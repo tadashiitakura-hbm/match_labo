@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>算数チャレンジ｜小4上 16〜20</title>
+<title>解法チャレンジ｜小4上 16〜20</title>
 <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Kiwi+Maru:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -68,6 +68,13 @@
   .judge{font-size:34px; font-weight:900; min-height:46px}.ok{color:var(--good)}.ng{color:var(--bad)}
   .box{border:3px solid #111;border-radius:18px;background:#fff;padding:12px;margin:12px 0;line-height:1.8}.box h3{margin:0 0 6px;font-size:18px}.hint{background:#fffbe6}.solution{background:#effdf5}.learn{background:#fdf2ff}
   .step{border-left:8px solid var(--pink); background:rgba(255,255,255,.76); border-radius:12px; padding:8px 10px; margin:8px 0; min-height:0; line-height:1.65}.step b{color:#db2777}
+
+  .numPad{display:grid;grid-template-columns:repeat(3,minmax(62px,1fr));gap:8px;width:min(330px,100%);margin:8px 0 12px}
+  .numKey{font-family:"Kiwi Maru",YakuHanJPs_Noto,serif;border:3px solid #111;border-radius:16px;background:#fff;font-size:24px;font-weight:900;padding:12px 6px;box-shadow:3px 3px 0 #111;cursor:pointer;touch-action:manipulation}
+  .numKey:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #111}
+  .numKey.wide{grid-column:span 2;background:#ffe4f7}
+  .numKey.clear{background:#dcfce7;font-size:18px}
+  @media(max-width:640px){.answer input{width:160px;font-size:28px}.numPad{width:100%;gap:10px}.numKey{font-size:28px;padding:14px 6px}}
   .hidden{display:none!important}
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.48);display:none;align-items:center;justify-content:center;z-index:20;padding:18px}.modal.show{display:flex}.modalPanel{background:var(--paper);border:5px solid #111;border-radius:28px;box-shadow:10px 10px 0 rgba(0,0,0,.35);width:min(560px,100%);padding:22px;text-align:center}.modalPanel h2{font-family:"Kiwi Maru", YakuHanJPs_Noto, serif;font-size:34px;margin:0 0 10px}
   .cutin{position:fixed;left:50%;top:38%;width:min(980px,118vw);min-height:150px;background:var(--yellow);border-top:8px solid #111;border-bottom:8px solid #111;transform:translateX(-190vw) rotate(-7deg);z-index:50;padding:18px 58px;font-family:"Kiwi Maru", YakuHanJPs_Noto, serif;font-size:clamp(34px,7vw,72px);font-weight:900;color:#111;text-shadow:3px 3px 0 #fff;transition:transform .46s cubic-bezier(.2,1.2,.2,1),opacity .12s;display:flex;align-items:center;justify-content:center;gap:26px;text-align:center;opacity:0;pointer-events:none;white-space:nowrap;overflow:visible}.cutin.show{transform:translateX(-50%) rotate(-7deg);opacity:1}.cutin:before,.cutin:after{content:"";position:absolute;border-radius:999px;background:#ff4fd8;box-shadow:44px 18px 0 #42e8ff,80px -12px 0 #b7ff1a; width:26px;height:26px;right:18%;top:16px}.cutin:after{left:18%;top:auto;bottom:18px;background:#42e8ff}@media(max-width:640px){.cutin{width:124vw;min-height:92px;padding:16px 28px;white-space:normal}}
@@ -117,7 +124,7 @@
 <div class="modal" id="modal"><div class="modalPanel"><h2 id="modalTitle">CLEAR!</h2><p id="modalText"></p><div class="btnRow" style="justify-content:center"><button class="btn green" id="modalBtn">つぎへ</button></div></div></div>
 <div class="wrap">
   <div class="top">
-    <div class="titleBox"><h1>算数チャレンジ</h1><div class="sub">小4上 第16〜20回｜解法フレーム版</div></div>
+    <div class="titleBox"><h1>解法チャレンジ</h1><div class="sub">小4上 第16〜20回｜解法フレーム版</div></div>
     <div class="hud"><div class="pill" id="hudUnit">単元</div><div class="pill" id="hudMethod">解法</div><div class="pill" id="hudStreak">連勝 0</div><div class="pill" id="hudTime">残り 3:00</div></div>
   </div>
   <div class="layout">
@@ -129,7 +136,8 @@
       <section id="quizBox">
         <div class="question" id="question"></div>
         <div id="figure" class="svgFig"></div>
-        <div class="answer"><label id="answerLabel">答え</label><input id="answerInput" type="number" inputmode="numeric"><span class="unit" id="answerUnit"></span></div>
+        <div class="answer"><label id="answerLabel">答え</label><input id="answerInput" type="text" inputmode="decimal" autocomplete="off"><span class="unit" id="answerUnit"></span></div>
+        <div class="numPad" id="numPad" aria-label="数字入力"><button class="numKey" data-key="7">7</button><button class="numKey" data-key="8">8</button><button class="numKey" data-key="9">9</button><button class="numKey" data-key="4">4</button><button class="numKey" data-key="5">5</button><button class="numKey" data-key="6">6</button><button class="numKey" data-key="1">1</button><button class="numKey" data-key="2">2</button><button class="numKey" data-key="3">3</button><button class="numKey" data-key="0">0</button><button class="numKey" data-key=".">.</button><button class="numKey clear" data-key="back">消す</button><button class="numKey wide clear" data-key="clear">全消し</button><button class="numKey" data-key="-">−</button></div>
         <div class="judge" id="judge"></div>
         <div class="btnRow" id="topNextRow"></div>
         <div class="btnRow"><button class="btn blue" id="btnHint">ヒント</button><button class="btn pink" id="btnHow">解き方</button><button class="btn" id="btnCheck">こたえあわせ</button><button class="btn green hidden" id="btnNext">次へ</button><button class="btn white hidden" id="btnReveal">答えを見る</button></div>
@@ -169,23 +177,23 @@ const METHODS=[
 {unit:'19',unitName:'立方体と直方体の性質',id:'19-2',title:'展開図と対応',desc:'向かい合う面・重なる辺',rule:3,levels:3,learn:['展開図では、折り上げたときの位置を考えます。','正方形を90度ずつ回転させて、隣り合う面を追います。','一直線に並ぶ面の端は、離れた頂点に対応することがあります。'],gen(level){const oppBase={1:3,3:1,2:6,6:2,4:5,5:4};const adjBase={1:[2,4,5,6],2:[1,3,4,5],3:[2,4,5,6],4:[1,2,3,6],5:[1,2,3,6],6:[1,3,4,5]};let nums=[1,2,3,4,5,6],rot=rand(0,5);let labels={};nums.forEach((n,i)=>labels[n]=nums[(i+rot)%6]);let inv={};nums.forEach(pos=>inv[labels[pos]]=pos);let shown=choice(nums);let pos=inv[shown];let oppShown=labels[oppBase[pos]];let adjShown=adjBase[pos].map(x=>labels[x]);let ans,q,label,hint,steps,check,mode;if(level===1){mode='opposite';ans=oppShown;q=`図の展開図を組み立てます。面<b>${shown}</b>と向かい合う面の番号は何ですか。`;label='面番号';hint=['基準を決める','反対を探す','番号で答える'];steps=[`面${shown}を基準にして折り上げます。`,`となり合う4面ではなく、反対側に来る面を探します。`,`面${shown}と向かい合う面は${ans}です。`];check=`向かい合う面は1組だけです。`;}else if(level===2){mode='adjMax';ans=Math.max(...adjShown);q=`図の展開図を組み立てます。面<b>${shown}</b>と辺で接する面のうち、番号が一番大きい面は何番ですか。`;label='面番号';hint=['接する4面','番号を見る','最大を選ぶ'];steps=[`面${shown}と辺で接する面を4つ探します。`,`接する面は ${adjShown.join('、')} です。`,`一番大きい番号は${ans}です。`];check=`反対の面${oppShown}は辺で接しません。`;}else{mode='adjSum';ans=adjShown.reduce((a,b)=>a+b,0);q=`図の展開図を組み立てます。面<b>${shown}</b>と辺で接する4つの面の番号の合計はいくつですか。`;label='番号の合計';hint=['接する4面','番号を全部書く','4つを足す'];steps=[`面${shown}と辺で接する面を4つ探します。`,`接する面は ${adjShown.join('、')} です。`,`合計は ${adjShown.join('+')}=${ans} です。`];check=`反対の面${oppShown}以外の4面を足します。`;}return {q,ans,unit:'',label,figure:svgNet(labels),hint,steps,check,sig:`19-2-${level}-${mode}-${shown}-${JSON.stringify(labels)}`}}},
 {unit:'19',unitName:'立方体と直方体の性質',id:'19-3',title:'さいころ',desc:'向かい合う面の和を使う',rule:3,levels:3,learn:['普通のさいころは、向かい合う目の和が7です。','2つ重ねたとき、接している面は外から見えません。','見える面の合計は、全部の合計から見えない面を引きます。'],gen(level){let ans,q,label,hint,steps,check,mode;if(level===1){let top=rand(1,6),bottom=7-top;mode='opposite';ans=bottom;q=`普通のさいころで、上の面が<b>${top}</b>です。反対側の下の面はいくつですか。`;label='下の面';hint=['向かい合う面','和は7','7から引く'];steps=[`向かい合う面の和は7です。`,`上が${top}なので、下は 7-${top}=${bottom} です。`,`答えは${ans}です。`];check=`${top}+${bottom}=7`;}else if(level===2){let hidden=rand(1,6);mode='oneVisible';ans=21-hidden;q=`普通のさいころで、下の面が<b>${hidden}</b>です。机に接していない、見える5つの面の目の合計はいくつですか。`;label='見える合計';hint=['全部は21','下は見えない','21から引く'];steps=[`さいころ1個の目の合計は 1+2+3+4+5+6=21 です。`,`下の面${hidden}は机に接して見えません。`,`見える5面の合計は 21-${hidden}=${ans} です。`];check=`見える${ans}+見えない${hidden}=21`;}else{let contact=rand(1,6),other=7-contact,hiddenBottom=rand(1,6);mode='twoDice';ans=42-(contact+other)-hiddenBottom;q=`普通のさいころを2個重ねます。接して見えない2面の一方が<b>${contact}</b>、下の机に接する面が<b>${hiddenBottom}</b>です。外から見える面の合計はいくつですか。`;label='見える合計';hint=['2個で42','見えない面','42から引く'];steps=[`さいころ2個の目の合計は 21×2=42 です。`,`重なって見えない2面は ${contact} と ${other}、下で見えない面は${hiddenBottom}です。`,`見える合計は 42-(${contact}+${other}+${hiddenBottom})=${ans} です。`];check=`見える${ans}+見えない${contact+other+hiddenBottom}=42`;}return {q,ans,unit:'',label,hint,steps,check,sig:`19-3-${level}-${mode}-${q}-${ans}`}}},
 {unit:'19',unitName:'立方体と直方体の性質',id:'19-4',title:'立方体を切り開く',desc:'切る辺と残す辺',rule:3,levels:3,learn:['立方体には辺が12本あります。','6つの正方形を1つにつなげるには、5本の辺を残します。','だから切り開く辺は 12−5=7本です。'],gen(level){let ans,q,label,hint,steps,check,mode;if(level===1){let faces=rand(3,6);mode='remainPartial';ans=faces-1;q=`<b>${faces}</b>個の正方形を1つにつなげた形を作ります。切らずに残す辺は何本ですか。`;label='残す辺';hint=['面をつなぐ','面より1少ない','面数−1'];steps=[`${faces}個の面を1つにつなげます。`,`1つながりにする残す辺は、面の数より1少ないです。`,`残す辺は ${faces}-1=${ans}本です。`];check=`${faces}面をつなぐ残す辺は${ans}本`;}else if(level===2){let connected=rand(2,4);mode='addFaces';ans=6-connected;q=`展開図を作る途中で、すでに<b>${connected}</b>個の面が1つにつながっています。6面すべてを1つにつなげるには、あと何本の辺を切らずに残せばよいですか。`;label='あと残す辺';hint=['今の面数','残りの面','1面に1本'];steps=[`今は${connected}面が1つにつながっています。`,`全部で6面なので、あと ${6-connected}面 つなげます。`,`面を1つ増やすごとに1本残すので、あと${ans}本です。`];check=`${connected}+${ans}=6`;}else{let given=choice(['cut','remain']);if(given==='cut'){let cut=rand(3,7);mode='cutToRemain';ans=12-cut;q=`立方体の辺12本のうち、<b>${cut}</b>本を切りました。切らずに残っている辺は何本ですか。`;label='残った辺';hint=['全部は12本','切った分','12−切る'];steps=[`立方体の辺は全部で12本です。`,`そのうち${cut}本を切りました。`,`残った辺は 12-${cut}=${ans}本です。`];check=`${cut}+${ans}=12`;}else{let remain=rand(2,6);mode='remainToCut';ans=12-remain;q=`立方体の辺12本のうち、<b>${remain}</b>本を切らずに残しました。切った辺は何本ですか。`;label='切った辺';hint=['全部は12本','残した分','12−残す'];steps=[`立方体の辺は全部で12本です。`,`そのうち${remain}本を残しました。`,`切った辺は 12-${remain}=${ans}本です。`];check=`${remain}+${ans}=12`;} }return {q,ans,unit:'本',label,hint,steps,check,sig:`19-4-${level}-${mode}-${q}-${ans}`}}},
-{unit:'16',unitName:'約数',id:'16-oni',title:'文章題',desc:'最大公約数を使う',rule:3,levels:1,oniOnly:true,learn:['文章の中から、同じ数ずつ分けるものを見つけます。','できるだけ多く分けるときは、最大公約数を使います。','答えたあと、全部割り切れるか検算します。'],gen(level){
+{unit:'16',unitName:'約数',id:'16-oni',title:'文章題',desc:'最大公約数を使う',rule:5,levels:3,learn:['文章の中から、同じ数ずつ分けるものを見つけます。','できるだけ多く分けるときは、最大公約数を使います。','答えたあと、全部割り切れるか検算します。'],gen(level){
   const pairs=[[84,126],[96,144],[108,162],[120,180],[132,198],[168,252],[180,270],[216,324]];
   const [a,b]=choice(pairs); const ans=gcd(a,b); const x=a/ans, y=b/ans;
   return {q:`色紙が<b>${a}</b>枚、シールが<b>${b}</b>枚あります。どの袋にも同じ枚数ずつ入れ、余りが出ないようにします。できるだけ多くの袋を作ると、何袋できますか。`,ans,unit:'袋',label:'袋の数',hint:['余りなしを探す','共通の約数','一番大きい約数'],steps:[`袋の数は、${a}と${b}の両方を割り切る数です。`,`できるだけ多く作るので、${a}と${b}の最大公約数を求めます。`,`最大公約数は${ans}なので、${ans}袋できます。`],check:`${a}÷${ans}=${x}、${b}÷${ans}=${y}`,sig:`16-oni-${a}-${b}`}
 }},
-{unit:'17',unitName:'倍数',id:'17-oni',title:'文章題',desc:'最小公倍数を使う',rule:3,levels:1,oniOnly:true,learn:['何日ごと、何分ごとなど、くり返しの問題です。','次に同時に起こるときは、最小公倍数を使います。','複数の周期でも、共通する一番小さい数を探します。'],gen(level){
+{unit:'17',unitName:'倍数',id:'17-oni',title:'文章題',desc:'最小公倍数を使う',rule:5,levels:3,learn:['何日ごと、何分ごとなど、くり返しの問題です。','次に同時に起こるときは、最小公倍数を使います。','複数の周期でも、共通する一番小さい数を探します。'],gen(level){
   const triples=[[6,8,12],[8,10,12],[9,12,15],[10,15,18],[12,16,20],[14,21,28],[15,20,30]];
   const [a,b,c]=choice(triples); const ans=lcm(lcm(a,b),c);
   return {q:`Aのライトは<b>${a}</b>分ごと、Bは<b>${b}</b>分ごと、Cは<b>${c}</b>分ごとに光ります。今3つ同時に光りました。次に3つ同時に光るのは何分後ですか。`,ans,unit:'分後',label:'時間',hint:['周期を確認','公倍数を探す','最小を選ぶ'],steps:[`同時に光る時間は、${a}、${b}、${c}の公倍数です。`,`最初に同時に光るので、最小公倍数を求めます。`,`最小公倍数は${ans}なので、${ans}分後です。`],check:`${ans}÷${a}=${ans/a}、${ans}÷${b}=${ans/b}、${ans}÷${c}=${ans/c}`,sig:`17-oni-${a}-${b}-${c}`}
 }},
-{unit:'18',unitName:'一方におきかえて解く問題',id:'18-oni',title:'文章題',desc:'置換で考える',rule:3,levels:1,oniOnly:true,learn:['全部同じものだったと考えます。','本当の合計との差を出します。','1つ変えるとどれだけ変わるかで割ります。'],gen(level){
+{unit:'18',unitName:'一方におきかえて解く問題',id:'18-oni',title:'文章題',desc:'置換で考える',rule:5,levels:3,learn:['全部同じものだったと考えます。','本当の合計との差を出します。','1つ変えるとどれだけ変わるかで割ります。'],gen(level){
   const sets=[[42,120,80,4360],[55,150,90,6750],[68,180,120,10560],[75,200,130,12650],[96,240,160,18560]];
   const [total, high, low, sum] = choice(sets);
   const highCount=(sum-low*total)/(high-low); const lowCount=total-highCount;
   return {q:`入場券を大人と子ども合わせて<b>${total}</b>枚買いました。大人は1枚<b>${high}</b>円、子どもは1枚<b>${low}</b>円で、代金は全部で<b>${sum}</b>円です。大人の券は何枚ですか。`,ans:highCount,unit:'枚',label:'大人の券',hint:['全部子ども','差を出す','1枚の差で割る'],steps:[`全部子どもなら、${low}×${total}=${low*total}円です。`,`本当は${sum}円なので、差は${sum}-${low*total}=${sum-low*total}円です。`,`大人1枚に変えると${high}-${low}=${high-low}円増えます。${sum-low*total}÷${high-low}=${highCount}枚です。`],check:`${high}×${highCount}+${low}×${lowCount}=${sum}`,sig:`18-oni-${total}-${high}-${low}-${sum}`}
 }},
-{unit:'19',unitName:'立方体と直方体の性質',id:'19-oni',title:'文章題',desc:'立体の条件を読む',rule:3,levels:1,oniOnly:true,learn:['立体の文章題は、まず何を数えるかを決めます。','辺の本数、リボンの本数、見えない面などを書き出します。','最後に、足し忘れがないか検算します。'],gen(level){
+{unit:'19',unitName:'立方体と直方体の性質',id:'19-oni',title:'文章題',desc:'立体の条件を読む',rule:5,levels:3,learn:['立体の文章題は、まず何を数えるかを決めます。','辺の本数、リボンの本数、見えない面などを書き出します。','最後に、足し忘れがないか検算します。'],gen(level){
   const type=rand(1,3);
   if(type===1){ const a=rand(12,24), b=rand(18,36), c=rand(8,20), knot=rand(12,30), spare=rand(2,8); const ans=(a+b)*2+c*4+knot+spare;
     return {q:`たて<b>${a}</b>cm、横<b>${b}</b>cm、高さ<b>${c}</b>cmの箱にリボンをかけます。たて・横は2本ずつ、高さは4本、結び目に<b>${knot}</b>cm、余りに<b>${spare}</b>cm使います。リボンは全部で何cm必要ですか。`,ans,unit:'cm',label:'リボン',figure:svgBox(b,c,a),hint:['本数を書く','結び目を足す','余りも足す'],steps:[`たて・横は2本ずつなので、(${a}+${b})×2=${(a+b)*2}cmです。`,`高さは4本なので、${c}×4=${c*4}cmです。`,`結び目と余りを足して、${(a+b)*2}+${c*4}+${knot}+${spare}=${ans}cmです。`],check:`${a}×2+${b}×2+${c}×4+${knot}+${spare}=${ans}`,sig:`19-oni-ribbon-${a}-${b}-${c}-${knot}-${spare}`}
@@ -209,7 +217,7 @@ const COMPREHENSIVE=[
   {unit:'20',unitName:'総合',id:'20-2',title:'倍数総合',desc:'第17回',rule:3,levels:3,learn:['第20回も、低・中・高の3段階で進みます。','最小公倍数・倍数条件を使います。','問題文の「同時」「ぴったり」「あまり」に注目します。'],gen(level){return choice(METHODS.filter(m=>m.unit==='17')).gen(Math.min(3, Math.max(1, level||1)))}},
   {unit:'20',unitName:'総合',id:'20-3',title:'置換総合',desc:'第18回',rule:3,levels:3,learn:['第20回も、低・中・高の3段階で進みます。','全部一方におきかえる問題です。','差を出し、1つ変わる量で割ります。'],gen(level){return choice(METHODS.filter(m=>m.unit==='18')).gen(Math.min(3, Math.max(1, level||1)))}},
   {unit:'20',unitName:'総合',id:'20-4',title:'立体総合',desc:'第19回',rule:3,levels:3,learn:['第20回も、低・中・高の3段階で進みます。','辺・面・展開図・さいころの問題です。','図形の性質を言葉で確認してから答えます。'],gen(level){return choice(METHODS.filter(m=>m.unit==='19')).gen(Math.min(3, Math.max(1, level||1)))}},
-  {unit:'20',unitName:'総合',id:'20-oni',title:'総合文章題',desc:'第16〜19回',rule:3,levels:1,oniOnly:true,learn:['第16〜19回の考え方を混ぜた文章題です。','まず、どの解法を使う問題か見抜きます。','ヒントを見て、使う型を確認しましょう。'],gen(level){return choice(METHODS.filter(m=>m.oniOnly && m.unit!=='20')).gen(4)}},
+  {unit:'20',unitName:'総合',id:'20-oni',title:'総合文章題',desc:'第16〜19回',rule:5,levels:3,learn:['第16〜19回の考え方を混ぜた文章題です。','まず、どの解法を使う問題か見抜きます。','ヒントを見て、使う型を確認しましょう。'],gen(level){return choice(['16-oni','17-oni','18-oni','19-oni'].map(id=>ALL.find(m=>m.id===id))).gen(Math.min(3, Math.max(1, level||1)))}},
 ];
 const ALL=[...METHODS,...COMPREHENSIVE];
 
@@ -370,7 +378,7 @@ function loadProgress(){
       const savedLevel=Number(data.lastLevel||0);
       const savedMethod=ALL.find(m=>m.id===state.methodId);
       const progressedLevel=Number(state.progress[state.methodId]||0);
-      const resumeLevel=Math.max(savedLevel, Math.min(progressedLevel, savedMethod&&savedMethod.oniOnly?1:99));
+      const resumeLevel=Math.max(savedLevel, progressedLevel);
       state.level = Math.max(0, resumeLevel);
       state.streak=0;
     }
@@ -380,7 +388,6 @@ function markProgress(id,level){ state.progress[id]=Math.max(state.progress[id]|
 function isPlusLevel(){ return state.level>3; }
 function levelName(lv=state.level){
   if(lv===0) return '解法';
-  if(current()&&current().oniOnly) return '鬼';
   if(lv===1) return '低';
   if(lv===2) return '中';
   if(lv===3) return '高';
@@ -388,16 +395,14 @@ function levelName(lv=state.level){
 }
 function levelStars(lv=state.level){
   if(lv===0) return '☆☆☆';
-  if(current()&&current().oniOnly) return '👹';
   if(lv<=3) return '★'.repeat(lv)+'☆'.repeat(3-lv);
   return '★★★' + '+'.repeat(lv-3);
 }
 function clearGoal(){
-  if(current()&&current().oniOnly) return 3;
-  return state.level<=3 ? 3 : (state.level-2)*3; // +は6連勝、++は9連勝、+++は12連勝…
+  const m=current();
+  return state.level<=3 ? (m&&m.rule?m.rule:3) : (state.level-2)*3; // +は6連勝、++は9連勝、+++は12連勝…
 }
 function timeLimitForLevel(){
-  if(current()&&current().oniOnly) return 180;
   if(state.level<=3) return 180;
   return Math.max(30, 180 - (state.level-3)*60); // +は2分、++は1分、+++以降は最低30秒
 }
@@ -406,20 +411,17 @@ function problemSignature(p){
 }
 function nextDifficultyLevel(){ return state.level+1; }
 
-function methodStage(m){ if(state.cleared[m.id] || (state.progress[m.id]||0)>=4) return {text:'クリア',cls:'s4'}; const lv=Math.max(state.progress[m.id]||0, m.id===state.methodId ? state.level : 0); if(m.oniOnly && lv>=1) return {text:'鬼',cls:'s3'}; if(lv>=3) return {text:'上級',cls:'s3'}; if(lv>=2) return {text:'中級',cls:'s2'}; if(lv>=1) return {text:'初級',cls:'s1'}; return {text:'未受講',cls:'s0'}; }
+function methodStage(m){ if(state.cleared[m.id] || (state.progress[m.id]||0)>=4) return {text:'クリア',cls:'s4'}; const lv=Math.max(state.progress[m.id]||0, m.id===state.methodId ? state.level : 0); if(lv>=3) return {text:'上級',cls:'s3'}; if(lv>=2) return {text:'中級',cls:'s2'}; if(lv>=1) return {text:'初級',cls:'s1'}; return {text:'未受講',cls:'s0'}; }
 function unitStageChips(u){
   const arr=methodsForUnit(u.id), total=arr.length;
   const low=arr.filter(m=>(state.progress[m.id]||0)>=1 || state.cleared[m.id]).length;
   const mid=arr.filter(m=>(state.progress[m.id]||0)>=2 || state.cleared[m.id]).length;
   const high=arr.filter(m=>(state.progress[m.id]||0)>=3 || state.cleared[m.id]).length;
   const clear=arr.filter(m=>state.cleared[m.id] || (state.progress[m.id]||0)>=4).length;
-  const oniTotal=arr.filter(m=>m.oniOnly).length;
-  const oni=arr.filter(m=>m.oniOnly && ((state.progress[m.id]||0)>=1 || state.cleared[m.id])).length;
   const chips=[];
   if(low>0) chips.push(`<span class="progChip low">初級 ${low}/${total}</span>`);
   if(mid>0) chips.push(`<span class="progChip mid">中級 ${mid}/${total}</span>`);
   if(high>0) chips.push(`<span class="progChip high">上級 ${high}/${total}</span>`);
-  if(oni>0) chips.push(`<span class="progChip high">鬼 ${oni}/${oniTotal}</span>`);
   if(clear>0) chips.push(`<span class="progChip clear">クリア ${clear}/${total}</span>`);
   return chips.length?`<div class="unitProgress">${chips.join('')}</div>`:'';
 }
@@ -449,7 +451,7 @@ function renderHeader(){
   $('mainTitle').textContent=m.title;
   $('mainDesc').textContent=m.desc;
   $('stars').textContent=levelStars();
-  $('clearRule').textContent= current().oniOnly ? '鬼は3連続正解でクリア' : (state.level<=3 ? '各難易度3連続正解で次へ' : `${levelName()}は${clearGoal()}連続正解で次へ`);
+  $('clearRule').textContent= state.level<=3 ? `各難易度${clearGoal()}連続正解で次へ` : `${levelName()}は${clearGoal()}連続正解で次へ`;
   const total=clearGoal();
   const pct=Math.min(100, state.streak/total*100);
   const arr=methodsForUnit(state.unit);
@@ -466,7 +468,7 @@ function nextProblem(){
   state.viewedHow=false;
   state.timeLeft=timeLimitForLevel();
   saveProgress();
-  const genLevel=(m.oniOnly?4:Math.min(3, Math.max(1, state.level||1)));
+  const genLevel=Math.min(3, Math.max(1, state.level||1));
   let p=null, sig='', key=m.id+'::'+state.level, recent=state.recentSig[key]||[], last=state.lastSig[key];
   for(let i=0;i<80;i++){
     p=m.gen(genLevel);
@@ -561,31 +563,33 @@ function rabbitPunch(text='やったね！'){ setRabbit('punch', text, 1500); }
 function rabbitHeart(text='単元クリア！すごい！'){ setRabbit('heart', text, 2600); }
 
 function tick(){ let m=Math.floor(state.timeLeft/60),s=state.timeLeft%60; $('hudTime').textContent=`残り ${m}:${String(s).padStart(2,'0')}`; if(state.timeLeft<=30) $('hudTime').style.background='#fecaca'; else $('hudTime').style.background='rgba(255,255,255,.88)'; updateRabbitByTime(); }
-function timeUp(){ if(state.answered)return; state.answered=true; state.streak=0; $('answerInput').disabled=true; $('btnCheck').disabled=true; $('judge').textContent='時間切れ'; $('judge').className='judge ng'; setRabbit('panic','時間切れ…次はいける！',1800); showSolution(); addNextButtons(); renderHeader(); }
+
+const MISS_LINES=['どんまい！','大丈夫！','次いける！','おしい！','落ち着こう','まだいける'];
+const TIMEUP_LINES=['どんまい！','次は早い！','大丈夫！','また挑戦！','落ち着こう','次いける！'];
+function cheer(kind='miss'){ const arr=kind==='time'?TIMEUP_LINES:MISS_LINES; const seed=Date.now()+state.miss+(state.level||0); return arr[seed%arr.length]; }
+function keypadPress(key){
+  const input=$('answerInput'); if(!input || input.disabled) return;
+  let v=input.value||'';
+  if(key==='back') v=v.slice(0,-1);
+  else if(key==='clear') v='';
+  else if(key==='.' && v.includes('.')) return;
+  else if(key==='-' && v.length>0) return;
+  else v+=key;
+  input.value=v; input.focus();
+}
+function timeUp(){ if(state.answered)return; state.answered=true; state.streak=0; $('answerInput').disabled=true; $('btnCheck').disabled=true; $('judge').textContent='時間切れ'; $('judge').className='judge ng'; setRabbit('panic',cheer('time'),1800); showSolution(); addNextButtons(); renderHeader(); }
 function showHint(){ if(state.answered)return; $('btnHint').disabled=true; const p=state.problem; $('hintBox').classList.remove('hidden'); $('hintBox').innerHTML='<h3>ヒント</h3>'+p.hint.map((h,i)=>`<div class="step"><b>${i+1}</b> ${h}</div>`).join(''); }
 function showHow(){ if(state.answered)return; if(!state.viewedHow){ state.streak=0; state.viewedHow=true; showMiniModal('解き方を見ます','連勝カウントは0に戻りました。',()=>{}); renderHeader(); }
  $('btnHow').disabled=true; showSolution(false); }
 function showSolution(final=true){ const p=state.problem; $('solutionBox').classList.remove('hidden'); $('solutionBox').innerHTML=fmtSteps(p.steps)+`<div class="step"><b>検算</b><br>${p.check||''}</div>`+(final?`<div class="step"><b>答え</b><br>${p.ans}${p.unit||''}</div>`:''); }
-function checkAnswer(){ if(state.answered)return; let val=Number($('answerInput').value); if(Number.isNaN(val) || $('answerInput').value===''){ $('judge').textContent='数字を入れてください'; $('judge').className='judge ng'; return; } const p=state.problem; if(Math.abs(val-Number(p.ans))<1e-9){ correct(); } else { state.miss++; state.streak=0; $('judge').textContent='もう一度'; $('judge').className='judge ng'; setRabbit('focus','惜しい！条件を見直そう！',1200); if(state.miss>=2) $('btnReveal').classList.remove('hidden'); renderHeader(); }}
+function checkAnswer(){ if(state.answered)return; let val=Number($('answerInput').value); if(Number.isNaN(val) || $('answerInput').value===''){ $('judge').textContent='数字を入れてください'; $('judge').className='judge ng'; return; } const p=state.problem; if(Math.abs(val-Number(p.ans))<1e-9){ correct(); } else { state.miss++; state.streak=0; const cm=cheer('miss'); $('judge').textContent=cm; $('judge').className='judge ng'; setRabbit('focus',cm,1200); if(state.miss>=2) $('btnReveal').classList.remove('hidden'); renderHeader(); }}
 function correct(){ clearInterval(state.timer); state.answered=true; state.streak++; const msg=praise('correct'); $('answerInput').disabled=true; $('btnCheck').disabled=true; $('btnHint').disabled=true; $('btnHow').disabled=true; $('judge').textContent='すごい！正解！'; $('judge').className='judge ok'; showSolution(); cutin(msg); rabbitPunch(msg); const goal=clearGoal(); if(state.streak>=goal){ setTimeout(()=>clearMethod(),650); } else { addNextButtons(); } renderHeader(); }
 function revealAnswer(){ if(state.answered)return; clearInterval(state.timer); state.answered=true; state.streak=0; $('answerInput').value=state.problem.ans; $('answerInput').disabled=true; $('btnCheck').disabled=true; $('btnHint').disabled=true; $('btnHow').disabled=true; $('btnReveal').classList.add('hidden'); $('judge').textContent='答えを確認'; $('judge').className='judge ng'; setRabbit('focus','解説で型を確認しよう！',1500); showSolution(); addNextButtons(); renderHeader(); }
 function addNextButtons(){ $('topNextRow').innerHTML=''; $('bottomNextRow').innerHTML=''; $('btnNext').classList.remove('hidden'); $('btnNext').disabled=false; }
 function clearMethod(){
   const m=current();
-  if(m.oniOnly){
-    state.cleared[m.id]=true;
-    markProgress(m.id,4);
-    renderMethods();
-    renderUnits();
-    const arr=methodsForUnit(state.unit);
-    const unitDone=arr.every(x=>state.cleared[x.id] || (state.progress[x.id]||0)>=4);
-    const clearMsg=praise('clear');
-    if(unitDone) rabbitHeart(clearMsg);
-    showMiniModal(unitDone?'単元クリア！':'文章題クリア！', `${clearMsg}<br>文章題を3連続正解しました。`,()=>gotoNextMethod());
-    return;
-  }
   if(state.level<3){
-    showMiniModal('レベルアップ！',`${praise('clear')}<br>難易度${levelName(state.level)}を3連続正解。次は難易度${levelName(state.level+1)}です。`,()=>{
+    showMiniModal('レベルアップ！',`${praise('clear')}<br>難易度${levelName(state.level)}を${clearGoal()}連続正解。次は難易度${levelName(state.level+1)}です。`,()=>{
       state.level++;
       state.streak=0;
       markProgress(m.id,state.level);
@@ -621,6 +625,7 @@ function clearMethod(){
 function gotoNextMethod(){ const arr=methodsForUnit(state.unit); let idx=arr.findIndex(x=>x.id===state.methodId); if(idx<arr.length-1){ state.methodId=arr[idx+1].id; state.level=0; state.streak=0; load(); } else { const unitIdx=UNITS.findIndex(u=>u.id===state.unit); if(unitIdx<UNITS.length-1){ state.unit=UNITS[unitIdx+1].id; state.methodId=methodsForUnit(state.unit)[0].id; state.level=0; state.streak=0; load(); } else { showMiniModal('全クリア！','第16〜20回のフレームを最後までクリアしました。',()=>load()); } } }
 function cutin(text){ const el=$('cutin'); const words=CORRECT_PRAISE_LINES; const msg=String(text||choice(words)).slice(0,10); el.classList.remove('show'); const t=el.querySelector('.cutinText'); if(t) t.textContent=msg; void el.offsetWidth; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),1980); }
 function showMiniModal(title,text,cb){ $('modalTitle').textContent=title; $('modalText').innerHTML=String(text); $('modal').classList.add('show'); $('modalBtn').disabled=false; $('modalBtn').onclick=()=>{ $('modalBtn').disabled=true; $('modal').classList.remove('show'); cb&&cb(); }; }
+document.querySelectorAll('.numKey').forEach(b=>b.addEventListener('click',()=>keypadPress(b.dataset.key)));
 $('btnHint').onclick=showHint; $('btnHow').onclick=showHow; $('btnCheck').onclick=checkAnswer; $('btnReveal').onclick=revealAnswer; $('btnNext').onclick=()=>{ $('btnNext').disabled=true; nextProblem(); }; $('answerInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkAnswer()});
 loadProgress();
 load();
