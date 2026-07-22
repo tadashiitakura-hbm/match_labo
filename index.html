@@ -196,6 +196,14 @@
   .chProg .bar>div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7fd0ff);transition:.3s;}
   .chProg .txt{text-align:center;font-size:12px;color:#777;margin-top:3px;}
   .b-skip{background:#ffe0b0;color:#9a5b00;}
+  .chCtrl{flex:1 1 100%;display:flex;justify-content:center;gap:10px;margin-top:8px;}
+  .b-pause{background:#ffe9b0;color:#8a5a00;font-size:14px;padding:8px 16px;}
+  .b-abort{background:#ffd3d3;color:#a02525;font-size:14px;padding:8px 16px;}
+  #chPause{position:fixed;inset:0;background:rgba(60,40,60,.55);display:none;align-items:center;justify-content:center;z-index:8000;}
+  #chPause.show{display:flex;}
+  .chPause-box{background:#fff;border-radius:22px;padding:28px 38px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.35);max-width:82vw;}
+  .chPause-box .t{font-family:'Hachi Maru Pop',cursive;font-size:30px;color:var(--pink-d);margin-bottom:8px;}
+  .chPause-box .s{font-size:14px;color:#777;margin-bottom:16px;}
   /* ===== SRSバッジ ===== */
   .b-mastered{background:#dff5e4;color:#2c8f45;} .b-due{background:#ffe2c2;color:#c06a00;}
   .b-learning{background:#e6eefc;color:#3f63bf;}
@@ -251,6 +259,10 @@
       <div class="bigtime remain" id="chRemainBox"><div class="lbl">のこり時間</div><div class="val" id="chRemain">2:00:00</div></div>
       <div class="bigtime best"><div class="lbl">前回の記録</div><div class="val" id="chBest">--:--</div></div>
       <div class="chProg"><div class="bar"><div id="chBar"></div></div><div class="txt" id="chProgTxt">0 / 0 解いた</div></div>
+      <div class="chCtrl">
+        <button class="b b-pause" id="btnPause">⏸ 一時ストップ</button>
+        <button class="b b-abort" id="btnAbort">■ 中断する</button>
+      </div>
     </div>
 
     <div class="layout">
@@ -307,6 +319,7 @@
   </div>
 
   <div class="scrim" id="scrim"></div>
+  <div id="chPause"><div class="chPause-box"><div class="t">⏸ 一時ストップ中</div><div class="s">時間は止まっています。もどったら「再開」を押してね。</div><button class="b b-check" id="btnResume">▶ 再開する</button></div></div>
   <div id="cutin">
     <div class="cutin-glow"></div>
     <div class="cutin-rays"></div>
@@ -1734,16 +1747,23 @@
     };
   };
   /* --- k3_round 1回転の角 --- */
+  function arcPoly(cx,cy,a0,a1,r,stroke,w){
+    let pts=''; const steps=Math.max(3,Math.round(Math.abs(a1-a0)/6));
+    for(let i=0;i<=steps;i++){ const ang=a0+(a1-a0)*i/steps; const p=pA(cx,cy,ang,r); pts+=(i?' ':'')+p[0].toFixed(1)+','+p[1].toFixed(1); }
+    return '<polyline points="'+pts+'" fill="none" stroke="'+stroke+'" stroke-width="'+(w||1.5)+'"/>';
+  }
   GEN.k3_round = function (rng) {
-    const a = ri(rng, 30, 160), ans = 360 - a;
-    const cx=155,cy=110,L=120;
-    const g = ln([cx-L,cy],[cx+L,cy]) + ln([cx,cy], pA(cx,cy,a,115))
-      + txt(pA(cx,cy,a/2,52), a+'°','#1f6fb0')
-      + txt(pA(cx,cy,(a+360)/2,40), 'ア','#c0286b');
+    const a = ri(rng, 30, 150), ans = 360 - a;
+    const cx=150,cy=88,L=92,V=[cx,cy];
+    const g = ln(V, [cx+L,cy]) + ln(V, pA(cx,cy,a,L))                 // 2本の光線
+      + arcPoly(cx,cy,0,a,22,'#1f6fb0',1.4)                          // 小さい角
+      + arcPoly(cx,cy,a,360,34,'#c0286b',1.9)                        // 大きい角（反射角）ア
+      + txt(pA(cx,cy,a/2,38), a+'°','#1f6fb0')
+      + txt(pA(cx,cy,(a/2)+180,46), 'ア','#c0286b');
     return {
-      title:'1回転の角', stem:'下の図で、'+H('アの角の大きさは何度')+'ですか。', svg: svgWrap(g,310,150),
+      title:'1回転の角', stem:'下の図で、'+H('大きいほうの角ア')+'の大きさは'+H('何度')+'ですか。', svg: svgWrap(g,300,178),
       fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
-      hints:['ぐるっと1回転した角（大きいほうの角）に注目します。','<b>1回転の角は360°</b>。'+a+'° とアの和が360°です。','ア＝360−'+a+'。'],
+      hints:['2本の直線（光線）でできる、ぐるっと回った<b>大きいほうの角</b>アに注目します。','<b>1回転は360°</b>。小さい角 '+a+'° とアの和が360°です。','ア＝360−'+a+'。'],
       solution:'1回転の角は360°だから、ア＝360−'+a+'＝<b>'+ans+'（度）</b>。', sig:'k3rd:'+a
     };
   };
@@ -2616,7 +2636,7 @@ var qcard=$('qcard'),qnum=$('qnum'),difftag=$('difftag'),qtitle=$('qtitle'),figs
 var view='home', mode=null;
 var current=null,currentKey=null,answered=false,timedOut=false,checkCount=0,cutinBusy=false,transitioning=false;
 var streak=0,hintStage=0,mDiff='low',mKind='learn',pendingAdvance=false;
-var chRemaining=[],chSolved=0,chSkips=0,chTotal=0,chActive=false,chRemainMs=0,chTimer=null;
+var chRemaining=[],chSolved=0,chSkips=0,chTotal=0,chActive=false,chRemainMs=0,chTimer=null,chPaused=false;
 var qStartMs=0,timer=null,timeLeft=0,cutinTimer=null,recentSig={};
 
 /* ============ ルーター ============ */
@@ -2627,7 +2647,7 @@ function showView(v){
   $('recordsView').style.display = v==='records'?'':'none';
   Array.prototype.forEach.call(document.querySelectorAll('.navbtn'),function(b){ b.classList.toggle('active', b.getAttribute('data-view')===v); });
   if(v!=='mastery'&&v!=='challenge') clearTimer();
-  if(v!=='challenge'){ stopChTimer(); chActive=false; }
+  if(v!=='challenge'){ stopChTimer(); chActive=false; chPaused=false; document.getElementById('chPause').classList.remove('show'); }
 }
 function goHome(){ showView('home'); renderHome(); }
 function goRecords(){ showView('records'); renderRecords(); }
@@ -2717,15 +2737,19 @@ function enterChallenge(){
   startChallenge();
 }
 function startChallenge(){
-  chRemaining=PROBLEMS.slice(); chSolved=0; chSkips=0; chTotal=N; chActive=true; chRemainMs=CH_LIMIT_MS;
+  chRemaining=PROBLEMS.slice(); chSolved=0; chSkips=0; chTotal=N; chActive=true; chPaused=false; chRemainMs=CH_LIMIT_MS;
+  document.getElementById('chPause').classList.remove('show');
   chBestEl.textContent = data.challenge.best!=null ? fmtHMS(data.challenge.best) : '--:--';
   startChTimer();
   updateChProg();
   nextChallengeItem();
 }
+function pauseChallenge(){ if(!chActive||chPaused) return; chPaused=true; stopChTimer(); document.getElementById('chPause').classList.add('show'); }
+function resumeChallenge(){ if(!chActive||!chPaused) return; chPaused=false; document.getElementById('chPause').classList.remove('show'); startChTimer(); }
+function abortChallenge(){ if(!chActive) return; showConfirm('チャレンジを中断しますか？<br>（ここまでのタイムと解いた数は「きろく」に残ります）', function(){ finishChallenge('abort'); }); }
 function nextChallengeItem(){
-  if(!chActive) return;
-  if(chRemaining.length===0){ finishChallenge(true); return; }
+  if(!chActive||chPaused) return;
+  if(chRemaining.length===0){ finishChallenge('clear'); return; }
   currentKey=chRemaining[0];
   current=genInstance(currentKey);
   renderCard();
@@ -2735,15 +2759,16 @@ function updateChProg(){
   chBar.style.width=Math.round(chSolved/chTotal*100)+'%';
   chProgTxt.textContent=chSolved+' / '+chTotal+' 解いた'+(chSkips?('　（スキップ '+chSkips+'）'):'');
 }
-function finishChallenge(completed){
-  chActive=false; stopChTimer();
+function finishChallenge(status){
+  chActive=false; chPaused=false; stopChTimer(); document.getElementById('chPause').classList.remove('show');
   var elapsed=CH_LIMIT_MS-chRemainMs;
-  var rec={date:todayStr(), ms:elapsed, solved:chSolved, total:chTotal, skips:chSkips, completed:completed};
+  var completed=(status==='clear');
+  var rec={date:todayStr(), ms:elapsed, solved:chSolved, total:chTotal, skips:chSkips, status:status};
   data.challenge.history.unshift(rec);
   var isBest=false;
   if(completed && (data.challenge.best==null || elapsed<data.challenge.best)){ data.challenge.best=elapsed; isBest=true; }
   save();
-  var head = completed ? (isBest?'🏆 新記録！':'⚡ クリア！') : '⏰ 時間切れ';
+  var head = status==='clear' ? (isBest?'🏆 新記録！':'⚡ クリア！') : status==='abort' ? '■ 中断しました' : '⏰ 時間切れ';
   qcard.className='card mode-high';
   qcard.innerHTML='<div class="done"><h2>'+head+'</h2>'+
     '<div style="font-family:Hachi Maru Pop,cursive;font-size:40px;color:#1f6fb0;margin:6px 0;">'+fmtHMS(elapsed)+'</div>'+
@@ -2756,7 +2781,7 @@ function finishChallenge(completed){
   if(isBest) showCutin('新記録！');
   renderHome();
 }
-function startChTimer(){ stopChTimer(); paintChRemain(); chTimer=setInterval(function(){ chRemainMs-=1000; if(chRemainMs<=0){chRemainMs=0;paintChRemain();stopChTimer();finishChallenge(false);return;} paintChRemain(); },1000); }
+function startChTimer(){ stopChTimer(); paintChRemain(); chTimer=setInterval(function(){ chRemainMs-=1000; if(chRemainMs<=0){chRemainMs=0;paintChRemain();stopChTimer();finishChallenge('timeup');return;} paintChRemain(); },1000); }
 function stopChTimer(){ if(chTimer){ clearInterval(chTimer); chTimer=null; } }
 function paintChRemain(){
   chRemainEl.textContent=fmtHMS(chRemainMs);
@@ -2900,16 +2925,18 @@ function onTimeout(){
   renderSidebar(); renderHome();
 }
 function onCheckChallenge(ok){
+  if(chPaused) return;
   if(ok){
     answered=true; btnCheck.disabled=true; recordSolve(true);
     chSolved++; chRemaining.shift();
     feedback.textContent='せいかい！'; feedback.className='feedback ok';
+    showCutin(CUTIN_OK[(Math.random()*CUTIN_OK.length)|0], {block:false, ms:600});   // 正解カットイン
     updateChProg();
-    setTimeout(function(){ if(chActive) nextChallengeItem(); },300);
+    setTimeout(function(){ if(chActive&&!chPaused) nextChallengeItem(); },320);
   } else {
     recordSolve(false);
     feedback.textContent='ちがうよ、もう一回！'; feedback.className='feedback ng';
-    btnCheck.disabled=true; setTimeout(function(){ if(chActive&&!answered) btnCheck.disabled=false; },350);
+    btnCheck.disabled=true; setTimeout(function(){ if(chActive&&!answered&&!chPaused) btnCheck.disabled=false; },350);
   }
 }
 
@@ -2923,7 +2950,7 @@ function onNext(){
   setTimeout(function(){ transitioning=false; },120);
 }
 function onSkip(){
-  if(mode!=='challenge'||!chActive||transitioning) return;
+  if(mode!=='challenge'||!chActive||transitioning||chPaused) return;
   transitioning=true;
   chRemaining.push(chRemaining.shift()); chSkips++;
   updateChProg();
@@ -2955,13 +2982,14 @@ function showSolution(){
 function onSol(){ if(!(mode==='mastery'&&mKind==='learn'&&mDiff==='low')) return; showConfirm('解法を見ると連続正解は0に戻ります。見る？',function(){ streak=0; updateStreakDots(); showSolution(); }); }
 
 /* ---- カットイン ---- */
-function showCutin(txt){
-  cutinBusy=true;
+function showCutin(txt, opts){
+  opts=opts||{}; var block=opts.block!==false; var ms=opts.ms||750;
+  if(block) cutinBusy=true;
   var nm=CHARS[(Math.random()*CHARS.length)|0];
   if(CHAR_IMG[nm]){ cutinChar.src=CHAR_IMG[nm]; cutinChar.style.display=''; } else cutinChar.style.display='none';
   cutinTxt.textContent=txt.length>10?txt.slice(0,10):txt;
   cutinEl.classList.add('show'); clearTimeout(cutinTimer);
-  cutinTimer=setTimeout(function(){ cutinEl.classList.remove('show'); cutinBusy=false; },750);
+  cutinTimer=setTimeout(function(){ cutinEl.classList.remove('show'); cutinBusy=false; },ms);
 }
 function showConfirm(msg,onYes){
   var ov=document.createElement('div'); ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:10000;';
@@ -3034,7 +3062,11 @@ function renderRecords(){
   if(!his||his.length===0){ html+='<div class="rec-empty">まだ記録がありません</div>'; }
   else{
     html+='<table class="rec-table"><tr><th>日づけ</th><th>タイム</th><th>クリア数</th><th>スキップ</th><th></th></tr>';
-    his.slice(0,30).forEach(function(r){ var best=(data.challenge.best!=null&&r.completed&&r.ms===data.challenge.best); html+='<tr class="'+(best?'best':'')+'"><td>'+r.date+'</td><td>'+fmtHMS(r.ms)+'</td><td>'+r.solved+'/'+r.total+'</td><td>'+r.skips+'</td><td>'+(r.completed?(best?'🏆ベスト':'完走'):'時間切れ')+'</td></tr>'; });
+    his.slice(0,30).forEach(function(r){
+      var st = r.status || (r.completed?'clear':'timeup');
+      var best=(data.challenge.best!=null && st==='clear' && r.ms===data.challenge.best);
+      var label = st==='clear'?(best?'🏆ベスト':'完走') : st==='abort'?'中断' : '時間切れ';
+      html+='<tr class="'+(best?'best':'')+'"><td>'+r.date+'</td><td>'+fmtHMS(r.ms)+'</td><td>'+r.solved+'/'+r.total+'</td><td>'+r.skips+'</td><td>'+label+'</td></tr>'; });
     html+='</table>';
   }
   html+='</div>';
@@ -3074,6 +3106,9 @@ btnSol.addEventListener('click',onSol);
 btnReset.addEventListener('click',onReset);
 drawerToggle.addEventListener('click',toggleMenu);
 scrim.addEventListener('click',function(){ setMenu(false); });
+$('btnPause').addEventListener('click',pauseChallenge);
+$('btnAbort').addEventListener('click',abortChallenge);
+$('btnResume').addEventListener('click',resumeChallenge);
 Array.prototype.forEach.call(document.querySelectorAll('.navbtn'),function(b){ b.addEventListener('click',function(){ var v=b.getAttribute('data-view'); if(v==='home')goHome(); else if(v==='mastery')enterMastery(); else if(v==='challenge')enterChallenge(); else if(v==='records')goRecords(); }); });
 $('cardMastery').addEventListener('click',enterMastery);
 $('cardChallenge').addEventListener('click',enterChallenge);
