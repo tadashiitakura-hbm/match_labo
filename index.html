@@ -165,59 +165,145 @@
   @media(max-width:520px){
     .field input{width:74px;} .btns .left,.btns .right{flex:1;justify-content:center;}
   }
+
+  /* ===== モードナビ ===== */
+  .topnav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+  .navbtn{font-family:'Kiwi Maru',serif;font-size:14px;font-weight:500;border:none;border-radius:999px;
+    padding:9px 18px;cursor:pointer;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);color:#7a6a8a;}
+  .navbtn.active{background:var(--pink);color:#fff;box-shadow:0 3px 10px rgba(216,27,96,.3);}
+  /* ===== ホーム ===== */
+  .home-cards{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:840px;margin:6px auto 0;}
+  .home-card{flex:1 1 330px;background:var(--card);border-radius:22px;padding:22px 22px 20px;box-shadow:0 6px 18px rgba(0,0,0,.08);
+    cursor:pointer;transition:transform .1s;border:3px solid transparent;}
+  .home-card:hover{transform:translateY(-3px);border-color:#ffd9e8;}
+  .home-card h3{font-family:'Hachi Maru Pop',cursive;font-size:22px;margin:2px 0 8px;color:var(--pink-d);}
+  .home-card.ch h3{color:var(--blue-d);}
+  .home-card p{font-size:13px;line-height:1.7;color:#66607a;margin:6px 0;}
+  .home-card .stat{background:#faf7ff;border-radius:12px;padding:8px 10px;margin-top:10px;font-size:13px;color:#5a5a68;}
+  .home-card .stat b{font-family:'Hachi Maru Pop',cursive;font-size:20px;color:var(--pink-d);}
+  .home-card.ch .stat b{color:var(--blue-d);}
+  .home-hero{text-align:center;font-size:14px;color:#8a8a95;margin:2px auto 14px;}
+  /* ===== チャレンジ大タイマー ===== */
+  .chHeader{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;background:var(--card);border-radius:18px;
+    padding:14px 16px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,.07);}
+  .bigtime{text-align:center;min-width:130px;}
+  .bigtime .lbl{font-size:12px;color:#8a8a95;margin-bottom:2px;}
+  .bigtime .val{font-family:'Hachi Maru Pop',cursive;font-size:clamp(30px,7vw,46px);line-height:1;}
+  .bigtime.remain .val{color:var(--blue-d);} .bigtime.remain.warn .val{color:var(--orange);} .bigtime.remain.danger .val{color:var(--red);}
+  .bigtime.best .val{color:var(--pink-d);}
+  .chProg{flex:1 1 100%;margin-top:6px;}
+  .chProg .bar{height:12px;background:#eee;border-radius:99px;overflow:hidden;}
+  .chProg .bar>div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7fd0ff);transition:.3s;}
+  .chProg .txt{text-align:center;font-size:12px;color:#777;margin-top:3px;}
+  .b-skip{background:#ffe0b0;color:#9a5b00;}
+  /* ===== SRSバッジ ===== */
+  .b-mastered{background:#dff5e4;color:#2c8f45;} .b-due{background:#ffe2c2;color:#c06a00;}
+  .b-learning{background:#e6eefc;color:#3f63bf;}
+  /* ===== きろく ===== */
+  .recWrap{max-width:900px;margin:0 auto;}
+  .rec-sec{background:var(--card);border-radius:18px;padding:16px 18px;box-shadow:0 4px 14px rgba(0,0,0,.07);margin-bottom:14px;}
+  .rec-sec h3{font-family:'Hachi Maru Pop',cursive;color:var(--blue-d);font-size:18px;margin:2px 0 10px;}
+  .rec-table{width:100%;border-collapse:collapse;}
+  .rec-table th,.rec-table td{border-bottom:1px solid #eee;padding:7px 8px;font-size:13px;text-align:center;}
+  .rec-table th{color:#8a8a95;font-weight:500;background:#faf9ff;}
+  .rec-table tr.best td{background:#fff3f8;font-weight:700;}
+  .rec-empty{color:#b0b0bb;font-size:13px;text-align:center;padding:16px;}
+  .kpi-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+  .kpi{flex:1 1 150px;background:linear-gradient(135deg,#fff0f6,#eef6ff);border-radius:14px;padding:12px;text-align:center;}
+  .kpi .n{font-family:'Hachi Maru Pop',cursive;font-size:26px;color:var(--pink-d);}
+  .kpi .l{font-size:12px;color:#777;}
 </style>
 </head>
 <body>
-  <h1>解法チャレンジ 第20回 総合</h1>
-  <div class="sub">予習シリーズ 4年上 第20回「総合」実戦演習 ／ 低（支援あり）→ 高（支援なし）</div>
-  <button class="drawer-toggle" id="drawerToggle">≡ もんだい一覧</button>
+  <h1>解法チャレンジ 4年上</h1>
+  <div class="sub">予習シリーズ 4年上 ／ 習得モード（間隔をあけてくり返し）・チャレンジモード（全解法タイムアタック）</div>
 
-  <div class="layout">
-    <!-- 左メニュー -->
-    <aside class="sidebar" id="sidebar">
-      <div class="side-h">もんだい一覧</div>
-      <div class="clearbox">
-        <div class="clearfrac"><span class="big" id="fracNum">0</span> / <span id="fracDen">22</span> クリア</div>
-        <div class="lownote" id="lowNote"></div>
-        <div class="pbar"><div id="pbarfill"></div></div>
+  <div class="topnav" id="topnav">
+    <button class="navbtn" data-view="home">🏠 ホーム</button>
+    <button class="navbtn" data-view="mastery">📚 習得モード</button>
+    <button class="navbtn" data-view="challenge">⚡ チャレンジ</button>
+    <button class="navbtn" data-view="records">📈 きろく</button>
+  </div>
+
+  <!-- ===== ホーム ===== -->
+  <div id="homeView">
+    <div class="home-hero" id="homeHero"></div>
+    <div class="home-cards">
+      <div class="home-card" id="cardMastery">
+        <h3>📚 習得モード</h3>
+        <p>3問れんぞく正解で「習得」。習得した解法は <b>1日後・3日後・1週間後・その後2週間ごと</b> にまた出てきて、くり返しで完全定着させます。</p>
+        <div class="stat" id="masteryStat">まだ習得した解法はありません</div>
       </div>
-      <div class="prob-list" id="probList"></div>
-      <div class="side-foot"><button class="reset-link" id="btnReset">さいしょからやり直す</button></div>
-    </aside>
+      <div class="home-card ch" id="cardChallenge">
+        <h3>⚡ チャレンジモード</h3>
+        <p>最初の単元から <b>1解法1問</b> ですべて解くタイムアタック。残り時間と前回の記録を見ながら、前回のタイムをこえよう！スキップもできます。</p>
+        <div class="stat" id="challengeStat">まだ記録はありません</div>
+      </div>
+    </div>
+  </div>
 
-    <!-- メイン -->
-    <div class="main">
-      <div class="topbar">
-        <span class="pill" id="qnum">問題 1 / 22</span>
-        <span class="pill diff-low" id="difftag">難易度：低</span>
-        <div class="streak">3れんぞく
-          <span class="dot" id="d0"></span><span class="dot" id="d1"></span><span class="dot" id="d2"></span>
+  <!-- ===== プレイ（習得・チャレンジ共通） ===== -->
+  <div id="playView" style="display:none;">
+    <button class="drawer-toggle" id="drawerToggle">≡ もんだい一覧</button>
+
+    <!-- チャレンジ用 大タイマー -->
+    <div class="chHeader" id="chHeader" style="display:none;">
+      <div class="bigtime remain" id="chRemainBox"><div class="lbl">のこり時間</div><div class="val" id="chRemain">2:00:00</div></div>
+      <div class="bigtime best"><div class="lbl">前回の記録</div><div class="val" id="chBest">--:--</div></div>
+      <div class="chProg"><div class="bar"><div id="chBar"></div></div><div class="txt" id="chProgTxt">0 / 0 解いた</div></div>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" id="sidebar">
+        <div class="side-h" id="sideH">習得の状況</div>
+        <div class="clearbox">
+          <div class="clearfrac"><span class="big" id="fracNum">0</span> / <span id="fracDen">22</span> 習得</div>
+          <div class="lownote" id="lowNote"></div>
+          <div class="pbar"><div id="pbarfill"></div></div>
         </div>
-        <div class="timer green" id="timer">5:00</div>
-      </div>
+        <div class="prob-list" id="probList"></div>
+        <div class="side-foot"><button class="reset-link" id="btnReset">進捗をリセット</button></div>
+      </aside>
 
-      <div class="card mode-low" id="qcard">
-        <div class="qtitle" id="qtitle"></div>
-        <div class="figs" id="figs"></div>
-        <div class="stem" id="stem"></div>
-        <div class="fields" id="fields"></div>
-        <div class="feedback" id="feedback"></div>
-        <div class="attempts" id="attempts"></div>
-        <div id="hintarea"></div>
-        <div id="solarea"></div>
-        <div class="btns">
-          <div class="left">
-            <button class="b b-hint" id="btnHint">ヒント</button>
-            <button class="b b-sol" id="btnSol">解法</button>
-            <button class="b b-reveal" id="btnReveal" style="display:none;">答えと解説を見る</button>
+      <div class="main">
+        <div class="topbar" id="topbar">
+          <span class="pill" id="qnum">問題 1 / 22</span>
+          <span class="pill diff-low" id="difftag">難易度：低</span>
+          <div class="streak" id="streakBox">3れんぞく
+            <span class="dot" id="d0"></span><span class="dot" id="d1"></span><span class="dot" id="d2"></span>
           </div>
-          <div class="right">
-            <button class="b b-check" id="btnCheck">答え合わせ</button>
-            <button class="b b-next" id="btnNext">次へ</button>
+          <div class="timer green" id="timer">5:00</div>
+        </div>
+
+        <div class="card mode-low" id="qcard">
+          <div class="qtitle" id="qtitle"></div>
+          <div class="figs" id="figs"></div>
+          <div class="stem" id="stem"></div>
+          <div class="fields" id="fields"></div>
+          <div class="feedback" id="feedback"></div>
+          <div class="attempts" id="attempts"></div>
+          <div id="hintarea"></div>
+          <div id="solarea"></div>
+          <div class="btns">
+            <div class="left">
+              <button class="b b-hint" id="btnHint">ヒント</button>
+              <button class="b b-sol" id="btnSol">解法</button>
+              <button class="b b-reveal" id="btnReveal" style="display:none;">答えと解説を見る</button>
+            </div>
+            <div class="right">
+              <button class="b b-check" id="btnCheck">答え合わせ</button>
+              <button class="b b-next" id="btnNext">次へ</button>
+              <button class="b b-skip" id="btnSkip" style="display:none;">スキップ</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ===== きろく（振り返り） ===== -->
+  <div id="recordsView" style="display:none;">
+    <div class="recWrap" id="recWrap"></div>
   </div>
 
   <div class="scrim" id="scrim"></div>
@@ -1391,6 +1477,962 @@
     return '<svg viewBox="0 0 ' + Math.max(220, wv) + ' 170" class="fig" role="img" aria-label="' + n + '×' + n + '×' + n + 'の立方体">' + g + '</svg>';
   }
 
+  /* =========================================================
+     第1回 かけ算とわり算の文章題
+     ========================================================= */
+  /* --- k1_mul かけ算の文章題 --- */
+  GEN.k1_mul = function (rng) {
+    const items = [['ボール','個'],['お弁当','個'],['ノート','さつ'],['ケーキ','個'],['カード','まい']];
+    const it = pick(rng, items);
+    let p, n;
+    if (rng() < 0.5) { p = pick(rng, [125,175,225,275,325,385,435,525,685,725]); n = ri(rng, 12, 45); }
+    else { p = pick(rng, [800,1200,1400,1500,1800,2400]); n = pick(rng, [120,180,250,280,320,360,150,240]); }
+    const ans = p * n;
+    if (ans !== p * n || ans / n !== p) throw new Error('k1_mul');
+    return {
+      title: 'かけ算の文章題',
+      stem: '1' + it[1] + ' ' + N(p) + ' 円の' + it[0] + 'を ' + N(n) + ' ' + it[1] + '買いました。' + H('代金は何円') + 'ですか。',
+      fields: [{ label: '', unit: '円', answer: ans, type: 'int' }],
+      hints: [
+        '1つぶんのねだんと、いくつ分（' + n + it[1] + '）から、全部のお金（代金）を求めます。',
+        '「1つの数 × いくつ分 ＝ 全部」。同じ数のくり返しは<b>かけ算</b>です。',
+        p + '×' + n + ' を計算します（0が多いときは0をはぶいて計算し、あとで0をつけ加える）。'
+      ],
+      solution: p + '×' + n + '＝<b>' + ans + '（円）</b>。',
+      sig: 'k1mul:' + p + ':' + n
+    };
+  };
+  /* --- k1_div わり算の文章題（あまり） --- */
+  GEN.k1_div = function (rng) {
+    const p = pick(rng, [3,4,5,6,7,8,9,12]);
+    const q = ri(rng, 8, 24), r = ri(rng, 1, p - 1);
+    const Nn = p * q + r;
+    if (Nn % p !== r || Math.floor(Nn / p) !== q) throw new Error('k1_div');
+    return {
+      title: 'わり算の文章題（あまり）',
+      stem: N(Nn) + ' m のひもから、1本 ' + N(p) + ' m のひもを切り取っていきます。' + H('何本切り取れて、何mあまりますか') + '。',
+      fields: [
+        { label: '本数', unit: '本', answer: q, type: 'int' },
+        { label: 'あまり', unit: 'm', answer: r, type: 'int' }
+      ],
+      hints: [
+        '同じ長さ（' + p + ' m）ずつ切り取れる本数と、あまる長さを求めます。',
+        '「全体 ÷ 1つ分」の<b>わり算</b>。商が本数、あまりがのこりです。',
+        Nn + '÷' + p + ' を計算します。'
+      ],
+      solution: Nn + '÷' + p + '＝' + q + ' あまり ' + r + ' より、<b>' + q + '本</b>切り取れて <b>' + r + ' m</b>あまります。<br>（たしかめ：' + p + '×' + q + '＋' + r + '＝' + Nn + '）',
+      sig: 'k1div:' + Nn + ':' + p
+    };
+  };
+  /* --- k1_ceil わり算の文章題（何台必要＝切り上げ） --- */
+  GEN.k1_ceil = function (rng) {
+    const ctx = pick(rng, [['人','台','バス','人'],['個','箱','箱','個'],['さつ','はこ','箱','さつ']]);
+    const cap = pick(rng, [18,22,24,26,28,30,35,40]);
+    const full = ri(rng, 4, 12), r = ri(rng, 1, cap - 1);
+    const Nn = cap * full + r;
+    const ans = full + 1;
+    if (Math.ceil(Nn / cap) !== ans || (ans - 1) * cap >= Nn || ans * cap < Nn) throw new Error('k1_ceil');
+    const stem = (ctx[2] === 'バス')
+      ? ('小学生 ' + N(Nn) + ' 人がバスに乗って遠足に行きます。1台のバスには ' + N(cap) + ' 人まで乗れます。' + H('バスは少なくとも何台必要') + 'ですか。')
+      : (N(Nn) + ' ' + ctx[0] + 'の' + ctx[3] + 'を、1' + ctx[1] + ' ' + N(cap) + ' ' + ctx[0] + 'まで入る' + ctx[2] + 'に入れます。全部入れるには、' + ctx[2] + 'は' + H('少なくとも何' + ctx[1] + '必要') + 'ですか。');
+    return {
+      title: 'わり算の文章題（何台必要）',
+      stem: stem,
+      fields: [{ label: '', unit: ctx[1], answer: ans, type: 'int' }],
+      hints: [
+        'わり算のあまりを、どうあつかうかがポイント。あまった分も乗せる（入れる）ので、もう1' + ctx[1] + '必要です。',
+        Nn + '÷' + cap + ' を計算し、<b>あまりがあれば商に1をたす</b>（切り上げ）。',
+        Nn + '÷' + cap + '＝' + full + ' あまり ' + r + ' → ' + full + '＋1。'
+      ],
+      solution: Nn + '÷' + cap + '＝' + full + ' あまり ' + r + '。<br>あまった ' + r + ' ' + ctx[0] + 'の分にもう1' + ctx[1] + '必要だから、' + full + '＋1＝<b>' + ans + '（' + ctx[1] + '）</b>。',
+      sig: 'k1ceil:' + Nn + ':' + cap + ':' + ctx[2]
+    };
+  };
+  /* --- k1_change かけ算とわり算（おつり・2種類） 例題5型 --- */
+  GEN.k1_change = function (rng) {
+    let a, b, m, yk, paid, change, spent;
+    for (let t = 0; t < 300; t++) {
+      a = pick(rng, [12,15,18,20,24,25]);
+      b = a + pick(rng, [3,5,6,8,10]);
+      m = ri(rng, 10, 30);
+      yk = ri(rng, 5, 22);
+      spent = a * m + b * yk;
+      paid = pick(rng, [500,1000,1000,2000,2000,3000]);
+      change = paid - spent;
+      if (change >= 20 && change < paid && spent > 0) break;
+    }
+    if (a * m + b * yk !== paid - change) throw new Error('k1_change');
+    return {
+      title: 'かけ算とわり算（おつり）',
+      stem: 'あるお店で、1個 ' + N(a) + ' 円の赤いビー玉と 1個 ' + N(b) + ' 円の青いビー玉を売っています。赤いビー玉を ' + N(m) + ' 個と青いビー玉を何個か買って ' + N(paid) + ' 円さつを1まい出したところ、' + H('おつりは ' + N2(change) + ' 円') + 'でした。' + H('青いビー玉を何個買いましたか') + '。',
+      fields: [{ label: '青いビー玉', unit: '個', answer: yk, type: 'int' }],
+      hints: [
+        '順にお金を整理します。まず使ったお金の合計、つぎに赤の代金、のこりが青の代金です。',
+        '使った合計＝' + paid + '−' + change + '。赤の代金＝' + a + '×' + m + '。青の代金＝（合計）−（赤の代金）。',
+        '青の個数＝（青の代金）÷' + b + '。'
+      ],
+      solution:
+        '使った合計は ' + paid + '−' + change + '＝' + spent + '（円）。<br>' +
+        '赤の代金は ' + a + '×' + m + '＝' + (a * m) + '（円）。<br>' +
+        '青の代金は ' + spent + '−' + (a * m) + '＝' + (b * yk) + '（円）。<br>' +
+        '青の個数は ' + (b * yk) + '÷' + b + '＝<b>' + yk + '（個）</b>。',
+      sig: 'k1chg:' + a + ':' + b + ':' + m + ':' + paid + ':' + change
+    };
+  };
+  /* --- k1_inverse 逆算（練習1型） --- */
+  GEN.k1_inverse = function (rng) {
+    const d = pick(rng, [12,13,14,15,16,18]);
+    const q = ri(rng, 12, 40), r = ri(rng, 1, d - 1);
+    const num = d * q + r;
+    const correct = num * d;
+    if (num % d !== r || Math.floor(num / d) !== q || correct !== num * d) throw new Error('k1_inv');
+    return {
+      title: '逆算',
+      stem: 'ある整数に ' + N(d) + ' をかける計算を、まちがえて、ある整数を ' + N(d) + ' で' + H('わってしまった') + 'ので、' + H('商が ' + N2(q) + '、あまりが ' + N2(r)) + ' になりました。<br>（1）' + H('ある整数はいくつ') + 'ですか。<br>（2）' + H('正しく計算すると') + '、答えはいくつですか。',
+      fields: [
+        { label: '（1）ある整数', unit: '', answer: num, type: 'int' },
+        { label: '（2）正しい答え', unit: '', answer: correct, type: 'int' }
+      ],
+      hints: [
+        'まず「ある整数」を求め、それから正しい計算（×' + d + '）をします。',
+        '（1）わり算のたしかめ「わる数 × 商 ＋ あまり ＝ わられる数」を使う → ' + d + '×' + q + '＋' + r + '。',
+        '（2）ある整数がわかったら、正しくは ' + d + ' を<b>かける</b>。'
+      ],
+      solution:
+        '（1）ある整数 ＝ ' + d + '×' + q + '＋' + r + '＝<b>' + num + '</b>。<br>' +
+        '（2）正しくは ' + num + '×' + d + '＝<b>' + correct + '</b>。',
+      sig: 'k1inv:' + d + ':' + q + ':' + r
+    };
+  };
+
+  /* =========================================================
+     第2回 計算のきまり
+     ========================================================= */
+  function mathBox(expr){ return '<div style="font-size:22px;text-align:center;margin:10px 0;letter-spacing:1px;">' + expr + '</div>'; }
+  /* --- k2_order 計算の順序（四則＋かっこ・2重かっこ） --- */
+  GEN.k2_order = function (rng) {
+    for (let t = 0; t < 800; t++) {
+      const kind = pick(rng, ['t1','t2','t3','t4','t5','t6','d1','d2']);
+      let expr, ans;
+      if (kind === 't1') { const a=ri(rng,5,40),b=ri(rng,2,9),c=ri(rng,2,9); expr=a+'＋'+b+'×'+c; ans=a+b*c; }
+      else if (kind === 't2') { const c=ri(rng,2,9),q=ri(rng,2,9),b=c*q,a=ri(rng,q+2,60); expr=a+'−'+b+'÷'+c; ans=a-q; }
+      else if (kind === 't3') { const a=ri(rng,2,9),b=ri(rng,2,15),c=ri(rng,2,15); expr=a+'×（'+b+'＋'+c+'）'; ans=a*(b+c); }
+      else if (kind === 't4') { const c=ri(rng,2,9),q=ri(rng,2,12),b=ri(rng,3,30),a=b+c*q; expr='（'+a+'−'+b+'）÷'+c; ans=q; }
+      else if (kind === 't5') { const d=ri(rng,2,9),q=ri(rng,2,9),s=d*q,b=ri(rng,2,s-1),c=s-b,a=ri(rng,q+1,60); if(c<1)continue; expr=a+'−（'+b+'＋'+c+'）÷'+d; ans=a-q; }
+      else if (kind === 't6') { const g=ri(rng,2,9),q=ri(rng,2,9),a=g*q,c=ri(rng,1,8),b=g+c; expr=a+'÷（'+b+'−'+c+'）'; ans=q; }
+      else if (kind === 'd1') { const inner=ri(rng,2,9),a=ri(rng,2,9),c=ri(rng,2,10),d=ri(rng,2,10),b=inner+c+d; expr=a+'×｛'+b+'−（'+c+'＋'+d+'）｝'; ans=a*inner; }
+      else { const g=ri(rng,2,9),q=ri(rng,2,9),a=g*q,c=ri(rng,2,9),d=ri(rng,2,9),b=g+c+d; expr=a+'÷｛'+b+'−（'+c+'＋'+d+'）｝'; ans=q; }
+      if (!Number.isInteger(ans) || ans < 0 || ans > 100000) continue;
+      return {
+        title: '計算の順序',
+        stem: '次の計算をしなさい。' + mathBox(expr),
+        fields: [{ label: '', unit: '', answer: ans, type: 'int' }],
+        hints: [
+          '四則（＋−×÷）とかっこがまざった計算です。<b>計算する順番</b>を守るのがポイント。',
+          '<b>かっこの中 → ×÷ → ＋−</b> の順。2重かっこ ｛（ ）｝ は<b>内側の（ ）から</b>。',
+          'まず計算する所に番号をふって、1つずつ計算しましょう。'
+        ],
+        solution: '順番のきまり（かっこの中 → ×÷ → ＋−）にしたがって計算すると、<b>' + ans + '</b>。',
+        sig: 'k2ord:' + expr
+      };
+    }
+    const a=ri(rng,5,40),b=ri(rng,2,9),c=ri(rng,2,9);
+    return { title:'計算の順序', stem:'次の計算をしなさい。'+mathBox(a+'＋'+b+'×'+c), fields:[{label:'',unit:'',answer:a+b*c,type:'int'}], hints:['×÷を先に。','×→＋の順。','番号をふって計算。'], solution:'<b>'+(a+b*c)+'</b>。', sig:'k2ord:f'+a+b+c };
+  };
+  /* --- k2_inv1 逆算（基本） --- */
+  GEN.k2_inv1 = function (rng) {
+    const form = pick(rng, ['add','sub1','sub2','mul','div1','div2']);
+    const x = ri(rng, 3, 40); let A, B, expr, rule;
+    if (form==='add'){ A=ri(rng,5,40); B=x+A; expr='□＋'+A+'＝'+B; rule='□＝'+B+'−'+A; }
+    else if (form==='sub1'){ A=ri(rng,2,9); B=x-A>0?x-A:1; const xx=B+A; expr='□−'+A+'＝'+B; rule='□＝'+B+'＋'+A; return finishInv(xx,expr,rule); }
+    else if (form==='sub2'){ A=ri(rng,x+1,x+40); B=A-x; expr=A+'−□＝'+B; rule='□＝'+A+'−'+B; }
+    else if (form==='mul'){ A=ri(rng,2,9); B=x*A; expr='□×'+A+'＝'+B; rule='□＝'+B+'÷'+A; }
+    else if (form==='div1'){ A=ri(rng,2,9); const B2=ri(rng,2,12); const xx=A*B2; expr='□÷'+A+'＝'+B2; rule='□＝'+B2+'×'+A; return finishInv(xx,expr,rule); }
+    else { const B2=ri(rng,2,9); A=x*B2; expr=A+'÷□＝'+B2; rule='□＝'+A+'÷'+B2; }
+    return finishInv(x, expr, rule);
+    function finishInv(xv, ex, rl){
+      return {
+        title: '逆算', stem: '次の□にあてはまる数を求めなさい。' + mathBox(ex),
+        fields: [{ label: '□', unit: '', answer: xv, type: 'int' }],
+        hints: ['□をふくむ式から、□にあてはまる数を逆算で求めます。','たし算↔ひき算、かけ算↔わり算は<b>逆の計算</b>でもとせます。','公式：'+rl+'。'],
+        solution: rl + '＝<b>' + xv + '</b>。', sig: 'k2inv1:' + ex
+      };
+    }
+  };
+  /* --- k2_inv2 逆算（複合） --- */
+  GEN.k2_inv2 = function (rng) {
+    const T = pick(rng, ['t1','t2','t3']);
+    let x, expr, ans;
+    if (T==='t1'){ x=ri(rng,2,9); const C=ri(rng,2,9), p=x*C, B=ri(rng,1,20), A=B+p; expr=A+'−□×'+C+'＝'+B; ans=x;
+      return mk('（'+A+'−'+B+'）÷'+C); }
+    if (T==='t2'){ const C=ri(rng,2,6), q=ri(rng,2,9); x=C*q; const dv=q, B=ri(rng,1,20), A=B+dv; expr=A+'−□÷'+C+'＝'+B; ans=x;
+      return mk('（'+A+'−'+B+'）×'+C); }
+    { const C=ri(rng,2,6), B=ri(rng,3,12), s=B*C, x2=ri(rng,2,s-2), A=s-x2; x=x2; expr='（□＋'+A+'）÷'+C+'＝'+B; ans=x2;
+      return mk(B+'×'+C+'−'+A); }
+    function mk(rl){
+      return { title:'逆算（複合）', stem:'次の□にあてはまる数を求めなさい。'+mathBox(expr),
+        fields:[{label:'□',unit:'',answer:ans,type:'int'}],
+        hints:['□が式の中ほどにある複合の逆算です。計算の順序を考え、外側から順にもどします。','「かたまり」を1つの□とみて、後ろの計算から逆にほどきます。','逆算すると □＝'+rl+'。'],
+        solution:'計算の順序を逆にたどると、□＝'+rl+'＝<b>'+ans+'</b>。', sig:'k2inv2:'+expr };
+    }
+  };
+  /* --- k2_kufuu 計算のくふう --- */
+  GEN.k2_kufuu = function (rng) {
+    const s = pick(rng, ['a254','a502','a1258','m99','m101','m102','sum','dif']);
+    let expr, ans, tip;
+    if (s==='a254'){ const a=ri(rng,12,999); expr=a+'×25×4'; ans=a*100; tip='25×4＝100 を先に'; }
+    else if (s==='a502'){ const a=ri(rng,12,999); expr=a+'×50×2'; ans=a*100; tip='50×2＝100 を先に'; }
+    else if (s==='a1258'){ const a=ri(rng,7,99); expr=a+'×125×8'; ans=a*1000; tip='125×8＝1000 を先に'; }
+    else if (s==='m99'){ const a=ri(rng,4,90); expr=a+'×99'; ans=a*99; tip='99＝100−1 とみて '+a+'×100−'+a; }
+    else if (s==='m101'){ const a=ri(rng,4,90); expr=a+'×101'; ans=a*101; tip='101＝100＋1 とみて '+a+'×100＋'+a; }
+    else if (s==='m102'){ const a=ri(rng,4,90); expr=a+'×102'; ans=a*102; tip='102＝100＋2 とみて '+a+'×100＋'+a+'×2'; }
+    else if (s==='sum'){ const k=ri(rng,6,40),a=ri(rng,20,80),b=100-a; expr=a+'×'+k+'＋'+b+'×'+k; ans=(a+b)*k; tip='×'+k+' が共通 →（'+a+'＋'+b+'）×'+k+'＝100×'+k; }
+    else { const k=ri(rng,6,40),b=ri(rng,10,60),a=b+100; expr=a+'×'+k+'−'+b+'×'+k; ans=(a-b)*k; tip='×'+k+' が共通 →（'+a+'−'+b+'）×'+k+'＝100×'+k; }
+    if (!Number.isInteger(ans)) throw new Error('k2kufuu');
+    return {
+      title: '計算のくふう', stem: '<b>くふうして</b>計算しなさい。' + mathBox(expr),
+      fields: [{ label: '', unit: '', answer: ans, type: 'int' }],
+      hints: ['そのまま計算せず、<b>計算のきまり（結合・分配法則）</b>で楽にできないか考えます。','25×4＝100、125×8＝1000、99＝100−1、共通の数でまとめる…などが使えます。','この問題では：'+tip+'。'],
+      solution: 'くふう：'+tip+'。<br>答えは <b>'+ans+'</b>。', sig: 'k2kuf:'+expr
+    };
+  };
+  /* --- k2_word 文章の逆算 --- */
+  GEN.k2_word = function (rng) {
+    const x = ri(rng, 1, 15), B = ri(rng, 1, 9), C = ri(rng, 2, 4), D = ri(rng, 1, 20);
+    const S = (x + B) * C, A = S + D;
+    if (A - (x + B) * C !== D) throw new Error('k2word');
+    return {
+      title: '文章の逆算', stem: N(A) + ' から、' + H('ある数と ' + N2(B) + ' の合計の ' + N2(C) + ' 倍') + 'をひいたところ、答えが ' + N(D) + ' になりました。' + H('ある数はいくつ') + 'ですか。',
+      fields: [{ label: 'ある数', unit: '', answer: x, type: 'int' }],
+      hints: ['「ある数」を□とおいて式を作り、逆算でもとします。', '式：'+A+'−（□＋'+B+'）×'+C+'＝'+D+'。うしろから逆にほどきます。', '（□＋'+B+'）×'+C+'＝'+A+'−'+D+'＝'+S+' → □＋'+B+'＝'+(S/C)+' → □＝'+(S/C - B)+'。'],
+      solution: '□とおくと '+A+'−（□＋'+B+'）×'+C+'＝'+D+'。<br>（□＋'+B+'）×'+C+'＝'+A+'−'+D+'＝'+S+'。<br>□＋'+B+'＝'+S+'÷'+C+'＝'+(S/C)+'。<br>□＝'+(S/C)+'−'+B+'＝<b>'+x+'</b>。',
+      sig: 'k2word:'+A+':'+B+':'+C+':'+D
+    };
+  };
+
+  /* =========================================================
+     第3回 角の性質（図形・SVG）
+     ========================================================= */
+  function drad(d){ return d*Math.PI/180; }
+  function pA(cx,cy,ang,len){ return [cx+len*Math.cos(drad(ang)), cy-len*Math.sin(drad(ang))]; }
+  function ln(P,Q,dash){ return '<line x1="'+P[0].toFixed(1)+'" y1="'+P[1].toFixed(1)+'" x2="'+Q[0].toFixed(1)+'" y2="'+Q[1].toFixed(1)+'" stroke="#333" stroke-width="1.7"'+(dash?' stroke-dasharray="5 3"':'')+'/>'; }
+  function txt(P,s,col){ return '<text x="'+P[0].toFixed(1)+'" y="'+P[1].toFixed(1)+'" font-size="13" fill="'+(col||'#c0286b')+'" text-anchor="middle" dominant-baseline="middle">'+s+'</text>'; }
+  function svgWrap(g,w,h){ return '<svg viewBox="0 0 '+w+' '+h+'" class="fig" role="img" aria-label="角の図">'+g+'</svg>'; }
+
+  /* --- k3_straight 1直線の角 --- */
+  GEN.k3_straight = function (rng) {
+    const a = ri(rng, 20, 160), ans = 180 - a;
+    const cx=155,cy=115,L=125, rayAng=180-a;
+    const g = ln([cx-L,cy],[cx+L,cy]) + ln([cx,cy], pA(cx,cy,rayAng,120))
+      + txt(pA(cx,cy,180-a/2,42), a+'°','#1f6fb0')
+      + txt(pA(cx,cy,rayAng/2,50), 'ア','#c0286b');
+    return {
+      title:'1直線の角', stem:'下の図で、'+H('アの角の大きさは何度')+'ですか。', svg: svgWrap(g,310,150),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['一直線（まっすぐな線）の上にできる角に注目します。','<b>一直線の角は180°</b>。'+a+'° とアの和が180°です。','ア＝180−'+a+'。'],
+      solution:'一直線の角は180°だから、ア＝180−'+a+'＝<b>'+ans+'（度）</b>。', sig:'k3st:'+a
+    };
+  };
+  /* --- k3_round 1回転の角 --- */
+  GEN.k3_round = function (rng) {
+    const a = ri(rng, 30, 160), ans = 360 - a;
+    const cx=155,cy=110,L=120;
+    const g = ln([cx-L,cy],[cx+L,cy]) + ln([cx,cy], pA(cx,cy,a,115))
+      + txt(pA(cx,cy,a/2,52), a+'°','#1f6fb0')
+      + txt(pA(cx,cy,(a+360)/2,40), 'ア','#c0286b');
+    return {
+      title:'1回転の角', stem:'下の図で、'+H('アの角の大きさは何度')+'ですか。', svg: svgWrap(g,310,150),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['ぐるっと1回転した角（大きいほうの角）に注目します。','<b>1回転の角は360°</b>。'+a+'° とアの和が360°です。','ア＝360−'+a+'。'],
+      solution:'1回転の角は360°だから、ア＝360−'+a+'＝<b>'+ans+'（度）</b>。', sig:'k3rd:'+a
+    };
+  };
+  /* --- k3_vertical 対頂角＋一直線（3本の直線が1点で交わる） --- */
+  GEN.k3_vertical = function (rng) {
+    let a,b,ans;
+    for(let t=0;t<200;t++){ a=ri(rng,25,90); b=ri(rng,25,90); ans=180-a-b; if(ans>=20) break; }
+    const cx=155,cy=110,L=120;
+    const r1=180-a, r2=b;
+    const g = ln(pA(cx,cy,0,L),pA(cx,cy,180,L)) + ln(pA(cx,cy,r1,L),pA(cx,cy,r1+180,L)) + ln(pA(cx,cy,r2,L),pA(cx,cy,r2+180,L))
+      + txt(pA(cx,cy,(180+r1)/2,46), a+'°','#1f6fb0')
+      + txt(pA(cx,cy,(r1+r2)/2,52), 'ア','#c0286b')
+      + txt(pA(cx,cy,r2/2,46), b+'°','#1f6fb0');
+    return {
+      title:'対頂角・一直線', stem:'下の図のように、3本の直線が1つの点で交わっています。'+H('アの角の大きさは何度')+'ですか。', svg: svgWrap(g,310,170),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['1点で交わる直線どうしの角。上側の '+a+'°・ア・'+b+'° は一直線の上にならんでいます。','一直線の角は180°。'+a+'＋ア＋'+b+'＝180。','ア＝180−'+a+'−'+b+'。'],
+      solution:'上側の3つの角は一直線の上にあるので、'+a+'＋ア＋'+b+'＝180。<br>ア＝180−'+a+'−'+b+'＝<b>'+ans+'（度）</b>。', sig:'k3v:'+a+':'+b
+    };
+  };
+  /* --- k3_parallel_co 平行と角（同側内角） --- */
+  GEN.k3_parallel_co = function (rng) {
+    const a = ri(rng, 40, 140), ans = 180 - a;
+    const yT=45,yB=125,x0=40,x1=270; const slope=28;
+    const topX=170, botX=topX-slope;
+    const g = ln([x0,yT],[x1,yT]) + ln([x0,yB],[x1,yB])
+      + ln([topX+slope,yT-24],[botX-slope,yB+24])
+      + txt([x0-14,yT],'あ','#333') + txt([x0-14,yB],'い','#333')
+      + txt([topX+16,yT+16], a+'°','#1f6fb0')
+      + txt([botX+14,yB-16], 'ア','#c0286b');
+    return {
+      title:'平行と角（同側内角）', stem:'下の図で、直線 あ と 直線 い は'+H('平行')+'です。'+H('アの角の大きさは何度')+'ですか。', svg: svgWrap(g,300,170),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['平行な2直線を1本の直線が横切っています。同じがわの内側の角（同側内角）に注目。','平行なら「同側内角」の和は180°。'+a+'° とアの和が180°。','ア＝180−'+a+'。'],
+      solution:'平行だから同側内角の和は180°。ア＝180−'+a+'＝<b>'+ans+'（度）</b>。', sig:'k3co:'+a
+    };
+  };
+  /* --- k3_parallel_z 平行と角（補助線・折れ線） --- */
+  GEN.k3_parallel_z = function (rng) {
+    let p,q,ans;
+    for(let t=0;t<200;t++){ p=ri(rng,20,80); q=ri(rng,20,80); ans=p+q; if(ans<=150) break; }
+    const yT=42,yB=140,x0=45,x1=265; const px=115, py=(yT+yB)/2;
+    const topEnd=[px+70, yT], botEnd=[px+70, yB];
+    const g = ln([x0,yT],[x1,yT]) + ln([x0,yB],[x1,yB])
+      + ln([px,py],topEnd) + ln([px,py],botEnd)
+      + txt([x0-14,yT],'あ','#333') + txt([x0-14,yB],'い','#333')
+      + txt([topEnd[0]-30,yT+14], p+'°','#1f6fb0')
+      + txt([botEnd[0]-30,yB-14], q+'°','#1f6fb0')
+      + txt([px+16,py], 'ア','#c0286b');
+    return {
+      title:'平行と角（補助線）', stem:'下の図で、直線 あ と 直線 い は'+H('平行')+'です。'+H('アの角の大きさは何度')+'ですか。', svg: svgWrap(g,300,185),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['折れ曲がった点アを通り、あ・いに<b>平行な補助線</b>を引くのがコツ。','補助線で上下2つの角に分けると、上は '+p+'°（さっ角）、下は '+q+'°（さっ角）。','ア＝'+p+'＋'+q+'。'],
+      solution:'アを通る平行な補助線を引くと、上の角＝'+p+'°、下の角＝'+q+'°（どちらもさっ角）。<br>ア＝'+p+'＋'+q+'＝<b>'+ans+'（度）</b>。', sig:'k3z:'+p+':'+q
+    };
+  };
+
+  /* =========================================================
+     第4回 和と差の問題
+     ========================================================= */
+  /* --- k4_wasa_fig 和と差の線分図 --- */
+  GEN.k4_wasa_fig = function (rng) {
+    let A, B; do { A = ri(rng, 12, 45); B = ri(rng, 4, A - 2); } while (A <= B);
+    const S = A + B, D = A - B, ans = A;
+    const x0 = 40, unit = 200 / A, yA = 45, yB = 85, h = 22;
+    const xA = x0 + A * unit, xB = x0 + B * unit;
+    const g =
+      '<rect x="' + x0 + '" y="' + yA + '" width="' + (A * unit).toFixed(1) + '" height="' + h + '" fill="#eaf4ff" stroke="#333"/>' +
+      '<rect x="' + x0 + '" y="' + yB + '" width="' + (B * unit).toFixed(1) + '" height="' + h + '" fill="#ffeef4" stroke="#333"/>' +
+      '<line x1="' + xB.toFixed(1) + '" y1="' + yA + '" x2="' + xB.toFixed(1) + '" y2="' + (yB + h) + '" stroke="#999" stroke-dasharray="3 2"/>' +
+      txt([(xB + xA) / 2, yA + h / 2], D + '', '#c0286b') +
+      '<text x="20" y="' + (yA + h / 2) + '" font-size="13" fill="#333" text-anchor="middle" dominant-baseline="middle">ア</text>' +
+      '<text x="20" y="' + (yB + h / 2) + '" font-size="13" fill="#333" text-anchor="middle" dominant-baseline="middle">イ</text>' +
+      '<path d="M' + (xA + 8) + ',' + yA + ' q8,0 8,8 v' + (yB + h - yA - 16) + ' q0,8 8,8" fill="none" stroke="#1f6fb0"/>' +
+      txt([xA + 34, (yA + yB + h) / 2], S + '', '#1f6fb0');
+    return {
+      title: '和と差の線分図', stem: '右の図は、2つの数 ア、イ の関係を表しています。（数の和が ' + N(S) + '、差が ' + N(D) + '）<br>' + H('ア（大きい方）はいくつ') + 'ですか。',
+      svg: svgWrap(g, 290, 130),
+      fields: [{ label: 'ア', unit: '', answer: ans, type: 'int' }],
+      hints: ['和（合わせた数）' + S + ' と 差 ' + D + ' がわかっています。線分図で「大きい方にそろえて」考えます。', 'イを ' + D + ' 大きくしてアにそろえると、和は ' + S + '＋' + D + '＝' + (S + D) + '＝アの2つ分。', 'ア＝（' + S + '＋' + D + '）÷2。'],
+      solution: 'イをア にそろえると和は ' + S + '＋' + D + '＝' + (S + D) + '（アの2倍）。<br>ア＝' + (S + D) + '÷2＝<b>' + ans + '</b>。', sig: 'k4fig:' + A + ':' + B
+    };
+  };
+  /* --- k4_wasa2 和差算（2量の文章題） --- */
+  GEN.k4_wasa2 = function (rng) {
+    const ctx = pick(rng, [
+      ['メダカ','オス','メス','匹','small'],
+      ['虫','カブトムシ','クワガタムシ','匹','small'],
+      ['ペン','赤いペン','青いペン','本','small']
+    ]);
+    let big, small; do { small = ri(rng, 5, 30); const d = ri(rng, 2, 12); big = small + d; } while (big <= small);
+    const S = big + small, D = big - small;
+    const askSmall = (ctx[4] === 'small');
+    const ans = askSmall ? small : big;
+    return {
+      title: '和差算（2量）',
+      stem: N(S) + ' ' + ctx[3] + 'の' + ctx[0] + 'がいます。' + ctx[1] + 'は' + ctx[2] + 'より ' + N(D) + ' ' + ctx[3] + H('多い') + 'です。' + H(ctx[2] + 'は何' + ctx[3]) + 'ですか。',
+      fields: [{ label: ctx[2], unit: ctx[3], answer: ans, type: 'int' }],
+      hints: ['2つの数の和 ' + S + ' と 差 ' + D + ' から、それぞれの数を求める<b>和差算</b>です。', '求めたい' + ctx[2] + '（小さい方）にそろえます。' + ctx[1] + 'を ' + D + ' へらすと和は ' + S + '−' + D + '＝' + (S - D) + '＝' + ctx[2] + 'の2つ分。', ctx[2] + '＝（' + S + '−' + D + '）÷2。'],
+      solution: ctx[2] + 'にそろえると和は ' + S + '−' + D + '＝' + (S - D) + '（' + ctx[2] + 'の2倍）。<br>' + ctx[2] + '＝' + (S - D) + '÷2＝<b>' + ans + '（' + ctx[3] + '）</b>。',
+      sig: 'k4w2:' + S + ':' + D
+    };
+  };
+  /* --- k4_avg 平均と和差算 --- */
+  GEN.k4_avg = function (rng) {
+    const avg = ri(rng, 8, 20), D = ri(rng, 2, 12) * (rng() < 0.5 ? 1 : 1);
+    const total = avg * 2, big = (total + D) / 2;
+    if (!Number.isInteger(big)) return GEN.k4_avg(rng);
+    return {
+      title: '平均と和差算',
+      stem: '兄は弟より ' + N(D) + ' 才年上で、2人の年令の' + H('平均は ' + N2(avg) + ' 才') + 'です。<br>（1）2人の年令の' + H('合計は何才') + 'ですか。<br>（2）' + H('兄は何才') + 'ですか。',
+      fields: [
+        { label: '（1）合計', unit: '才', answer: total, type: 'int' },
+        { label: '（2）兄', unit: '才', answer: big, type: 'int' }
+      ],
+      hints: ['平均から「合計」を出せば、あとは和（合計）と差の<b>和差算</b>です。', '（1）合計＝平均×人数＝' + avg + '×2。（2）合計 ' + total + ' と差 ' + D + ' で兄にそろえる。', '（2）兄＝（' + total + '＋' + D + '）÷2。'],
+      solution: '（1）合計＝' + avg + '×2＝<b>' + total + '（才）</b>。<br>（2）兄にそろえると ' + total + '＋' + D + '＝' + (total + D) + '（兄の2倍）→ 兄＝' + (total + D) + '÷2＝<b>' + big + '（才）</b>。',
+      sig: 'k4avg:' + avg + ':' + D
+    };
+  };
+  /* --- k4_wasa3 和差算（3量） --- */
+  GEN.k4_wasa3 = function (rng) {
+    const x = ri(rng, 5, 20), d1 = ri(rng, 2, 8), d2 = ri(rng, 1, 6);
+    const total = x + (x + d1) + (x + d1 + d2);
+    const sanDiff = d1 + d2;
+    if (3 * x + 2 * d1 + d2 !== total) throw new Error('k4w3');
+    return {
+      title: '和差算（3量）',
+      stem: '一郎君、二郎君、三郎君の3人が、カードを' + H('合わせて ' + N2(total) + ' まい') + '持っています。一郎君は二郎君より ' + N(d1) + ' まい多く、三郎君は一郎君より ' + N(d2) + ' まい多いです。<br>（1）' + H('三郎君は二郎君より何まい多い') + 'ですか。<br>（2）' + H('二郎君は何まい') + '持っていますか。',
+      fields: [
+        { label: '（1）三郎−二郎', unit: 'まい', answer: sanDiff, type: 'int' },
+        { label: '（2）二郎', unit: 'まい', answer: x, type: 'int' }
+      ],
+      hints: ['3量の和差算。いちばん少ない二郎君に「そろえて」考えます。', '（1）三郎は二郎より ' + d1 + '＋' + d2 + ' 多い。（2）一郎の ' + d1 + ' まいと三郎の ' + sanDiff + ' まいをへらすと、3人とも二郎にそろう。', '（2）二郎＝（' + total + '−' + d1 + '−' + sanDiff + '）÷3。'],
+      solution: '（1）三郎は二郎より ' + d1 + '＋' + d2 + '＝<b>' + sanDiff + '（まい）</b>多い。<br>（2）二郎にそろえると合計は ' + total + '−（' + d1 + '＋' + sanDiff + '）＝' + (total - d1 - sanDiff) + '（二郎の3倍）。<br>二郎＝' + (total - d1 - sanDiff) + '÷3＝<b>' + x + '（まい）</b>。',
+      sig: 'k4w3:' + x + ':' + d1 + ':' + d2
+    };
+  };
+
+  /* =========================================================
+     第6回 小数と単位（答えは小数：dec型）
+     ========================================================= */
+  function decStr(intVal, dp){
+    if (dp === 0) return String(intVal);
+    const neg = intVal < 0; let v = Math.abs(intVal);
+    let s = String(v); while (s.length < dp + 1) s = '0' + s;
+    let intp = s.slice(0, s.length - dp), frac = s.slice(s.length - dp).replace(/0+$/,'');
+    return (neg?'-':'') + intp + (frac ? '.' + frac : '');
+  }
+  /* --- k6_kumi 小数のしくみ --- */
+  GEN.k6_kumi = function (rng) {
+    for (let t=0;t<200;t++){
+      const form = pick(rng,['full','full','h','th','tenth']);
+      let milli, desc;
+      if (form==='full'){ const a=ri(rng,0,9),b=ri(rng,0,9),c=ri(rng,0,9),d=ri(rng,0,9);
+        const parts=[]; if(a)parts.push(H('1')+' が '+N2(a)+' 個'); if(b)parts.push(H('0.1')+' が '+N2(b)+' 個'); if(c)parts.push(H('0.01')+' が '+N2(c)+' 個'); if(d)parts.push(H('0.001')+' が '+N2(d)+' 個');
+        if(parts.length<2) continue; milli=a*1000+b*100+c*10+d; desc=parts.join('、'); }
+      else if (form==='h'){ const k=ri(rng,11,99); milli=k*10; desc=H('0.01')+' が '+N2(k)+' 個'; }
+      else if (form==='th'){ const k=ri(rng,105,999); milli=k; desc=H('1/1000')+' が '+N2(k)+' 個'; }
+      else { const k=ri(rng,11,99); milli=k*100; desc=H('1/10')+' が '+N2(k)+' 個'; }
+      if (milli<=0) continue;
+      const ans=decStr(milli,3);
+      return { title:'小数のしくみ', stem:'次の数を小数で表しなさい。<br>'+desc+' 集まった数。',
+        fields:[{label:'',unit:'',answer:ans,type:'dec'}],
+        hints:['小数は、1・0.1・0.01・0.001 がそれぞれ何個あるかで決まります。','それぞれの位の数字にして、位をそろえて合わせます。','各位を書いて合体：'+ans+'。'],
+        solution:'各位を合わせると <b>'+ans+'</b>。', sig:'k6ku:'+form+':'+milli };
+    }
+    return { title:'小数のしくみ', stem:'次の数を小数で表しなさい。<br>'+H('0.01')+' が '+N2(24)+' 個 集まった数。', fields:[{label:'',unit:'',answer:'0.24',type:'dec'}], hints:['x','x','x'], solution:'0.24', sig:'k6ku:f' };
+  };
+  /* --- k6_addsub 小数のたし算・ひき算 --- */
+  GEN.k6_addsub = function (rng) {
+    const dpa=ri(rng,1,3), dpb=ri(rng,1,3);
+    let am=ri(rng,11,999)*Math.pow(10,3-dpa), bm=ri(rng,11,999)*Math.pow(10,3-dpb);
+    const plus = rng()<0.5;
+    if(!plus && am<=bm){ const tmp=am; am=bm+ri(rng,10,500); }
+    const ansm = plus ? am+bm : am-bm;
+    if(ansm<=0) return GEN.k6_addsub(rng);
+    const A=decStr(am,3), B=decStr(bm,3), ans=decStr(ansm,3);
+    return { title:'小数のたし算・ひき算', stem:'次の計算をしなさい。<div style="font-size:22px;text-align:center;margin:8px 0;">'+A+(plus?' ＋ ':' − ')+B+'</div>',
+      fields:[{label:'',unit:'',answer:ans,type:'dec'}],
+      hints:['小数のたし算・ひき算は<b>位（小数点）をそろえて</b>計算します。','けた数がちがうときは0をおぎなって、整数と同じように計算。','答えにも同じ位置に小数点をつけます（一番下の0は消す）。'],
+      solution:A+(plus?' ＋ ':' − ')+B+'＝<b>'+ans+'</b>。', sig:'k6as:'+A+(plus?'+':'-')+B };
+  };
+  /* --- k6_unit 単位換算 --- */
+  GEN.k6_unit = function (rng) {
+    const type = pick(rng, ['mcm','cmm','mkm','kmm','kgg','gkg','LmL','mLL','LdL','dLL']);
+    let srcStr, su, du, ansStr;
+    if (type==='mcm'){ const h=ri(rng,11,990); srcStr=decStr(h,2); su='m'; du='cm'; ansStr=String(h); }
+    else if (type==='cmm'){ const v=ri(rng,15,9990); srcStr=String(v); su='cm'; du='m'; ansStr=decStr(v,2); }
+    else if (type==='mkm'){ const v=ri(rng,120,9990); srcStr=String(v); su='m'; du='km'; ansStr=decStr(v,3); }
+    else if (type==='kmm'){ const th=ri(rng,105,9990); srcStr=decStr(th,3); su='km'; du='m'; ansStr=String(th); }
+    else if (type==='kgg'){ const th=ri(rng,105,9990); srcStr=decStr(th,3); su='kg'; du='g'; ansStr=String(th); }
+    else if (type==='gkg'){ const v=ri(rng,120,9990); srcStr=String(v); su='g'; du='kg'; ansStr=decStr(v,3); }
+    else if (type==='LmL'){ const th=ri(rng,105,9990); srcStr=decStr(th,3); su='L'; du='mL'; ansStr=String(th); }
+    else if (type==='mLL'){ const v=ri(rng,120,9990); srcStr=String(v); su='mL'; du='L'; ansStr=decStr(v,3); }
+    else if (type==='LdL'){ const te=ri(rng,11,990); srcStr=decStr(te,1); su='L'; du='dL'; ansStr=String(te); }
+    else { const v=ri(rng,11,990); srcStr=String(v); su='dL'; du='L'; ansStr=decStr(v,1); }
+    return { title:'単位の換算', stem:'次の□にあてはまる数を求めなさい。<div style="font-size:20px;text-align:center;margin:8px 0;">'+N(srcStr)+' '+su+' ＝ □ '+du+'</div>',
+      fields:[{label:'',unit:du,answer:ansStr,type:'dec'}],
+      hints:['長さ・重さ・かさの単位をなおします。1km=1000m、1m=100cm、1kg=1000g、1L=1000mL=10dL。','大きい単位→小さい単位は数が大きく（小数点を右へ）、逆は左へ動かします。',su+' を '+du+' になおすと '+ansStr+'。'],
+      solution:N(srcStr)+' '+su+' ＝ <b>'+ansStr+' '+du+'</b>。', sig:'k6u:'+type+':'+srcStr };
+  };
+  /* --- k6_unitcalc 単位の計算（そろえてから） --- */
+  GEN.k6_unitcalc = function (rng) {
+    const T = pick(rng,['len','wgt','vol']);
+    let expr, ansStr, du, tip;
+    if (T==='len'){ // A m ＋ B km ＝ □ m
+      const A=ri(rng,120,3000), Bth=ri(rng,105,3990); const A2=A, Bm=Bth;
+      expr=N(String(A))+' m ＋ '+N(decStr(Bth,3))+' km'; du='m'; ansStr=String(A+Bth); tip=decStr(Bth,3)+' km ＝ '+Bth+' m にそろえて '+A+'＋'+Bth;
+    } else if (T==='wgt'){ // A kg − B g ＝ □ g   (A kg to g)
+      const Akg_th=ri(rng,1200,5000), Bg=ri(rng,50,Akg_th-50);
+      expr=N(decStr(Akg_th,3))+' kg − '+N(String(Bg))+' g'; du='g'; ansStr=String(Akg_th-Bg); tip=decStr(Akg_th,3)+' kg ＝ '+Akg_th+' g にそろえて '+Akg_th+'−'+Bg;
+    } else { // A L ＋ B dL ＝ □ dL
+      const Ate=ri(rng,11,90), Bdl=ri(rng,5,90); const Adl=Ate;
+      expr=N(decStr(Ate,1))+' L ＋ '+N(String(Bdl))+' dL'; du='dL'; ansStr=String(Ate+Bdl); tip=decStr(Ate,1)+' L ＝ '+Ate+' dL にそろえて '+Ate+'＋'+Bdl;
+    }
+    return { title:'単位の計算', stem:'次の□にあてはまる数を求めなさい。<div style="font-size:19px;text-align:center;margin:8px 0;">'+expr+' ＝ □ '+du+'</div>',
+      fields:[{label:'',unit:du,answer:ansStr,type:'dec'}],
+      hints:['ちがう単位がまざったたし算・ひき算は、<b>答えの単位にそろえてから</b>計算します。','答えは '+du+' なので、すべて '+du+' になおします。',tip+'。'],
+      solution:'答えの単位 '+du+' にそろえると：'+tip+' ＝ <b>'+ansStr+' '+du+'</b>。', sig:'k6uc:'+expr };
+  };
+
+  /* =========================================================
+     第7回 分数の性質（整数答え＋分数答え：frac型）
+     ========================================================= */
+  function fracHTML(a,b){ return '<span style="display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;font-size:.82em;line-height:1.05;margin:0 1px;"><span style="padding:0 3px;">'+a+'</span><span style="border-top:1.4px solid;padding:0 3px;">'+b+'</span></span>'; }
+  function dispMix(num,den){ if(den===1||num%den===0) return String(num/ (den===1?1:den) * (den===1?1:1)) ; const w=Math.floor(num/den), n=num%den; return (w>0? w+' ':'')+' '+fracHTML(n,den); }
+  function mixStr(num,den){ if(den===1) return String(num); const w=Math.floor(num/den), n=num%den; if(n===0) return String(w); if(w===0) return n+'/'+den; return w+' '+n+'/'+den; }
+  function dispFracVal(num,den){ // whole + fraction html or integer
+    if(num%den===0) return String(num/den);
+    const w=Math.floor(num/den), n=num%den;
+    return (w>0? w+' ':'')+fracHTML(n,den);
+  }
+  /* --- k7_bunsu_int 分数の意味（整数答え） --- */
+  GEN.k7_bunsu_int = function (rng) {
+    const ctx = pick(rng, [['水','L'],['さとう','g'],['本','ページ'],['ジュース','mL']]);
+    const B = ri(rng, 3, 9), A = ri(rng, 1, B - 1), q = ri(rng, 4, 16), Nn = B * q;
+    const part = Nn / B * A;
+    const remaining = rng() < 0.4;
+    const ans = remaining ? Nn - part : part;
+    if (ans <= 0) return GEN.k7_bunsu_int(rng);
+    const stem = remaining
+      ? (N(Nn) + ' ' + ctx[1] + 'の' + ctx[0] + 'のうち、全体の ' + H('' ) + fracHTML(A,B) + ' を使いました。' + H('残りは何' + ctx[1]) + 'ですか。')
+      : (N(Nn) + ' ' + ctx[1] + 'の' + ctx[0] + 'の ' + fracHTML(A,B) + ' は' + H('何' + ctx[1]) + 'ですか。');
+    return {
+      title:'分数の意味', stem: stem,
+      fields:[{label:'',unit:ctx[1],answer:ans,type:'int'}],
+      hints:['分数 '+A+'/'+B+' は「'+B+'等分した '+A+'つ分」。まず1つ分（÷'+B+'）を求めます。', Nn+'÷'+B+'＝'+(Nn/B)+'（1つ分）。それを '+A+' 倍。'+(remaining?'残りは全体から引きます。':''), (remaining? ('使った分＝'+Nn+'÷'+B+'×'+A+'＝'+part+'。残り＝'+Nn+'−'+part+'。') : (Nn+'÷'+B+'×'+A+'。'))],
+      solution: (remaining
+        ? ('使った分＝'+Nn+'÷'+B+'×'+A+'＝'+part+'（'+ctx[1]+'）。<br>残り＝'+Nn+'−'+part+'＝<b>'+ans+'（'+ctx[1]+'）</b>。')
+        : (Nn+'÷'+B+'×'+A+'＝<b>'+ans+'（'+ctx[1]+'）</b>。')),
+      sig:'k7bi:'+Nn+':'+A+':'+B+':'+(remaining?'r':'d')
+    };
+  };
+  /* --- k7_unitfrac 単位のついた分数（整数答え） --- */
+  GEN.k7_unitfrac = function (rng) {
+    const bases = [['kg','g',1000,[2,4,5,8,10,20,25,40,50]],['時間','分',60,[2,3,4,5,6,10,12,15,20,30]],['分','秒',60,[2,3,4,5,6,10,12,15,20,30]],['m','cm',100,[2,4,5,10,20,25,50]],['L','mL',1000,[2,4,5,8,10,20,25,40,50]]];
+    const bb = pick(rng, bases); const base = bb[2];
+    const B = pick(rng, bb[3]), A = ri(rng, 1, B - 1);
+    const ans = base / B * A;
+    if (!Number.isInteger(ans)) return GEN.k7_unitfrac(rng);
+    return {
+      title:'単位のついた分数', stem: fracHTML(A,B) + ' ' + bb[0] + ' は ' + H('何' + bb[1]) + 'ですか。',
+      fields:[{label:'',unit:bb[1],answer:ans,type:'int'}],
+      hints:[fracHTML(A,B)+' '+bb[0]+' は「1'+bb[0]+' の '+A+'/'+B+'」の意味です。','1'+bb[0]+'＝'+base+bb[1]+'。その '+B+'等分の '+A+'つ分。',base+'÷'+B+'×'+A+'。'],
+      solution:'1'+bb[0]+'＝'+base+bb[1]+' だから、'+base+'÷'+B+'×'+A+'＝<b>'+ans+'（'+bb[1]+'）</b>。',
+      sig:'k7uf:'+bb[0]+':'+A+':'+B
+    };
+  };
+  /* --- k7_kari_tai 仮分数↔帯分数（分数答え） --- */
+  GEN.k7_kari_tai = function (rng) {
+    const den = ri(rng, 3, 9), w = ri(rng, 1, 6), n = ri(rng, 1, den - 1);
+    const imp = w * den + n;
+    if (rng() < 0.5) {
+      return { title:'仮分数→帯分数', stem: fracHTML(imp,den) + ' を'+H('帯分数')+'になおしなさい。',
+        fields:[{label:'',unit:'',answer:w+' '+n+'/'+den,type:'frac'}],
+        hints:['仮分数（分子≥分母）を帯分数（整数＋真分数）になおします。','分子÷分母＝整数部分…あまりが分子。'+imp+'÷'+den+'＝'+w+' あまり '+n+'。','帯分数は '+w+' と '+n+'/'+den+'。（入力は「'+w+' '+n+'/'+den+'」）'],
+        solution: imp+'÷'+den+'＝'+w+' あまり '+n+' より、'+fracHTML(imp,den)+' ＝ <b>'+w+' '+fracHTML(n,den)+'</b>。',
+        sig:'k7kt:m:'+imp+':'+den };
+    }
+    return { title:'帯分数→仮分数', stem: (w+' ')+fracHTML(n,den) + ' を'+H('仮分数')+'になおしなさい。',
+      fields:[{label:'',unit:'',answer:imp+'/'+den,type:'frac'}],
+      hints:['帯分数を仮分数（分子が分母以上）になおします。','整数部分×分母＋分子＝新しい分子。'+w+'×'+den+'＋'+n+'。','分母はそのまま '+den+'。（入力は「'+imp+'/'+den+'」）'],
+      solution: w+'×'+den+'＋'+n+'＝'+imp+' より、<b>'+fracHTML(imp,den)+'</b>。',
+      sig:'k7kt:i:'+imp+':'+den };
+  };
+  /* --- k7_addsub 同分母のたし算・ひき算（分数答え） --- */
+  GEN.k7_addsub = function (rng) {
+    const d = ri(rng, 4, 11);
+    let a1 = ri(rng, 1, 6 * d), a2 = ri(rng, 1, 6 * d);
+    const plus = rng() < 0.5;
+    if (!plus) { if (a1 <= a2) { const t = a1; a1 = a2 + ri(rng,1,3*d); a2 = t; } if (a1 - a2 < 1) a1 = a2 + ri(rng,1,d); }
+    const res = plus ? a1 + a2 : a1 - a2;
+    if (res <= 0) return GEN.k7_addsub(rng);
+    const op1 = dispFracVal(a1, d), op2 = dispFracVal(a2, d), ansStr = mixStr(res, d);
+    return {
+      title:'同分母のたし算・ひき算',
+      stem:'次の計算をしなさい。<div style="font-size:20px;text-align:center;margin:10px 0;">'+op1+(plus?' ＋ ':' − ')+op2+'</div>',
+      fields:[{label:'',unit:'',answer:ansStr,type:'frac'}],
+      hints:['分母が同じ分数のたし算・ひき算は、<b>分母はそのまま、分子どうし</b>を計算します。','帯分数は整数どうし・分数どうしで計算。分数部分がひけないときは整数から1くり下げます。','答えが仮分数になったら、帯分数か整数になおします。（入力は「1 3/'+d+'」や「'+d+'/'+d+'」の形）'],
+      solution: op1+(plus?' ＋ ':' − ')+op2+' ＝ <b>'+dispFracVal(res,d)+'</b>（答え '+ansStr+'）。',
+      sig:'k7as:'+a1+(plus?'+':'-')+a2+':'+d
+    };
+  };
+  /* --- k7_inverse 分数の逆算（分数答え） --- */
+  GEN.k7_inverse = function (rng) {
+    const d = ri(rng, 4, 9), an = ri(rng, 1, d - 1);
+    const R = ri(rng, d + 1, 5 * d);           // まちがえた答え（x − A/B）improper over d, >=1
+    const x = R + an;                          // ある数
+    const correct = R + 2 * an;                // 正しい（x + A/B）
+    return {
+      title:'分数の逆算',
+      stem:'ある数に '+fracHTML(an,d)+' をたす計算を、まちがえて '+H('ひいて')+'しまったので、答えが '+dispFracVal(R,d)+' になりました。<br>（1）'+H('ある数はいくつ')+'ですか。<br>（2）'+H('正しく計算すると')+'いくつですか。',
+      fields:[
+        {label:'（1）ある数',unit:'',answer:mixStr(x,d),type:'frac'},
+        {label:'（2）正しい答え',unit:'',answer:mixStr(correct,d),type:'frac'}
+      ],
+      hints:['「ひいて」答えが '+mixStr(R,d)+' →（ある数）＝答え＋'+an+'/'+d+'（逆算でたす）。','（1）ある数＝'+dispFracVal(R,d)+' ＋ '+fracHTML(an,d)+'。','（2）ある数に正しく '+fracHTML(an,d)+' をたす（＝答えより '+an+'/'+d+' が2つ分大きい）。'],
+      solution:'（1）ある数＝'+dispFracVal(R,d)+'＋'+fracHTML(an,d)+'＝<b>'+dispFracVal(x,d)+'</b>。<br>（2）正しくは '+dispFracVal(x,d)+'＋'+fracHTML(an,d)+'＝<b>'+dispFracVal(correct,d)+'</b>。',
+      sig:'k7inv:'+d+':'+an+':'+R
+    };
+  };
+
+  /* =========================================================
+     第8回 三角形の角（図形・SVG）
+     ========================================================= */
+  function apexFrom(B, C, bAng, cAng) {
+    const L = C[0] - B[0];
+    const tb = Math.tan(drad(bAng)), tc = Math.tan(drad(cAng));
+    const h = L * tb * tc / (tb + tc), d1 = h / tb;
+    return [B[0] + d1, B[1] - h];
+  }
+  function angLabel(V, P, Q, s, col) {
+    const a1 = Math.atan2(-(P[1]-V[1]), P[0]-V[0]), a2 = Math.atan2(-(Q[1]-V[1]), Q[0]-V[0]);
+    let dx = Math.cos(a1)+Math.cos(a2), dy = Math.sin(a1)+Math.sin(a2);
+    const len = Math.hypot(dx,dy) || 1; dx/=len; dy/=len;
+    return txt([V[0]+dx*26, V[1]-dy*26], s, col);
+  }
+  function tick(P, Q) {
+    const mx=(P[0]+Q[0])/2, my=(P[1]+Q[1])/2; let dx=Q[0]-P[0], dy=Q[1]-P[1];
+    const l=Math.hypot(dx,dy); dx/=l; dy/=l; const nx=-dy, ny=dx;
+    return '<line x1="'+(mx-nx*4).toFixed(1)+'" y1="'+(my-ny*4).toFixed(1)+'" x2="'+(mx+nx*4).toFixed(1)+'" y2="'+(my+ny*4).toFixed(1)+'" stroke="#333" stroke-width="1.4"/>';
+  }
+  function poly(pts){ return '<polygon points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="#333" stroke-width="1.7"/>'; }
+  /* --- k8_inner 三角形の内角の和 --- */
+  GEN.k8_inner = function (rng) {
+    let b,c; do { b=ri(rng,25,80); c=ri(rng,25,80); } while (b+c<50 || b+c>155);
+    const ans=180-b-c;
+    const B=[60,150], C=[265,150], A=apexFrom(B,C,b,c);
+    const g = poly([B,C,A]) + angLabel(B,A,C,b+'°','#1f6fb0') + angLabel(C,A,B,c+'°','#1f6fb0') + angLabel(A,B,C,'ア','#c0286b');
+    return { title:'三角形の内角の和', stem:'右の図のアの角の大きさは'+H('何度')+'ですか。', svg:svgWrap(g,320,175),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['三角形の3つの角（内角）に注目します。','<b>三角形の内角の和は180°</b>。'+b+'＋'+c+'＋ア＝180。','ア＝180−（'+b+'＋'+c+'）。'],
+      solution:'三角形の内角の和は180°。ア＝180−（'+b+'＋'+c+'）＝<b>'+ans+'（度）</b>。', sig:'k8in:'+b+':'+c };
+  };
+  /* --- k8_exterior 三角形の外角の定理 --- */
+  GEN.k8_exterior = function (rng) {
+    let aA,bB; do { aA=ri(rng,30,90); bB=ri(rng,30,80); } while (aA+bB<60 || aA+bB>150);
+    const ans=aA+bB, cInt=180-aA-bB;
+    const B=[55,150], C=[235,150], A=apexFrom(B,C,bB,cInt);
+    const Cext=[C[0]+55,150];
+    const g = poly([B,C,A]) + ln(C,Cext)
+      + angLabel(A,B,C,aA+'°','#1f6fb0') + angLabel(B,A,C,bB+'°','#1f6fb0')
+      + angLabel(C,Cext,A,'ア','#c0286b');
+    return { title:'三角形の外角の定理', stem:'右の図のアの角（外角）の大きさは'+H('何度')+'ですか。', svg:svgWrap(g,320,175),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['三角形の外側にできる角（外角）に注目します。','<b>外角＝となりにない2つの内角の和</b>（外角の定理）。ア＝'+aA+'＋'+bB+'。','ア＝'+aA+'＋'+bB+'。'],
+      solution:'外角の定理より、ア＝'+aA+'＋'+bB+'＝<b>'+ans+'（度）</b>。', sig:'k8ex:'+aA+':'+bB };
+  };
+  /* --- k8_iso 二等辺三角形の角 --- */
+  GEN.k8_iso = function (rng) {
+    const apexGiven = rng()<0.5;
+    let apex, base;
+    if (apexGiven) { do { apex=ri(rng,20,140); } while ((180-apex)%2!==0); base=(180-apex)/2; }
+    else { base=ri(rng,30,80); apex=180-2*base; }
+    const B=[60,150], C=[260,150], A=[160,150-100*Math.tan(drad(base))];
+    let g = poly([B,C,A]) + tick(A,B) + tick(A,C);
+    let ans, stem;
+    if (apexGiven) { g += angLabel(A,B,C,apex+'°','#1f6fb0') + angLabel(C,A,B,'ア','#c0286b'); ans=base;
+      stem='右の図の三角形は二等辺三角形です（同じ印の辺は長さが等しい）。アの角の大きさは'+H('何度')+'ですか。'; }
+    else { g += angLabel(B,A,C,base+'°','#1f6fb0') + angLabel(A,B,C,'ア','#c0286b'); ans=apex;
+      stem='右の図の三角形は二等辺三角形です（同じ印の辺は長さが等しい）。アの角の大きさは'+H('何度')+'ですか。'; }
+    return { title:'二等辺三角形の角', stem:stem, svg:svgWrap(g,320,175),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['二等辺三角形は<b>2つの底角が等しい</b>。印のついた辺（等しい辺）の向かいの角が等しい底角です。',
+        apexGiven?('頂角が'+apex+'°。底角2つは等しいので、（180−'+apex+'）÷2。'):('底角が'+base+'°。もう1つの底角も'+base+'°。頂角＝180−'+base+'×2。'),
+        apexGiven?('ア（底角）＝（180−'+apex+'）÷2。'):('ア（頂角）＝180−'+base+'×2。')],
+      solution: apexGiven?('底角は等しいので ア＝（180−'+apex+'）÷2＝<b>'+ans+'（度）</b>。'):('底角が2つとも'+base+'° なので ア＝180−'+base+'×2＝<b>'+ans+'（度）</b>。'),
+      sig:'k8iso:'+(apexGiven?'a'+apex:'b'+base) };
+  };
+
+  /* =========================================================
+     第9回 いろいろな四角形（面積・角／図形SVG）
+     ========================================================= */
+  function dimLabel(P,s){ return '<text x="'+P[0]+'" y="'+P[1]+'" font-size="12" fill="#1f6fb0" text-anchor="middle" dominant-baseline="middle">'+s+'</text>'; }
+  /* --- k9_rect 正方形・長方形の面積 --- */
+  GEN.k9_rect = function (rng) {
+    const sq = rng()<0.4;
+    let a,b,ans,stem,sc;
+    if (sq){ a=ri(rng,5,18); b=a; ans=a*a; }
+    else { a=ri(rng,4,15); b=ri(rng,6,20); ans=a*b; }
+    sc=Math.min(150/b, 90/a); const W=b*sc, Hh=a*sc, x=70, y=25;
+    let g='<rect x="'+x+'" y="'+y+'" width="'+W.toFixed(1)+'" height="'+Hh.toFixed(1)+'" fill="#eef4ff" stroke="#333" stroke-width="1.6"/>';
+    if (sq){ g+=dimLabel([x+W/2,y+Hh+14],'1辺 '+a+' cm'); }
+    else { g+=dimLabel([x+W/2,y+Hh+14],'横 '+b+' cm')+dimLabel([x-24,y+Hh/2],'たて '+a); }
+    return { title:(sq?'正方形の面積':'長方形の面積'), stem:(sq?('1辺 '+N(a)+' cm の正方形の'):('たて '+N(a)+' cm、横 '+N(b)+' cm の長方形の'))+H('面積は何 cm²')+'ですか。', svg:svgWrap(g,260,150),
+      fields:[{label:'',unit:'cm²',answer:ans,type:'int'}],
+      hints:['面積は「1辺1cmの正方形が何個分か」。公式を使います。',(sq?'正方形の面積＝1辺×1辺。':'長方形の面積＝たて×横。'),(sq?(a+'×'+a):(a+'×'+b))+'。'],
+      solution:(sq?(a+'×'+a):(a+'×'+b))+'＝<b>'+ans+'（cm²）</b>。', sig:'k9r:'+(sq?'s'+a:'r'+a+'x'+b) };
+  };
+  /* --- k9_para 平行四辺形の面積 --- */
+  GEN.k9_para = function (rng) {
+    const base=ri(rng,6,16), h=ri(rng,4,12), side=ri(rng,5,10);
+    const ans=base*h;
+    const sc=Math.min(150/(base+4),90/h), x=55,y=25, W=base*sc, Hh=h*sc, sh=3*sc;
+    const B=[x,y+Hh],C=[x+W,y+Hh],D=[x+W+sh,y],A=[x+sh,y];
+    let g=poly([A,D,C,B])+'<line x1="'+(x+sh).toFixed(1)+'" y1="'+y+'" x2="'+(x+sh).toFixed(1)+'" y2="'+(y+Hh).toFixed(1)+'" stroke="#c0286b" stroke-dasharray="4 3"/>';
+    g+=dimLabel([x+W/2,y+Hh+14],'底辺 '+base+' cm')+dimLabel([x+sh-18,y+Hh/2],'高さ '+h)+dimLabel([(x+W/2+sh+6),y-8],'（横の辺 '+side+' cm）');
+    return { title:'平行四辺形の面積', stem:'底辺 '+N(base)+' cm、高さ '+N(h)+' cm の平行四辺形の'+H('面積は何 cm²')+'ですか。（ななめの辺 '+side+' cm は使いません）', svg:svgWrap(g,250,150),
+      fields:[{label:'',unit:'cm²',answer:ans,type:'int'}],
+      hints:['平行四辺形の面積は、底辺とそれに<b>垂直な高さ</b>で決まります。ななめの辺の長さは使いません。','平行四辺形の面積＝<b>底辺×高さ</b>。',base+'×'+h+'。'],
+      solution:'平行四辺形の面積＝底辺×高さ＝'+base+'×'+h+'＝<b>'+ans+'（cm²）</b>。', sig:'k9p:'+base+':'+h };
+  };
+  /* --- k9_trap 台形の面積 --- */
+  GEN.k9_trap = function (rng) {
+    let u,d,h; do { u=ri(rng,4,12); d=u+ri(rng,2,10); h=ri(rng,4,12); } while (((u+d)*h)%2!==0);
+    const ans=(u+d)*h/2;
+    const sc=Math.min(150/d,80/h), x=60,y=25, Wd=d*sc, Wu=u*sc, Hh=h*sc, off=(Wd-Wu)/2;
+    const B=[x,y+Hh],C=[x+Wd,y+Hh],D=[x+off+Wu,y],A=[x+off,y];
+    let g=poly([A,D,C,B])+'<line x1="'+(x+off).toFixed(1)+'" y1="'+y+'" x2="'+(x+off).toFixed(1)+'" y2="'+(y+Hh).toFixed(1)+'" stroke="#c0286b" stroke-dasharray="4 3"/>';
+    g+=dimLabel([x+off+Wu/2,y-8],'上底 '+u)+dimLabel([x+Wd/2,y+Hh+14],'下底 '+d+' cm')+dimLabel([x+off-20,y+Hh/2],'高さ '+h);
+    return { title:'台形の面積', stem:'上底 '+N(u)+' cm、下底 '+N(d)+' cm、高さ '+N(h)+' cm の台形の'+H('面積は何 cm²')+'ですか。', svg:svgWrap(g,250,150),
+      fields:[{label:'',unit:'cm²',answer:ans,type:'int'}],
+      hints:['台形は同じものを逆さにつなぐと平行四辺形（底辺＝上底＋下底）になります。','台形の面積＝<b>（上底＋下底）×高さ÷2</b>。','（'+u+'＋'+d+'）×'+h+'÷2。'],
+      solution:'（上底＋下底）×高さ÷2＝（'+u+'＋'+d+'）×'+h+'÷2＝'+((u+d)*h)+'÷2＝<b>'+ans+'（cm²）</b>。', sig:'k9t:'+u+':'+d+':'+h };
+  };
+  /* --- k9_rhombus ひし形の面積 --- */
+  GEN.k9_rhombus = function (rng) {
+    let p,q; do { p=ri(rng,5,16); q=ri(rng,5,16); } while ((p*q)%2!==0);
+    const ans=p*q/2;
+    const sc=Math.min(140/q,90/p), x=125,y=80, hw=q*sc/2, hh=p*sc/2;
+    const L=[x-hw,y],R=[x+hw,y],T=[x,y-hh],Bo=[x,y+hh];
+    let g=poly([T,R,Bo,L])+'<line x1="'+(x-hw).toFixed(1)+'" y1="'+y+'" x2="'+(x+hw).toFixed(1)+'" y2="'+y+'" stroke="#c0286b" stroke-dasharray="4 3"/>'+'<line x1="'+x+'" y1="'+(y-hh).toFixed(1)+'" x2="'+x+'" y2="'+(y+hh).toFixed(1)+'" stroke="#c0286b" stroke-dasharray="4 3"/>';
+    g+=dimLabel([x+hw/2,y-10],'対角線 '+q)+dimLabel([x+18,y+hh/2],'対角線 '+p);
+    return { title:'ひし形の面積', stem:'2本の対角線が '+N(p)+' cm と '+N(q)+' cm のひし形の'+H('面積は何 cm²')+'ですか。', svg:svgWrap(g,250,175),
+      fields:[{label:'',unit:'cm²',answer:ans,type:'int'}],
+      hints:['ひし形を長方形で囲むと、面積はその長方形の半分になります。','ひし形の面積＝<b>対角線×対角線÷2</b>。',p+'×'+q+'÷2。'],
+      solution:'対角線×対角線÷2＝'+p+'×'+q+'÷2＝'+(p*q)+'÷2＝<b>'+ans+'（cm²）</b>。', sig:'k9h:'+p+':'+q };
+  };
+  /* --- k9_quad_angle 四角形の角（平行四辺形） --- */
+  GEN.k9_quad_angle = function (rng) {
+    const b=ri(rng,40,140);
+    const askNext = rng()<0.5;
+    const ans = askNext ? 180-b : b;
+    const sc=1, x=55,y=30, W=150, Hh=80, sh=34;
+    const B=[x,y+Hh],C=[x+W,y+Hh],D=[x+W+sh,y],A=[x+sh,y];
+    let g=poly([A,D,C,B]) + angLabel(B,A,C,b+'°','#1f6fb0') + angLabel(askNext?A:D, askNext?[B[0],B[1]]:[C[0],C[1]], askNext?[D[0],D[1]]:[A[0],A[1]], 'ア','#c0286b');
+    return { title:'平行四辺形の角', stem:'右の四角形は'+H('平行四辺形')+'です。アの角の大きさは'+H('何度')+'ですか。', svg:svgWrap(g,260,140),
+      fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
+      hints:['平行四辺形は「<b>向かい合う角は等しい</b>」「<b>となり合う角の和は180°</b>」。',askNext?('アは '+b+'° の<b>となりの角</b>だから、和が180°。'):('アは '+b+'° の<b>向かい合う角</b>だから等しい。'),askNext?('ア＝180−'+b+'。'):('ア＝'+b+'。')],
+      solution: askNext?('となり合う角の和は180°。ア＝180−'+b+'＝<b>'+ans+'（度）</b>。'):('向かい合う角は等しい。ア＝<b>'+ans+'（度）</b>。'),
+      sig:'k9qa:'+b+':'+(askNext?'n':'o') };
+  };
+
+  /* =========================================================
+     第11回 三角形の面積（図形SVG）
+     ========================================================= */
+  /* --- k11_right 直角三角形の面積 --- */
+  GEN.k11_right = function (rng) {
+    let a,b; do { a=ri(rng,4,14); b=ri(rng,4,16); } while ((a*b)%2!==0);
+    const ans=a*b/2;
+    const sc=Math.min(150/b,85/a), Bp=[55,110], A=[55,110-a*sc], C=[55+b*sc,110];
+    let g=poly([A,Bp,C]) + '<path d="M'+(Bp[0]+7)+','+Bp[1]+' v-7 h-7" fill="none" stroke="#333" stroke-width="1"/>';
+    g+=dimLabel([Bp[0]-16,Bp[1]-a*sc/2],'たて '+a)+dimLabel([Bp[0]+b*sc/2,Bp[1]+14],'横 '+b+' cm');
+    return { title:'直角三角形の面積', stem:'直角をはさむ2辺が たて '+N(a)+' cm、横 '+N(b)+' cm の直角三角形の'+H('面積は何 cm²')+'ですか。', svg:svgWrap(g,250,145),
+      fields:[{label:'',unit:'cm²',answer:ans,type:'int'}],
+      hints:['直角三角形は、同じものを2つ組み合わせると<b>長方形</b>になります。','三角形の面積＝底辺×高さ÷2。直角三角形なら<b>直角をはさむ2辺×÷2</b>。',a+'×'+b+'÷2。'],
+      solution:a+'×'+b+'÷2＝'+(a*b)+'÷2＝<b>'+ans+'（cm²）</b>。', sig:'k11r:'+a+':'+b };
+  };
+  /* --- k11_tri 三角形の面積（底辺×高さ÷2） --- */
+  GEN.k11_tri = function (rng) {
+    let b,h; do { b=ri(rng,6,16); h=ri(rng,4,12); } while ((b*h)%2!==0);
+    const ans=b*h/2;
+    const sc=Math.min(150/b,85/h), Bp=[55,110], C=[55+b*sc,110];
+    const footR=0.35+0.3*(((b*7+h)%5)/5), footX=55+b*sc*footR, A=[footX,110-h*sc];
+    let g=poly([Bp,C,A]) + '<line x1="'+footX.toFixed(1)+'" y1="'+A[1].toFixed(1)+'" x2="'+footX.toFixed(1)+'" y2="110" stroke="#c0286b" stroke-dasharray="4 3"/>';
+    g+='<path d="M'+(footX+6).toFixed(1)+',110 v-6 h-6" fill="none" stroke="#333" stroke-width="1"/>';
+    g+=dimLabel([55+b*sc/2,124],'底辺 '+b+' cm')+dimLabel([footX+22,110-h*sc/2],'高さ '+h);
+    return { title:'三角形の面積', stem:'底辺 '+N(b)+' cm、高さ '+N(h)+' cm の三角形の'+H('面積は何 cm²')+'ですか。', svg:svgWrap(g,250,145),
+      fields:[{label:'',unit:'cm²',answer:ans,type:'int'}],
+      hints:['三角形は同じものを2つ組み合わせると平行四辺形（底辺×高さ）になります。','三角形の面積＝<b>底辺×高さ÷2</b>。底辺と高さは<b>垂直</b>です。',b+'×'+h+'÷2。'],
+      solution:'底辺×高さ÷2＝'+b+'×'+h+'÷2＝'+(b*h)+'÷2＝<b>'+ans+'（cm²）</b>。', sig:'k11t:'+b+':'+h };
+  };
+  /* --- k11_reverse 面積から高さを求める --- */
+  GEN.k11_reverse = function (rng) {
+    let x,b; do { x=ri(rng,4,14); b=ri(rng,4,16); } while ((b*x)%2!==0);
+    const S=b*x/2;
+    const sc=Math.min(150/b,85/x), Bp=[55,110], C=[55+b*sc,110], footX=55+b*sc*0.5, A=[footX,110-x*sc];
+    let g=poly([Bp,C,A]) + '<line x1="'+footX.toFixed(1)+'" y1="'+A[1].toFixed(1)+'" x2="'+footX.toFixed(1)+'" y2="110" stroke="#c0286b" stroke-dasharray="4 3"/>';
+    g+=dimLabel([55+b*sc/2,124],'底辺 '+b+' cm')+dimLabel([footX+16,110-x*sc/2],'x');
+    return { title:'面積から長さを求める', stem:'右の三角形の'+H('面積は '+N2(S)+' cm²')+'です。図の '+H('x（高さ）は何 cm')+'ですか。', svg:svgWrap(g,250,145),
+      fields:[{label:'x',unit:'cm',answer:x,type:'int'}],
+      hints:['「底辺×高さ÷2＝面積」の式を、逆算して高さを求めます。','底辺 '+b+'×x÷2＝'+S+' → x＝'+S+'×2÷'+b+'。','x＝'+(S*2)+'÷'+b+'。'],
+      solution:b+'×x÷2＝'+S+' より、x＝'+S+'×2÷'+b+'＝'+(S*2)+'÷'+b+'＝<b>'+x+'（cm）</b>。', sig:'k11rev:'+b+':'+x };
+  };
+
+  /* =========================================================
+     第12回 間の数を考える問題（植木算）
+     ========================================================= */
+  function svgTreesLine(gapText, ends){
+    const y=70, x0=25, x1=275; let g='<line x1="'+x0+'" y1="'+y+'" x2="'+x1+'" y2="'+y+'" stroke="#8a6a3a" stroke-width="2"/>';
+    const xs=[40,95,150,205,260];
+    xs.forEach(function(x,i){ const draw=ends||(i>0&&i<4); g+='<circle cx="'+x+'" cy="'+y+'" r="3" fill="#333"/>'; g+='<circle cx="'+x+'" cy="'+(y-14)+'" r="8" fill="#8fce8f" stroke="#4a8a4a"/><line x1="'+x+'" y1="'+(y-6)+'" x2="'+x+'" y2="'+y+'" stroke="#8a6a3a"/>'; });
+    g+='<text x="67" y="'+(y+16)+'" font-size="11" fill="#1f6fb0" text-anchor="middle">'+gapText+'</text>';
+    g+='<text x="150" y="'+(y+16)+'" font-size="12" fill="#999" text-anchor="middle">……</text>';
+    return svgWrap(g,300,95);
+  }
+  function svgTreesCircle(gapText){
+    let g='<ellipse cx="140" cy="75" rx="110" ry="55" fill="none" stroke="#3aa0e6" stroke-width="2"/>';
+    const pts=[[140,20],[230,50],[230,100],[140,130],[50,100],[50,50]];
+    pts.forEach(function(p){ g+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#4a8a4a"/>'; });
+    g+='<text x="188" y="32" font-size="11" fill="#1f6fb0">'+gapText+'</text>';
+    return svgWrap(g,290,150);
+  }
+  /* --- k12_both 両はしに植える --- */
+  GEN.k12_both = function (rng) {
+    const n=ri(rng,6,30), gap=pick(rng,[4,5,6,8,10,12,15,20]);
+    const L=gap*(n-1);
+    const askGap = rng()<0.5;
+    if (askGap) return {
+      title:'植木算（両はし）', stem:'まっすぐな道にそって、'+H(N2(n)+' 本の木')+'を同じ間かくで植えました。'+H('両はしの木は '+N2(L)+' m はなれて')+'います。'+H('木と木の間かくは何 m')+'ですか。',
+      svg:svgTreesLine(gap+'m',true), fields:[{label:'',unit:'m',answer:gap,type:'int'}],
+      hints:['両はしにも木を植えるので、<b>間の数＝木の数−1</b>。','間の数は '+n+'−1＝'+(n-1)+' か所。全体 '+L+' m をこれでわる。','間かく＝'+L+'÷'+(n-1)+'。'],
+      solution:'間の数＝'+n+'−1＝'+(n-1)+'（か所）。間かく＝'+L+'÷'+(n-1)+'＝<b>'+gap+'（m）</b>。', sig:'k12b:g:'+n+':'+gap };
+    return {
+      title:'植木算（両はし）', stem:'まっすぐな道にそって、'+H(N2(n)+' 本の木')+'を '+H(N2(gap)+' m の間かく')+'で植えました。'+H('両はしの木は何 m はなれて')+'いますか。',
+      svg:svgTreesLine(gap+'m',true), fields:[{label:'',unit:'m',answer:L,type:'int'}],
+      hints:['両はしにも植えるので、<b>間の数＝木の数−1</b>。','間の数は '+n+'−1＝'+(n-1)+' か所。','全体＝間かく×間の数＝'+gap+'×'+(n-1)+'。'],
+      solution:'間の数＝'+n+'−1＝'+(n-1)+'。全体＝'+gap+'×'+(n-1)+'＝<b>'+L+'（m）</b>。', sig:'k12b:l:'+n+':'+gap };
+  };
+  /* --- k12_notboth 両はしに植えない --- */
+  GEN.k12_notboth = function (rng) {
+    const n=ri(rng,6,30), gap=pick(rng,[3,4,5,6,8,10,12,15,25]);
+    const L=gap*(n+1);
+    return {
+      title:'植木算（両はしなし）', stem:'2つのバス停は '+H(N2(L)+' m')+'はなれています。この間に '+H(N2(gap)+' m おき')+'に木を植えます。'+H('何本の木を植える')+'ことになりますか。（バス停には植えない）',
+      svg:svgTreesLine(gap+'m',false), fields:[{label:'',unit:'本',answer:n,type:'int'}],
+      hints:['両はし（バス停）には植えないので、<b>間の数＝木の数＋1</b>。','間の数＝'+L+'÷'+gap+'＝'+(n+1)+' か所。','木の数＝間の数−1＝'+(n+1)+'−1。'],
+      solution:'間の数＝'+L+'÷'+gap+'＝'+(n+1)+'（か所）。木の数＝'+(n+1)+'−1＝<b>'+n+'（本）</b>。', sig:'k12nb:'+n+':'+gap };
+  };
+  /* --- k12_circle まるく植える --- */
+  GEN.k12_circle = function (rng) {
+    const n=ri(rng,8,40), gap=pick(rng,[4,5,6,8,10,12]);
+    const L=gap*n;
+    const askLen = rng()<0.5;
+    if (askLen) return {
+      title:'植木算（まるく）', stem:'池のまわりに '+H(N2(n)+' 本の木')+'を '+H(N2(gap)+' m おき')+'に植えました。'+H('池のまわりの長さは何 m')+'ですか。',
+      svg:svgTreesCircle(gap+'m'), fields:[{label:'',unit:'m',answer:L,type:'int'}],
+      hints:['まるく（輪になって）植えるときは、<b>間の数＝木の数</b>。','間の数は '+n+' か所。','まわり＝間かく×本数＝'+gap+'×'+n+'。'],
+      solution:'まるく植えるので間の数＝木の数＝'+n+'。まわり＝'+gap+'×'+n+'＝<b>'+L+'（m）</b>。', sig:'k12c:l:'+n+':'+gap };
+    return {
+      title:'植木算（まるく）', stem:'1周が '+H(N2(L)+' m')+'の池のまわりに、木を '+H(N2(gap)+' m おき')+'に植えます。'+H('木は全部で何本')+'植えられますか。',
+      svg:svgTreesCircle(gap+'m'), fields:[{label:'',unit:'本',answer:n,type:'int'}],
+      hints:['まるく植えるときは、<b>間の数＝木の数</b>。','本数＝まわり÷間かく＝'+L+'÷'+gap+'。','わり切れる数になっています。'],
+      solution:'まるく植えるので木の数＝間の数＝'+L+'÷'+gap+'＝<b>'+n+'（本）</b>。', sig:'k12c:n:'+n+':'+gap };
+  };
+  /* --- k12_number 番号をふる --- */
+  GEN.k12_number = function (rng) {
+    const gap=pick(rng,[2,3,4,5,6,9,10]);
+    const obj=pick(rng,['電柱','旗','くい']);
+    const p=ri(rng,1,20), q=p+ri(rng,5,30);
+    const dist=gap*(q-p);
+    return {
+      title:'植木算（番号）', stem:'まっすぐな道にそって、'+obj+'が '+H(N2(gap)+' m おき')+'に立ち、1番・2番・…と番号がついています。'+H(N2(p)+' 番と '+N2(q)+' 番')+'の'+obj+'は'+H('何 m はなれて')+'いますか。',
+      fields:[{label:'',unit:'m',answer:dist,type:'int'}],
+      hints:['番号は「間の数」だけふえていきます。番号の差＝間の数。','間の数＝'+q+'−'+p+'＝'+(q-p)+' か所。','きょり＝間かく×間の数＝'+gap+'×'+(q-p)+'。'],
+      solution:'番号の差（間の数）＝'+q+'−'+p+'＝'+(q-p)+'。きょり＝'+gap+'×'+(q-p)+'＝<b>'+dist+'（m）</b>。', sig:'k12num:'+gap+':'+p+':'+q };
+  };
+
+  /* =========================================================
+     第13回 周期を考える問題（周期算）
+     ========================================================= */
+  function randPattern(rng){
+    const L = ri(rng,4,6); const kinds = pick(rng,[[1,2,3],[2,3,4],[1,2],[1,2,3,4]]);
+    const pat=[]; for(let i=0;i<L;i++) pat.push(pick(rng,kinds));
+    // 少なくとも2種類は含める
+    if (new Set(pat).size<2) pat[0]=pat[0]===kinds[0]?kinds[1]:kinds[0];
+    return pat;
+  }
+  function showSeq(pat, terms){ const out=[]; for(let i=0;i<terms;i++) out.push(pat[i%pat.length]); return out.join('，')+'，……'; }
+  /* --- k13_seq_nth 周期・n番目の数字 --- */
+  GEN.k13_seq_nth = function (rng) {
+    const pat=randPattern(rng), L=pat.length, m=ri(rng,3*L+2,90);
+    const ans=pat[(m-1)%L];
+    return { title:'周期・○番目の数字', stem:'あるきまりで数字がならんでいます。<div style="font-size:16px;margin:8px 0;">'+showSeq(pat,Math.min(15,3*L+2))+'</div>'+H('左から '+N2(m)+' 番目')+'の数字は'+H('いくつ')+'ですか。',
+      fields:[{label:'',unit:'',answer:ans,type:'int'}],
+      hints:['くり返しのかたまり（周期）を見つけます。周期は '+L+' 個：{'+pat.join('，')+'}。','番目を周期の長さでわり、あまりで場所を決めます。'+m+'÷'+L+'＝'+Math.floor(m/L)+' あまり '+(m%L===0?L+'(=わり切れ→周期の最後)':m%L)+'。','あまり番目の数字が答え。'],
+      solution:'周期は {'+pat.join('，')+'}（'+L+'個）。'+m+'÷'+L+'＝'+Math.floor(m/L)+' あまり '+(m%L)+' より、'+(m%L===0?'ちょうどで周期の最後':(m%L)+'番目')+'。答えは <b>'+ans+'</b>。', sig:'k13n:'+pat.join('')+':'+m };
+  };
+  /* --- k13_seq_sum 周期・n番目までの和 --- */
+  GEN.k13_seq_sum = function (rng) {
+    const pat=randPattern(rng), L=pat.length, m=ri(rng,3*L+2,80);
+    const cyc=pat.reduce((a,b)=>a+b,0), full=Math.floor(m/L), rem=m%L;
+    let partial=0; for(let i=0;i<rem;i++) partial+=pat[i];
+    const ans=full*cyc+partial;
+    return { title:'周期・和', stem:'あるきまりで数字がならんでいます。<div style="font-size:16px;margin:8px 0;">'+showSeq(pat,Math.min(15,3*L+2))+'</div>左から順に'+H(N2(m)+' 番目まで加える')+'と、'+H('和はいくつ')+'ですか。',
+      fields:[{label:'',unit:'',answer:ans,type:'int'}],
+      hints:['1周期の和を求め、周期が何組あるかを考えます。周期の和＝'+pat.join('＋')+'＝'+cyc+'。',m+'÷'+L+'＝'+full+' あまり '+rem+'。→ 周期が '+full+' 組と、はんぱ '+rem+' 個。','和＝'+cyc+'×'+full+'＋（はんぱ '+rem+' 個の和）。'],
+      solution:'1周期の和＝'+cyc+'。'+m+'÷'+L+'＝'+full+' あまり '+rem+'。<br>和＝'+cyc+'×'+full+'＋'+partial+'＝<b>'+ans+'</b>。', sig:'k13s:'+pat.join('')+':'+m };
+  };
+  /* --- k13_units 一の位の周期（累乗） --- */
+  GEN.k13_units = function (rng) {
+    const b=ri(rng,2,9), n=ri(rng,5,40);
+    let last=1; for(let i=0;i<n;i++) last=(last*b)%10;
+    // 周期を見つけて説明
+    const cyc=[]; let x=b%10; while(true){ cyc.push(x); x=(x*b)%10; if(x===b%10) break; if(cyc.length>=4) break; }
+    return { title:'一の位の周期', stem:N(b)+' を '+H(N2(n)+' 個かけ合わせた')+'とき、その'+H('積の一の位はいくつ')+'ですか。',
+      fields:[{label:'',unit:'',answer:last,type:'int'}],
+      hints:[b+'を次々にかけたときの「一の位」だけを調べると、くり返し（周期）が見つかります。','一の位は {'+cyc.join('，')+'} の '+cyc.length+' 個を周期にくり返します。',n+'÷'+cyc.length+' のあまりで、周期の何番目かを求めます。'],
+      solution:'一の位は {'+cyc.join('，')+'}（'+cyc.length+'個）をくり返します。'+n+'÷'+cyc.length+'＝'+Math.floor(n/cyc.length)+' あまり '+(n%cyc.length)+' より、一の位は <b>'+last+'</b>。', sig:'k13u:'+b+':'+n };
+  };
+  /* --- k13_weekday 曜日の周期 --- */
+  const MLEN=[31,28,31,30,31,30,31,31,30,31,30,31];
+  const WDAY=['日','月','火','水','木','金','土'];
+  function doy(m,d){ let s=0; for(let i=0;i<m-1;i++) s+=MLEN[i]; return s+d; }
+  GEN.k13_weekday = function (rng) {
+    const m1=ri(rng,1,9), d1=ri(rng,1,MLEN[m1-1]); const w1=ri(rng,0,6);
+    const offset=ri(rng,20,120); const t=doy(m1,d1)+offset;
+    if (t>365) return GEN.k13_weekday(rng);
+    // convert t -> (m2,d2)
+    let m2=1, rem=t; while(rem>MLEN[m2-1]){ rem-=MLEN[m2-1]; m2++; }
+    const d2=rem; const w2=(w1+offset)%7;
+    const between=offset+1; // はじめと終わりをふくめた日数
+    return { title:'曜日の周期', stem:'ある年の '+N(m1)+' 月 '+N(d1)+' 日は '+H(WDAY[w1]+'曜日')+'です。この年の '+H(N2(m2)+' 月 '+N2(d2)+' 日')+'は'+H('何曜日')+'ですか。',
+      fields:[{label:'',unit:'曜日',answer:WDAY[w2],type:'str'}],
+      hints:['まず2つの日づけの間の日数を数えます（間の数＝日数の差）。','曜日は7日を周期にくり返します。日数の差を7でわったあまりで曜日がずれます。',m1+'/'+d1+' から '+m2+'/'+d2+' までは '+offset+' 日後。'+offset+'÷7＝'+Math.floor(offset/7)+' あまり '+(offset%7)+' → '+(offset%7)+' 曜日分すすむ。'],
+      solution:m1+'/'+d1+' から '+m2+'/'+d2+' までは '+offset+' 日後。'+offset+'÷7＝'+Math.floor(offset/7)+' あまり '+(offset%7)+'。<br>'+WDAY[w1]+'曜日から '+(offset%7)+' つすすんで <b>'+WDAY[w2]+'曜日</b>。', sig:'k13w:'+m1+d1+w1+':'+offset };
+  };
+
+  /* =========================================================
+     第14回 等差数列
+     ========================================================= */
+  function seqStr(a1,d,terms){ const out=[]; for(let i=0;i<terms;i++) out.push(a1+d*i); return out.join('，')+'，……'; }
+  /* --- k14_nth □番目の数 --- */
+  GEN.k14_nth = function (rng) {
+    const dec = rng()<0.3;
+    let a1,d;
+    if (dec){ d=-pick(rng,[2,3,4,5,6]); a1=ri(rng,60,99); } else { d=pick(rng,[2,3,4,5,6,7,8]); a1=ri(rng,1,12); }
+    const m=ri(rng,10,40); const ans=a1+d*(m-1);
+    if (ans<1) return GEN.k14_nth(rng);
+    return { title:'等差数列（□番目の数）', stem:'あるきまりで数がならんでいます。<div style="font-size:16px;margin:8px 0;">'+seqStr(a1,d,6)+'</div>左から '+H(N2(m)+' 番目')+'の数は'+H('いくつ')+'ですか。',
+      fields:[{label:'',unit:'',answer:ans,type:'int'}],
+      hints:['はじめの数と、いくつずつ増える（減る）か（公差）を見つけます。はじめ '+a1+'、公差 '+d+'。','□番目の数＝はじめ＋公差×(□−1)。公差は '+(m-1)+' 回たされます。',a1+'＋'+d+'×('+m+'−1)。'],
+      solution:'□番目の数＝はじめ＋公差×(□−1)＝'+a1+'＋'+d+'×'+(m-1)+'＝<b>'+ans+'</b>。', sig:'k14n:'+a1+':'+d+':'+m };
+  };
+  /* --- k14_which 何番目 --- */
+  GEN.k14_which = function (rng) {
+    const a1=ri(rng,1,10), d=pick(rng,[2,3,4,5,6,7,8]), m=ri(rng,10,40);
+    const v=a1+d*(m-1);
+    if ((v-a1)%d!==0) throw new Error('k14w');
+    return { title:'等差数列（何番目）', stem:'あるきまりで数がならんでいます。<div style="font-size:16px;margin:8px 0;">'+seqStr(a1,d,6)+'</div>'+H(N2(v))+' は左から'+H('何番目')+'にありますか。',
+      fields:[{label:'',unit:'番目',answer:m,type:'int'}],
+      hints:['はじめ '+a1+'、公差 '+d+' の等差数列です。','その数までに公差を何回たしたか＝(その数−はじめ)÷公差＝('+v+'−'+a1+')÷'+d+'。','番目＝（たした回数）＋1。'],
+      solution:'公差をたした回数＝('+v+'−'+a1+')÷'+d+'＝'+((v-a1)/d)+'。番目＝'+((v-a1)/d)+'＋1＝<b>'+m+'（番目）</b>。', sig:'k14w:'+a1+':'+d+':'+v };
+  };
+  /* --- k14_sum 等差数列の和 --- */
+  GEN.k14_sum = function (rng) {
+    let a1,d,n,last; do { a1=ri(rng,1,10); d=pick(rng,[2,3,4,5,6]); n=ri(rng,10,30); last=a1+d*(n-1); } while (((a1+last)*n)%2!==0);
+    const ans=(a1+last)*n/2;
+    return { title:'等差数列の和', stem:'あるきまりで数を '+H(N2(n)+' 個')+'ならべます。<div style="font-size:16px;margin:8px 0;">'+seqStr(a1,d,5)+'</div>ならべた数を'+H('すべて加える')+'と、'+H('和はいくつ')+'ですか。',
+      fields:[{label:'',unit:'',answer:ans,type:'int'}],
+      hints:['まず最後（'+n+'番目）の数を求めます：'+a1+'＋'+d+'×'+(n-1)+'＝'+last+'。','等差数列の和＝<b>（はじめ＋終わり）×個数÷2</b>。','（'+a1+'＋'+last+'）×'+n+'÷2。'],
+      solution:n+'番目＝'+a1+'＋'+d+'×'+(n-1)+'＝'+last+'。<br>和＝（'+a1+'＋'+last+'）×'+n+'÷2＝<b>'+ans+'</b>。', sig:'k14s:'+a1+':'+d+':'+n };
+  };
+  /* --- k14_odd 奇数の和 --- */
+  GEN.k14_odd = function (rng) {
+    if (rng()<0.5){ const n=ri(rng,8,25); const ans=n*n;
+      return { title:'奇数の和', stem:'1から順に奇数（1，3，5，7，……）を'+H(N2(n)+' 個')+'たすと、'+H('和はいくつ')+'ですか。',
+        fields:[{label:'',unit:'',answer:ans,type:'int'}],
+        hints:['1から順の奇数の和にはかんたんな公式があります。','<b>□番目までの奇数の和＝□×□</b>（平方数）。',n+'×'+n+'。'],
+        solution:'1から順の奇数を '+n+' 個たした和＝'+n+'×'+n+'＝<b>'+ans+'</b>。', sig:'k14o:s:'+n };
+    }
+    const k=ri(rng,8,25); const S=k*k; const ans=2*k-1;
+    return { title:'奇数の和', stem:'1から順に奇数（1，3，5，7，……）をたしていくと、'+H('和が '+N2(S)+' になりました')+'。'+H('最後にたした奇数はいくつ')+'ですか。',
+      fields:[{label:'',unit:'',answer:ans,type:'int'}],
+      hints:['□番目までの奇数の和＝□×□。和が '+S+' なので、□×□＝'+S+'。','同じ数を2つかけて '+S+' になる数（□）をさがす → □＝'+k+'。','□番目の奇数＝2×□−1＝2×'+k+'−1。'],
+      solution:'和＝□×□＝'+S+' より □＝'+k+'（'+k+'×'+k+'＝'+S+'）。<br>最後の奇数（'+k+'番目）＝2×'+k+'−1＝<b>'+ans+'</b>。', sig:'k14o:l:'+k };
+  };
+
   /* export helpers for later batch */
   root.SkChExtra = { makeRng, ri, pick, gcd, gcdList, lcm, lcmList, divisors, numDivisors, primeFactorize, ladder, ladderHtml, H, N, N2, shuffle, pairStr };
   root.SkChGEN = GEN;
@@ -1399,31 +2441,115 @@
 })(typeof module !== 'undefined' ? module.exports : (window.SkCh = window.SkCh || {}));
 window.SkChChars={"mabel": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCACWAJYDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3O+8QXiXcscPloiMVAK5JxUA8Rah/z0j/AO+BVO+H+nXH/XRv51Divx7F51jvbztWktX18z6inhKPIvdWxp/8JDqH/PSP/vgUf8JDqH/PSP8A74FZuKWuf+28f/z+l97K+qUf5F9xpf8ACQ6h/wA9I/8AvgUf8JBqH/PSP/vgVnKuR70Yx1qnm+YrV1pfexLDUH9lfcaP/CQ6h/z0j/74FH/CQah/z0j/AO+BWcACAOjfzpWVlOCCDTlmuZJX9tL72JYaj/KjQ/4SHUP+ekf/AHwKP+Eg1D/npH/3wKoCKRjgI2evSkMcm0NsbB9qP7VzK1/az+9h9Wofyov/APCQ6h/z0j/74FH/AAkOof8APSP/AL4FZ+0j+E/lTetQ85zBb1pfeylhaH8qNL/hIdQ/56R/98CkPiLUP+ekf/fArOoo/tvH/wDP6X3sf1Sj/IvuND/hItQ/56R/98Cj/hItQ/56R/8AfsVnUhp/21j/APn9L72P6pR/kX3Gl/wkWo/89I/+/YpP+Ej1H/npH/37FZpoo/trH/8AP6X3sPqlD+RfcdLoetT3s0kVwFbC7gyjHfpRWd4b4vZP+uR/mKK/SOG8XVr4GM6suZ3erPAzClGFZqKsipe/8ftx/wBdG/nUQqa9/wCP24/66N/Ooa/KsX/Hn6v8z6Kl8C9BaMUUuCegrnSvsU3YY27ORVa41M2q8lTjsRzU88ghGScH0rlPEmuw2MDTTnAAyOa9/AYecl7yKo01J67GrNr8MZMkkgyB0BrOfx7ArbBcL+LivINV1XVvEM0mx2tbUnjafmI/pWTH4djWUFp5CxIO4tgn86+mp5dC3vSsbcsekbnvS+L5peY2HHQ1Mniq5UZbA4615vpl5IkaLv3AKBknpWm2pEDhgSOoNcU6VnY6FRpvod0vi/sw3HvzVy28RWd22GCjPfpXh/iUX+oTxiC8kt1UZ+RsZNZ9je+JdFcSJcm9hH3kc5P59a2/s9VYXbV+zMZUYbcp9GqyStiJgcjIBNB4ODjPpXnHhbxpHqcACykSL96NvvKfSu8s9SW42iVgDjuK8LF5UlflVmYzoyjqtUW6TFOIwe34UleDODg+VmadxtIacaQ1JRqeHf8Aj9k/65n+Yoo8O/8AH7J/1zP8xRX6pwn/AMi+Pqz53M/47+RVvR/ptx/10b+dQipr3/j9uP8Aro386hr8yxf8efq/zPdpfAvQKCSB1pk88dtBJPK22OJC7n0AGTXn/h/4iX/jDXZINNgjt9Ng5aRhudh/T8q3wGArYluVLaO7FOaVk9zpdbvBbFmZjtA9a8p1nU5L+4dnZWjVjgf1zXXeN9S/c+Ujkk8tjjvXBaXo2peMPEMOg6XILcsvm3NyRkQx56gdyegr7jA4XZI6pVFSp80is7M2c4x2FQPMQ4LDkd6950r9nrwRFaqt5bXd/OR81xPdPvJ9flIA/AVw/wASfgtJ4Qtjq2hXE91pinE9vO257cdmVupXPUHkda9mWDcY3OKlmkJy5GrHHWtyVGA3B6e9XBeF/l79cZ6+1c7BK67ew+tace91BB/+vXnVaKvc9WErks75kHBJ7Z7VNE0jD+nrWh4e8H6p4tvxaWDrawL81xduu7yh2VR3Y/kBya9Lt/2fvDz24FxqmuSzY5lF1s59QoGK2pYOVWN0cuJzOnQlyvVnlFvGkNx9oSILKOuOMiu48PawLpVV22kcfNWF48+H+s/DYJqK3r6voLOI5JZUAmtSTgF8cMpPGeMd6g0uYrKHQnj0rixmGlTdpnRh8RTxEOaB63bSF4cHB9CPSpq5q01af+z5FgaNZ1XKFxkNjtVLwZ8SbTxReyaXcQfZdRj3DYDlX29cehr5bMsvrSTrwV4rfyOKbUJ8r6nZUhpTSV4BZp+Hf+P2T/rmf5iijw9/x+yf9cz/ADFFfqnCf/Ivj6v8z53Mv47+RVvf+P24/wCujfzqGpr3/j9n/wCujfzqGvzPF/x5+r/M92l8C9BkyRyQukwDRupVlboQRgiuQ0jw1pHhG3uhpatGLltx3/MeBgAew9a6u6ikeP5c471A9vbQsvnkjjkHGK+kyem4U3y9dxJJvmZ5rrkEtwzuTljk49B2xVn4VBNK1nVjIAJpfJKn1QA9P+BZruJH0Q5LW8ZHdmPJqGDwtpOpzrdaZLcQXEfG9AGH0I7ivo8LV5J36DxUlUpcr0O7i1i2tLKS7u7iK3t4ULySysFVFHUknoKwdR8deGPGHhLWn0bWLLUo4bd0mETcoSpxlSAcHsehrj/iT4d1nWvBeo+H1hmmF2ihZ7fGVZWDDcpPKkjnBryrwV8L9X8Hi7ubyW5aW6iEMkYBVCu4Ng+vIFezPGUo0229ex4tLBVJ1FbYoPblWB2k8c1pWELSMF57da27fQwXZpVK/QcCtaHSINo2KT+FeBVxN1Y+shCyOk8D6zpvhnQbi81O9t7KATnfLM+0ZwAB7njpXo+ieINP1ywjvtMvoL21kztmgcMpI6j6+1fP3jX4e3PjLSktraaa2mhfzY9mShbGOR34rovgb4W1vwFol5p17FPPPdXRnZj8sSAKFGCTkk4yePSvYweKpexSbs0fN47C1HWckrpnqnjprO58Ga5DfANbvYzBwf8AcOPxzjHvXivh/SLgRRLKjZ8td3scc165qunf2nABqU+bVSHMKDCsQeNx7gelVTPZWyhLaKEKPzPvXHj6qqtJbI6sufsIvuzmbLT5rYI2zdjuR1FO0XwHpFj4lbX7VdlxscCFRhVZvvN9cdvetG/1Bt4MEiKM4bKbvy5qvaXy/bDA8s+QchlVcY/KvIr0m6coRla+jOyp+81a2OjpKiRQ3K3Ex+oX/Cl2yDpIG9mX/Cvia+HdKXK2TGVzW8Pf8fkn/XM/zFFJ4cLfbZMr/wAszyDx1FFfpvCf/Ivj6s+fzL+O/kU9QlC306gFn8xjtH17+lV283aWeYQr/s4/mf8ACp75XN7cBAIwZWJOMk81ALePOWXew/if5jX5timo4ib83+Z7tNe4vQzrl7VyxBnucDnBZ/1yFFcdqWsBJyiQfZwenQk49a7nUlP2R1TrjgV5Trt0TM4YBGzgg8nFfXZdL2lJM0pLS5ZutckHG4nHJIrqPBvixYtBiC8PvYSHHQ5//VXmpnDIzZ3H19qbper/ANlzPBKx+zyncrdlb39jXqQp22FUXMrHtv8AwlxJAZl9ye9DeIIZhhgGz6ivNY9UV41bzNw6Eg8H3q7FqaqNxYY9aynFsUacUed/GKTxFYeJpb4zTNpM5H2Zl/1cXAyhxwDnJ981W+FN54lv/FFtLazTLp8D7rt2z5TJ3X0JPp2r0241izmieCfy5UkG1o2XcG9sd6qafq9pbW62yxC1CZCxhNgX8K7FiH7Hk5NTL2H7zm5j0aHWYEACBQKtL4gVTtA/GvPU1RGOVkBBGOtSf2qAR8xrz+Vo3cFI9BfxBEYmDsChByD6VwQ1zfkA5QniqNzrBuEaKF927gsOw/xqtlIxznI7AU29LMcKPKal3qQSNpBn3A5zS6RqNjqFyhkkQO2B6E4+lc7PfiMHOR9Km8JWn23VDNlkwfvJ3+o6UpLlg5M120PU7ezVFBSaZfTEhI/I5qz5cg/5bk/VBUUHnxoNypJx1U7T+XT9amDk9UcflXwuKqc9RyRhFGp4cVheybnLfuz2HqKKd4e5vZOP+WZ/mKK/SuE/+RevV/mfP5l/HfyKt9/x+z/9dG/nUFTXv/H7P/10b+dQ1+ZYv+PP1f5nvUvgXoVdRTdayc4wCeK8S8TXltFcME3b5GOSxr22/ZxEVVQQwwSe1eG+LDsvriEqjnJ6d/8AGvp+HVJxfM9C47Mzra7GMEqR6irP2f7Uu0Fcds+lYUjrEoEYZfTnqavaffOhCPwQeOetfTzpvdFRfRltdKnj4gaWMnptOAfwrF16fVfDV7p2qXN3cTaYtwsd3AG6oe/8/wAcV2FlOsighjkdATUOuaXDrGm3Gn3BxHOm3d12nqG/AgGop13Ca5lp1FWpc8Go79D0/wAMadoksEF5p6288E4DRzxkMHB75qzqVz4Pv9OnubzU9KFvbyyRzSyTKvlurEMDk5yCDxXytZQ+K/Ckk9tYX9/p7BisiQSlVJ9QOn41gNot3JKcxO8rt3GWZj/M16scPDfm0PHnSrb8p6hps48Y+JtX1HSbi4s9EgcQWcQYr5mB98j1PXHuPSuog0rbhpJ5ZSP7zE1meDNI/sPRILLaDN9+Ujux5P8Ah+FdJGnUcn69K8bE1XOo+Xboeth4ezppS36jFCwwkKnAGMCqN1fiIN8w+neotRvipMCKzt2Vck/pXNzTzyS7JAy842+/uKmlQctWdCZbmvDcSbATg8deK67wnffZvKQpyp6g1xMKyBgdhTcO4rt/Clstyu7IJ9BxSxcVycqBrQ9KXXNPtLZZLu9t7cHtI4B/LrVJvH3hhW2nWbbP4/4V4T4+nlXWpopPMRomIIIxn6etc4olHzRkMD1GetebR4WpTXPOb17HnyxHK7H1/wCDda03V7uQ2F9b3OIiSI3yRyO3WivHf2cJ/O8X3/31xpzZB/66x0V9dlGAjg8OqMXdXZ4eOnzVbnsl9/x+z/8AXRv51FUt7/x+3H/XRv51DX4/i/48/V/mfRUvgXoZeuTtFako4UjnnuK8u1aO2a6DyQ/aHcnLFQB+Fej+JJVjtWJG7IIGa8yvru2tJhJOUMn8IPrxjrX2eVUuSjG3Y1g1bUym8N309tdzQaRLOIY2mIAC5wM8HGe3SuUtPFWnz2Er3tsscigGFoFC+Yc/db2xznrXcX/xGn0i2ee2lCuAVQYyAfXFeKTDeBls5O786+lwdJyi/aHFjK7jJezZ6TomsR6kGktY5EWIhWDOMEkdicc+1dFHOk4APXuD2rxeG4lh2xQvJt67SeAe5r0/RktbiKO3stQSe4jiG8qCM+p596zxeGUfeRWFxLn7r3Nqezhu12zwiXaMK4OGA9M+lQWuh2dtJ5scG1z/ABsdzfh6U5ItUhOzy1f3zipEi1WXgRpHnnLNk156VtObT1O7nlaxeR4oF6gCsvX/ABCul6dJfi3eeOMhSBlQST6jtTrq3a2hM9zOpXbuwPlFeaeLLuUXbSG6S4trgcRo5Pl+2K6cJh1Uld7I5MTW9nHTdl3VfGE93Zyf2e7WkkrDzsMclPQHrjPWu08A6RZavoME13qR+3FmLK6Z2jPyjPXpXjsWyPOzOOwJroNF1q509xsldVz2r0cTQ5qfJDQ5MJXaq88j2tfDKwjIMUqjoQORWxo9pFayoUQIc/hXDaD4tknVd7bmx94HArsNO1RLhgx5Ix0PIr56pTnB2ke9zRlHQ4v43aO1vrMGpQxgLLEofHHzDjJrz22mByU+VvQ9/rXtPxWsjqnheK4Enly2xDA4yGB4wf0rw+J8MY5FZXXuO1e1gpuVNeR4OIjyzPZ/2cBIfGWoSEKA2mtkA9/Njopn7NZz4w1BlclTpzcHnB82OivZo/CePifjPaL3/j9uP+ujfzqu5IU461Yvf+P24/66N/OqszbYya/EcRHmxMl/ef5n01P4F6HP6/G81tKi/eUcYPXivBvFmpzLfyB2434yOa9i8S659kh83eVVJQGwOgzzXlPxG0ctcS39ujNEWAdR/Cff296/Q8ujy2TFUbUdDz+/vJbgMrMSBnHtWaNw+Tmr7xknrmrFraKzBjgivoFJRRwSpubKdvp8zRiUuqhnVAOpOa9C8M6RbaNOk6TzSySKMliMAenHvWBDEsrxBR8kZzXQ2UzKflUKF5Ga4sVOUo2OzD0Iw16nZx3AfDA5OOnvUvnKFJYDI9qxLS+2qCqg5fGM1ZmnfMjZG1QAxPvXjOFmdlzK8TTRzW8kJO6NwVIrzC508R7l818DoOtek6pB57EZIJz0H+fauV1DSyNxU556GvVwc1GNjmrUoz1aOXNlt2SISVYcbj0PpVi3jKH5utWE2wMY2yUJ6HtTjFg5U7h9a73I41SUXdGhp969u4KnGK7jwvqrvcKi5LMe/NefW6szgbTya7bwtCLY+e3+swdmOx9a4cVGPLdnZSm9kej6xB9vsLmwcHEkBXb6kDtXgJRorth0KEqUbrnuK9vtbxnVGkcl93QnqK8e8T2BsPEF5tbAaUsAT2JzXPls9XEyx0LWZ6r+zeI28Z6gyghv7OYEdP8AlrHRUP7NRLeNdQYNwdMbj/trHRX0dH4T57EfGe133/H7cf8AXRv51l6jceXGeCfpWnff8ftx/wBdG/nXPeI5FS0YO5UH0Nfj9CkqmOlfo2/xPqKXwxXoeZeO777SkscUeGDADuTmuJGqXFkXtLqV920eW2Qdp6YPqK6LXYmvY1b7Qd+dxRf4fTJ+lclqOmyySb5JNzNznqa+/wAKlyqLCUL7GdeWzOzHyoy395OM/hUMFlKVDSfJGTtODj/9dXFt5AOW3quSMU+0THyncY85wecE13c1kZqBJboYgmz5wCfyrUt5MEsBxnNZyKYw2Dz0x9RVizcGPYv3x1yPasJq6N4o17WYzzfOmEBGT6VenuXGVMeQzHPP3ucg1mW7uI1STaDn71XJDuhCF1YgYJ/z9a45xVy0E0ZI3ljkEjBPrWZKiNKQRjIweeM1YBkJYM5IGOTVSWQMyg4Gev1rWnFoLGbc6fFNkhNp5zWZJZSwSDymO3txXRbixO4dMdD1NVbll6A9OMV1Qm9jKVNMgtLbbHuZgW9K6DSpN3zZKcYFY0EbOyiMn5uldDpqhoyDGVxjnGTWGJfu6m9KKR0FlcMz/M33cc1z3xF0lZIU1GJgCMBsjr+Vblm28iJyOBgMeMrVXxlEW8MXBBBEZGfcV5+Fk41lYjFwTpsu/syureNdRGCrf2Y2cdD+9joqH9l9ifG+pAn/AJhj/wDo2OivrqPwnyWJ+M931WIwajcISD85bj35rkvFUfn27REkDuaKK/KKMVHM6kVtzS/M+noO9OD8keaXkMDGdthIjA2jPUnjk1zF0BliihVAJIznNFFfZ0TeJmXMIWFnU44B/AnpVG2uWV3GMqTjHpRRXfDWLuZ1dGXLeQEtGwPBByO+KmjZoZGcYIPb8cUUVDHHYvrIWA/2f1qwrlC+5QT1zRRXPJGiFTl5F4BAzVOeMRvx2ooog9QZV8wKMYJFZtzI4nLZ+8elFFdVPczbNC2cAx4HzLyTiultWd0BU7QOw70UVx4rY6IF5CEw3OR1pfERQeGL0SgsGUKMDkE9DRRXFS/iR9TLEP3Gan7KOhSXOva1qnnIsEFotttxlyzuGz6YAT9aKKK+wo/Aj5DE/wARn//Z", "george": "data:image/jpeg;base64,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", "roof": "data:image/jpeg;base64,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", "jerry": "data:image/jpeg;base64,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", "ellen": "data:image/jpeg;base64,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"};
 
-/* ====== アプリ本体 ====== */
+/* ====== アプリ本体（習得モード＋チャレンジモード） ====== */
 (function(){
 "use strict";
-var ENG = window.SkCh;
-var GEN = ENG.SkChGEN;
-var makeRng = ENG.SkChMakeRng;
+var ENG = window.SkCh, GEN = ENG.SkChGEN, makeRng = ENG.SkChMakeRng;
 
-var PROBLEMS = ['p1_divcount','p2_kth','p3_divmod1','p4_gcd','p5_commondivcount','p6_divmod2',
+var PROBLEMS = [
+  'k1_mul','k1_div','k1_ceil','k1_change','k1_inverse',
+  'k2_order','k2_inv1','k2_inv2','k2_kufuu','k2_word',
+  'k3_straight','k3_round','k3_vertical','k3_parallel_co','k3_parallel_z',
+  'k4_wasa_fig','k4_wasa2','k4_avg','k4_wasa3',
+  'k6_kumi','k6_addsub','k6_unit','k6_unitcalc',
+  'k7_bunsu_int','k7_unitfrac','k7_kari_tai','k7_addsub','k7_inverse',
+  'k8_inner','k8_exterior','k8_iso',
+  'k9_rect','k9_para','k9_trap','k9_rhombus','k9_quad_angle',
+  'k11_right','k11_tri','k11_reverse',
+  'k12_both','k12_notboth','k12_circle','k12_number',
+  'k13_seq_nth','k13_seq_sum','k13_units','k13_weekday',
+  'k14_nth','k14_which','k14_sum','k14_odd',
+  'p1_divcount','p2_kth','p3_divmod1','p4_gcd','p5_commondivcount','p6_divmod2',
   'p7_multcount','p8_lcm','p9_commonmult3','p10_venn','p11_tsuru','p12_price','p13_card','p14_game',
   'p15_edges','p16_dice','p17_net','p18_tape','p19_pack','p20_stack','p21_average','p22_paint'];
 var LABELS = {
-  p1_divcount:'基本1-(1)｜約数の個数', p2_kth:'基本1-(2)｜大きい方から□番目の約数',
-  p3_divmod1:'基本1-(3)｜わると余る整数', p4_gcd:'基本1-(4)｜最大公約数（連除法）',
-  p5_commondivcount:'基本1-(5)｜公約数の個数', p6_divmod2:'基本1-(6)｜2数をわると余る整数',
-  p7_multcount:'基本2-(1)(2)｜範囲の中の倍数の個数', p8_lcm:'基本2-(3)｜最小公倍数（連除法）',
-  p9_commonmult3:'基本2-(4)｜公倍数を小さい順に3つ', p10_venn:'基本3／練習1｜倍数の個数（ベン図）',
-  p11_tsuru:'基本4-(1)｜つるかめ算', p12_price:'基本4-(2)｜代金のつるかめ算',
-  p13_card:'基本4-(3)｜カードならべ（つるかめ）', p14_game:'基本5｜得点ゲーム（つるかめ）',
-  p15_edges:'基本6-(1)｜直方体の辺の長さの合計', p16_dice:'基本6-(2)｜さいころの見える目',
-  p17_net:'基本7｜展開図と見取図', p18_tape:'練習2｜のりしろテープ',
-  p19_pack:'練習3-(1)｜立方体で詰める（最大公約数）', p20_stack:'練習3-(2)｜積んで立方体（最小公倍数）',
-  p21_average:'練習5｜表と平均（つるかめ）', p22_paint:'練習6｜積み木の色ぬり'
+  k1_mul:'第1回-1｜かけ算の文章題', k1_div:'第1回-2｜わり算（あまり）',
+  k1_ceil:'第1回-3｜わり算（何台必要）', k1_change:'第1回-4｜かけ算とわり算（おつり）',
+  k1_inverse:'第1回-5｜逆算',
+  k2_order:'第2回-1｜計算の順序', k2_inv1:'第2回-2｜逆算（基本）', k2_inv2:'第2回-3｜逆算（複合）',
+  k2_kufuu:'第2回-4｜計算のくふう', k2_word:'第2回-5｜文章の逆算',
+  k3_straight:'第3回-1｜1直線の角', k3_round:'第3回-2｜1回転の角', k3_vertical:'第3回-3｜対頂角・一直線',
+  k3_parallel_co:'第3回-4｜平行と角（同側内角）', k3_parallel_z:'第3回-5｜平行と角（補助線）',
+  k4_wasa_fig:'第4回-1｜和と差の線分図', k4_wasa2:'第4回-2｜和差算（2量）',
+  k4_avg:'第4回-3｜平均と和差算', k4_wasa3:'第4回-4｜和差算（3量）',
+  k6_kumi:'第6回-1｜小数のしくみ', k6_addsub:'第6回-2｜小数のたし算・ひき算',
+  k6_unit:'第6回-3｜単位の換算', k6_unitcalc:'第6回-4｜単位の計算',
+  k7_bunsu_int:'第7回-1｜分数の意味', k7_unitfrac:'第7回-2｜単位のついた分数',
+  k7_kari_tai:'第7回-3｜仮分数と帯分数', k7_addsub:'第7回-4｜同分母のたし算・ひき算', k7_inverse:'第7回-5｜分数の逆算',
+  k8_inner:'第8回-1｜三角形の内角の和', k8_exterior:'第8回-2｜三角形の外角の定理', k8_iso:'第8回-3｜二等辺三角形の角',
+  k9_rect:'第9回-1｜正方形・長方形の面積', k9_para:'第9回-2｜平行四辺形の面積', k9_trap:'第9回-3｜台形の面積',
+  k9_rhombus:'第9回-4｜ひし形の面積', k9_quad_angle:'第9回-5｜平行四辺形の角',
+  k11_right:'第11回-1｜直角三角形の面積', k11_tri:'第11回-2｜三角形の面積', k11_reverse:'第11回-3｜面積から長さを求める',
+  k12_both:'第12回-1｜植木算（両はし）', k12_notboth:'第12回-2｜植木算（両はしなし）',
+  k12_circle:'第12回-3｜植木算（まるく）', k12_number:'第12回-4｜植木算（番号）',
+  k13_seq_nth:'第13回-1｜周期（○番目）', k13_seq_sum:'第13回-2｜周期（和）',
+  k13_units:'第13回-3｜一の位の周期', k13_weekday:'第13回-4｜曜日の周期',
+  k14_nth:'第14回-1｜等差数列（□番目）', k14_which:'第14回-2｜等差数列（何番目）',
+  k14_sum:'第14回-3｜等差数列の和', k14_odd:'第14回-4｜奇数の和',
+  p1_divcount:'第16回-1｜約数の個数', p2_kth:'第16回-2｜大きい方から□番目の約数',
+  p3_divmod1:'第16回-3｜わると余る整数', p4_gcd:'第16回-4｜最大公約数（連除法）',
+  p5_commondivcount:'第16回-5｜公約数の個数', p6_divmod2:'第16回-6｜2数をわると余る整数',
+  p7_multcount:'第17回-1｜範囲の中の倍数の個数', p8_lcm:'第17回-2｜最小公倍数（連除法）',
+  p9_commonmult3:'第17回-3｜公倍数を小さい順に3つ', p10_venn:'第17回-4｜倍数の個数（ベン図）',
+  p11_tsuru:'第18回-1｜つるかめ算', p12_price:'第18回-2｜代金のつるかめ算',
+  p13_card:'第18回-3｜カードならべ（つるかめ）', p14_game:'第18回-4｜得点ゲーム（つるかめ）',
+  p18_tape:'第18回-5｜のりしろテープ', p21_average:'第18回-6｜表と平均（つるかめ）',
+  p15_edges:'第19回-1｜直方体の辺の長さの合計', p16_dice:'第19回-2｜さいころの見える目',
+  p17_net:'第19回-3｜展開図と見取図', p19_pack:'第19回-4｜立方体で詰める（最大公約数）',
+  p20_stack:'第19回-5｜積んで立方体（最小公倍数）', p22_paint:'第19回-6｜積み木の色ぬり'
 };
-// 各問題の「見分け方」：どのキーワードから、どの解法を使うかを端的に説明
 var APPROACH = {
+  k1_mul:'「1つ ○円 を △個」で「<b>代金は何円</b>」。同じ数のくり返し→<b>かけ算</b>（○×△）。',
+  k1_div:'「□mから ○mずつ切り取る」「<b>何本と何mあまる</b>」→<b>わり算</b>。商が本数、あまりがのこりです。',
+  k1_ceil:'「<b>少なくとも何台（箱）必要</b>」→わり算して、<b>あまりがあれば商に＋1</b>（切り上げ）。',
+  k1_change:'「○円さつを出しておつり△円」「2種類の代金」→合計→片方の代金→のこり、の順に<b>かけ算とわり算</b>で整理します。',
+  k1_inverse:'「まちがえて<b>わって</b>しまい、商・あまり」→<b>逆算</b>。「わる数×商＋あまり」でもとの数を出し、正しく計算し直します。',
+  k2_order:'四則（＋−×÷）とかっこがまざった計算→<b>かっこの中 → ×÷ → ＋−</b> の順に計算します。',
+  k2_inv1:'「□をふくむ式」→<b>逆算</b>。たし算↔ひき算、かけ算↔わり算の逆でもとします。',
+  k2_inv2:'□が式の中ほどにある→複合の<b>逆算</b>。かたまりを□とみて、うしろの計算から逆にほどきます。',
+  k2_kufuu:'「くふうして計算」→<b>結合・分配法則</b>（25×4＝100、共通の数でまとめる、99＝100−1 など）。',
+  k2_word:'文章の中の「ある数」を□とおいて式を作り、<b>逆算</b>でもとします。',
+  k3_straight:'「一直線の上の角」→<b>一直線は180°</b>。180からひきます。',
+  k3_round:'「ぐるっと1回転した角」→<b>1回転は360°</b>。360からひきます。',
+  k3_vertical:'「直線が1点で交わる」→<b>一直線は180°・対頂角は等しい</b>を使います。',
+  k3_parallel_co:'「平行な2直線＋横切る直線」→<b>同位角・さっ角は等しい／同側内角の和は180°</b>。',
+  k3_parallel_z:'「平行＋折れ線」→アを通る<b>平行な補助線</b>を引き、さっ角で上下に分けてたします。',
+  k4_wasa_fig:'「和と差がわかる」→<b>和差算</b>。線分図で大きい方にそろえ、（和＋差）÷2。',
+  k4_wasa2:'「合わせて○・△だけ多い」→<b>和差算</b>。（和−差）÷2 で小さい方。',
+  k4_avg:'「平均＋差」→まず<b>合計＝平均×人数</b>にしてから<b>和差算</b>。',
+  k4_wasa3:'「3人の合計＋それぞれの差」→<b>和差算（3量）</b>。いちばん少ない人にそろえて÷3。',
+  k6_kumi:'「1・0.1・0.01・0.001 が何個」→各位を合わせて小数にします。',
+  k6_addsub:'小数のたし算・ひき算→<b>位（小数点）をそろえて</b>計算します。',
+  k6_unit:'長さ・重さ・かさの単位換算→1km=1000m など、<b>小数点を動かして</b>なおします。',
+  k6_unitcalc:'ちがう単位のたし引き→<b>答えの単位にそろえてから</b>計算します。',
+  k7_bunsu_int:'「N の A/B」→<b>N÷B×A</b>（B等分の A個分）。残りは全体から引きます。',
+  k7_unitfrac:'「A/B kg・A/B時間」→「1○の A/B」。1○を単位になおして <b>÷B×A</b>。',
+  k7_kari_tai:'仮分数↔帯分数→「分子÷分母」（帯分数へ）／「整数×分母＋分子」（仮分数へ）。',
+  k7_addsub:'同分母の分数→<b>分母そのまま、分子どうし</b>を計算。仮分数は帯分数か整数に。',
+  k7_inverse:'「まちがえて引いた」→<b>逆算</b>で分数をたしてもとします。',
+  k8_inner:'三角形の3つの角→<b>内角の和は180°</b>。',
+  k8_exterior:'三角形の外側の角→<b>外角＝となりにない2つの内角の和</b>（外角の定理）。',
+  k8_iso:'印つき＝二等辺三角形→<b>2つの底角が等しい</b>。',
+  k9_rect:'正方形＝1辺×1辺、長方形＝たて×横。',
+  k9_para:'平行四辺形の面積＝<b>底辺×高さ</b>（ななめの辺は使いません）。',
+  k9_trap:'台形の面積＝<b>（上底＋下底）×高さ÷2</b>。',
+  k9_rhombus:'ひし形の面積＝<b>対角線×対角線÷2</b>。',
+  k9_quad_angle:'平行四辺形→<b>向かい合う角は等しい・となりの和は180°</b>。',
+  k11_right:'直角三角形の面積＝<b>直角をはさむ2辺×÷2</b>（＝底辺×高さ÷2）。',
+  k11_tri:'三角形の面積＝<b>底辺×高さ÷2</b>（底辺と高さは垂直）。',
+  k11_reverse:'「底辺×高さ÷2＝面積」を<b>逆算</b>して長さを求めます。',
+  k12_both:'まっすぐ・両はしに植える→<b>間の数＝木の数−1</b>。',
+  k12_notboth:'まっすぐ・両はしに植えない→<b>間の数＝木の数＋1</b>。',
+  k12_circle:'まるく植える→<b>間の数＝木の数</b>。',
+  k12_number:'番号は「間の数」だけふえる→<b>きょり＝間かく×番号の差</b>。',
+  k13_seq_nth:'くり返しの列→<b>周期算</b>。番目を周期でわり、あまりの場所を見ます。',
+  k13_seq_sum:'周期の和→<b>1周期の和×組数＋はんぱの和</b>。',
+  k13_units:'累乗の一の位→<b>一の位だけ</b>を調べると周期が見つかります。',
+  k13_weekday:'曜日→<b>7日周期</b>。日数の差を7でわったあまりだけ曜日がすすみます。',
+  k14_nth:'等差数列の□番目＝<b>はじめ＋公差×(□−1)</b>。',
+  k14_which:'何番目＝<b>(その数−はじめ)÷公差＋1</b>。',
+  k14_sum:'等差数列の和＝<b>（はじめ＋終わり）×個数÷2</b>。',
+  k14_odd:'1から順の奇数の和＝<b>□×□</b>（平方数）。',
   p1_divcount:'きかれているのは「約数は<b>何個</b>」。約数を <b>□×△＝その数</b> の組で全部書き出して数える、"約数の個数"の求め方を使います。',
   p2_kth:'テーマは「<b>大きい方から○番目の約数</b>」。約数を全部そろえて<b>大きい順に並べる</b>解法を使います。',
   p3_divmod1:'キーワードは「<b>わると□あまる</b>」。（その数−余り）が<b>わり切れる</b>→"約数"で考え、<b>余りより大きい</b>約数だけを選びます。',
@@ -1450,399 +2576,511 @@ var APPROACH = {
 var CUTIN_OK = ['すごい！','できた！','天才！','最高！','よく見た！','えらい！','完ぺき！','その調子！'];
 var NG_MSG = ['検算した？','検算した？','検算した？','おしい！','次いける！','大丈夫！'];
 var TO_MSG = ['どんまい！','次いける！','深呼吸！','大丈夫！','また挑戦！'];
-var N = PROBLEMS.length;
-var KEY = 'sk_ch_v20';
-var MAX_CHECK = 2;         // 答え合わせは2回まで
-var TIME_LIMIT = 300;      // 制限時間5分
 var CHARS = ['mabel','george','roof','jerry','ellen'];
 var CHAR_IMG = window.SkChChars || {};
+var N = PROBLEMS.length;
+var KEY = 'sk_ch_v30';
+var MAX_CHECK = 2;
+var Q_LIMIT = 300;                 // 1問の制限（習得モード）5分
+var DAY = 86400000;
+var SRS = [1,3,7,14];              // 習得後：1日後・3日後・1週間後・その後2週間ごと
+var DAILY_SEC = 2*3600;           // 1日の制限 2時間
+var CH_LIMIT_MS = 2*3600*1000;    // チャレンジ 2時間
 
-/* ---- 状態 ---- */
-var state = load();
-var stats = state.stats;   // { key:{a:挑戦数, c:正解数, t:合計秒} }
-var streak = 0, wrongStreak = 0, hintStage = 0, checkCount = 0;
-var current = null, currentKey = null, answered = false, timedOut = false, transitioning = false, cutinBusy = false, pendingAdvance = false;
-var recent = {};
-var timer = null, timeLeft = 180, cutinTimer = null;
+/* ---- データ ---- */
+var data = load();
+function load(){
+  try{ var d=JSON.parse(localStorage.getItem(KEY)); if(d&&d.srs){ return norm(d); } }catch(e){}
+  return norm({});
+}
+function norm(d){ d.srs=d.srs||{}; d.stats=d.stats||{}; d.mDaily=d.mDaily||{}; d.challenge=d.challenge||{best:null,history:[]}; d.menu=d.menu||null; return d; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){} }
+function ensureSrs(k){ if(!data.srs[k]) data.srs[k]={status:'new',stage:0,due:0,low:false,high:false}; return data.srs[k]; }
+function ensureStat(k){ if(!data.stats[k]) data.stats[k]={a:0,c:0,t:0}; return data.stats[k]; }
+function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function dayRec(){ var t=todayStr(); if(!data.mDaily[t]) data.mDaily[t]={learned:0,reviews:0,correct:0,attempts:0,timeSec:0}; return data.mDaily[t]; }
+function masteredCount(){ var c=0; PROBLEMS.forEach(function(k){ if(data.srs[k]&&data.srs[k].status==='mastered')c++; }); return c; }
+function dueCount(){ var now=Date.now(),c=0; PROBLEMS.forEach(function(k){ var s=data.srs[k]; if(s&&s.status==='mastered'&&s.due<=now)c++; }); return c; }
 
 /* ---- DOM ---- */
-var $ = function(id){return document.getElementById(id);};
-var qcard=$('qcard'), qnum=$('qnum'), difftag=$('difftag'), qtitle=$('qtitle'),
-    figs=$('figs'), stem=$('stem'), fields=$('fields'), feedback=$('feedback'), attemptsEl=$('attempts'),
-    hintarea=$('hintarea'), solarea=$('solarea'), timerEl=$('timer'),
-    btnHint=$('btnHint'), btnSol=$('btnSol'), btnReveal=$('btnReveal'),
-    btnCheck=$('btnCheck'), btnNext=$('btnNext'), btnReset=$('btnReset'),
-    cutinEl=$('cutin'), cutinTxt=$('cutinTxt'), cutinChar=$('cutinChar'),
-    sidebar=$('sidebar'), scrim=$('scrim'), drawerToggle=$('drawerToggle');
+var $=function(id){return document.getElementById(id);};
+var qcard=$('qcard'),qnum=$('qnum'),difftag=$('difftag'),qtitle=$('qtitle'),figs=$('figs'),stem=$('stem'),
+    fields=$('fields'),feedback=$('feedback'),attemptsEl=$('attempts'),hintarea=$('hintarea'),solarea=$('solarea'),
+    timerEl=$('timer'),topbar=$('topbar'),streakBox=$('streakBox'),
+    btnHint=$('btnHint'),btnSol=$('btnSol'),btnReveal=$('btnReveal'),btnCheck=$('btnCheck'),btnNext=$('btnNext'),btnSkip=$('btnSkip'),
+    btnReset=$('btnReset'),cutinEl=$('cutin'),cutinTxt=$('cutinTxt'),cutinChar=$('cutinChar'),
+    sidebar=$('sidebar'),scrim=$('scrim'),drawerToggle=$('drawerToggle'),
+    chHeader=$('chHeader'),chRemainEl=$('chRemain'),chRemainBox=$('chRemainBox'),chBestEl=$('chBest'),chBar=$('chBar'),chProgTxt=$('chProgTxt');
 
-/* ---- 永続化 ---- */
-function load(){
-  try{
-    var s = JSON.parse(localStorage.getItem(KEY));
-    if(s && typeof s.pi==='number' && s.pi>=0 && s.pi<N && (s.diff==='low'||s.diff==='high')){
-      s.cleared = s.cleared || {}; s.stats = s.stats || {}; return s;
-    }
-  }catch(e){}
-  return {pi:0, diff:'low', cleared:{}, stats:{}};
-}
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify({pi:state.pi, diff:state.diff, cleared:state.cleared, stats:stats})); }catch(e){} }
-function ensureCleared(k){ if(!state.cleared[k]) state.cleared[k]={low:false,high:false}; return state.cleared[k]; }
-function ensureStat(k){ if(!stats[k]) stats[k]={a:0,c:0,t:0}; return stats[k]; }
-function recordStat(key, correct){
-  var st = ensureStat(key);
-  st.a += 1; if(correct) st.c += 1;
-  st.t += (TIME_LIMIT - timeLeft);   // かかった秒
-  save();
-}
-function fmtTime(sec){ var m=Math.floor(sec/60), s=Math.round(sec%60); return m+':'+(s<10?'0':'')+s; }
+/* ---- ランタイム ---- */
+var view='home', mode=null;
+var current=null,currentKey=null,answered=false,timedOut=false,checkCount=0,cutinBusy=false,transitioning=false;
+var streak=0,hintStage=0,mDiff='low',mKind='learn',pendingAdvance=false;
+var chRemaining=[],chSolved=0,chSkips=0,chTotal=0,chActive=false,chRemainMs=0,chTimer=null;
+var qStartMs=0,timer=null,timeLeft=0,cutinTimer=null,recentSig={};
 
-/* ---- 左メニュー ---- */
-function renderSidebar(){
-  var full=0, lowOnly=0, html='';
-  PROBLEMS.forEach(function(k,i){
-    var c=state.cleared[k]||{};
-    var status, cls;
-    if(c.high){ full++; status='クリア'; cls='b-full'; }
-    else if(c.low){ lowOnly++; status='低クリア'; cls='b-low'; }
-    else { status='みクリア'; cls='b-none'; }
-    var tag = LABELS[k].split('｜')[0], theme = LABELS[k].split('｜')[1];
-    var st = stats[k];
-    var statLine;
-    if(st && st.a>0){
-      var rate = Math.round(st.c/st.a*100);
-      var rc = rate>=80?'g':(rate>=50?'o':'r');
-      statLine = '正答率 <span class="rate '+rc+'">'+rate+'%</span>（'+st.c+'/'+st.a+'）・平均 '+fmtTime(st.t/st.a);
-    }else{
-      statLine = '<span style="color:#c2c2cc;">まだ挑戦していません</span>';
-    }
-    html += '<button class="prob-item'+(i===state.pi?' cur':'')+'" data-i="'+i+'">'+
-      '<span class="pi-no">'+(i+1)+'</span>'+
-      '<span class="pi-txt"><b>'+theme+'</b><small>'+tag+'</small>'+
-        '<div class="pi-stats">'+statLine+'</div></span>'+
-      '<span class="pi-badge '+cls+'">'+status+'</span></button>';
-  });
-  $('probList').innerHTML = html;
-  $('fracNum').textContent = full;
-  $('fracDen').textContent = N;
-  $('pbarfill').style.width = Math.round(full/N*100)+'%';
-  $('lowNote').textContent = lowOnly>0 ? ('低クリアのみ '+lowOnly+' 問') : '';
-  Array.prototype.forEach.call(document.querySelectorAll('.prob-item'), function(btn){
-    btn.onclick = function(){ jumpTo(parseInt(btn.getAttribute('data-i'),10)); };
-  });
+/* ============ ルーター ============ */
+function showView(v){
+  view=v;
+  $('homeView').style.display = v==='home'?'':'none';
+  $('playView').style.display = (v==='mastery'||v==='challenge')?'':'none';
+  $('recordsView').style.display = v==='records'?'':'none';
+  Array.prototype.forEach.call(document.querySelectorAll('.navbtn'),function(b){ b.classList.toggle('active', b.getAttribute('data-view')===v); });
+  if(v!=='mastery'&&v!=='challenge') clearTimer();
+  if(v!=='challenge'){ stopChTimer(); chActive=false; }
 }
-function jumpTo(i){
-  if(window.innerWidth<=860) setMenu(false);
-  if(i===state.pi){ return; }
-  var c = state.cleared[PROBLEMS[i]] || {};
-  state.pi = i;
-  state.diff = (!c.low) ? 'low' : (!c.high ? 'high' : 'low');
-  streak=0; wrongStreak=0; save();
-  renderQuestion();
+function goHome(){ showView('home'); renderHome(); }
+function goRecords(){ showView('records'); renderRecords(); }
+
+/* ============ ホーム ============ */
+function renderHome(){
+  var mc=masteredCount(), dc=dueCount();
+  $('homeHero').textContent = '全'+N+'解法（予習シリーズ4年上）。毎日つづけて完全定着させよう！';
+  $('masteryStat').innerHTML = '習得 <b>'+mc+'</b> / '+N+' 解法　・　今日の復習まち <b>'+dc+'</b> 件';
+  var ch=data.challenge;
+  $('challengeStat').innerHTML = ch.best!=null
+    ? 'ベスト記録 <b>'+fmtHMS(ch.best)+'</b>　（前回 '+(ch.history[0]?fmtHMS(ch.history[0].ms)+'／'+ch.history[0].solved+'問':'-')+'）'
+    : 'まだ記録はありません。さいしょの記録を作ろう！';
 }
-/* ---- 左メニュー開閉 ---- */
-var menuOpen = true;
-function applyMenu(){
-  document.body.classList.toggle('menu-open', menuOpen);
-  document.body.classList.toggle('menu-closed', !menuOpen);
-  drawerToggle.textContent = menuOpen ? '✕ メニューをとじる' : '☰ もんだい一覧';
-  try{ localStorage.setItem('sk_ch_menu', menuOpen?'open':'closed'); }catch(e){}
-}
-function setMenu(o){ menuOpen=o; applyMenu(); }
-function toggleMenu(){ setMenu(!menuOpen); }
-function initMenu(){
-  try{ var mm=localStorage.getItem('sk_ch_menu'); menuOpen = mm ? (mm==='open') : (window.innerWidth>860); }
-  catch(e){ menuOpen = window.innerWidth>860; }
+
+/* ============ 習得モード ============ */
+function enterMastery(){
+  mode='mastery'; showView('mastery');
+  chHeader.style.display='none';
+  topbar.style.display='';
+  sidebar.style.display='';
+  drawerToggle.style.display='';
+  btnSkip.style.display='none';
+  $('sideH').textContent='習得の状況';
   applyMenu();
+  nextMasteryItem();
+}
+function pickMastery(){
+  var now=Date.now(), due=null, dt=Infinity;
+  PROBLEMS.forEach(function(k){ var s=data.srs[k]; if(s&&s.status==='mastered'&&s.due<=now&&s.due<dt){due=k;dt=s.due;} });
+  if(due) return {key:due,kind:'review'};
+  for(var i=0;i<PROBLEMS.length;i++){ var k=PROBLEMS[i]; var s=data.srs[k]; if(!s||s.status!=='mastered') return {key:k,kind:'learn'}; }
+  return null;
+}
+function nextMasteryItem(){
+  if(dayRec().timeSec>=DAILY_SEC){ masteryDone('今日の学習時間（2時間）がおわりました。よくがんばったね！また明日つづきをしよう。'); return; }
+  var p=pickMastery();
+  if(!p){ masteryDone(masteryDoneMsg()); return; }
+  currentKey=p.key; mKind=p.kind;
+  var s=ensureSrs(currentKey);
+  if(mKind==='learn'){ mDiff = s.low ? 'high' : 'low'; streak=0; }
+  else { mDiff='high'; }
+  current=genInstance(currentKey);
+  renderCard();
+  startTimer();
+}
+function masteryDoneMsg(){
+  var now=Date.now(), next=Infinity;
+  PROBLEMS.forEach(function(k){ var s=data.srs[k]; if(s&&s.status==='mastered'&&s.due>now&&s.due<next) next=s.due; });
+  if(next===Infinity) return 'すべての解法を習得しました！すごい！🎉';
+  var d=new Date(next); return 'いまの分はすべて習得＆復習ずみ！つぎの復習は '+(d.getMonth()+1)+'月'+d.getDate()+'日ごろに出てきます。';
+}
+function masteryDone(msg){
+  clearTimer();
+  qcard.className='card mode-high';
+  qcard.innerHTML='<div class="done"><h2>📚 今日はここまで</h2><p>'+msg+'</p>'+
+    '<div style="margin-top:14px;"><button class="b b-check" id="mHome">ホームへ</button> <button class="b b-next" id="mRec">きろくを見る</button></div></div>';
+  $('mHome').onclick=goHome; $('mRec').onclick=goRecords;
+  renderSidebar(); renderHome();
+}
+function advanceLearn(){
+  var s=ensureSrs(currentKey);
+  if(mDiff==='low'){ s.low=true; save(); mDiff='high'; streak=0; current=genInstance(currentKey); renderCard(); startTimer(); }
+  else {
+    s.low=true; s.high=true; s.status='mastered'; s.stage=0; s.due=Date.now()+SRS[0]*DAY;
+    dayRec().learned++; save();
+    nextMasteryItem();
+  }
+}
+function passReview(passed){
+  var s=ensureSrs(currentKey);
+  if(passed){ s.stage=(s.stage||0)+1; s.due=Date.now()+SRS[Math.min(s.stage,SRS.length-1)]*DAY; }
+  else { s.stage=0; s.due=Date.now()+SRS[0]*DAY; }
+  dayRec().reviews++; save();
 }
 
-/* ---- 問題生成（検算内蔵＋sig重複回避） ---- */
+/* ============ チャレンジモード ============ */
+function enterChallenge(){
+  mode='challenge'; showView('challenge');
+  topbar.style.display='none';
+  sidebar.style.display='none';
+  drawerToggle.style.display='none';
+  setMenu(false);
+  chHeader.style.display='';
+  btnHint.style.display='none'; btnSol.style.display='none'; btnNext.style.display='none';
+  btnSkip.style.display='';
+  startChallenge();
+}
+function startChallenge(){
+  chRemaining=PROBLEMS.slice(); chSolved=0; chSkips=0; chTotal=N; chActive=true; chRemainMs=CH_LIMIT_MS;
+  chBestEl.textContent = data.challenge.best!=null ? fmtHMS(data.challenge.best) : '--:--';
+  startChTimer();
+  updateChProg();
+  nextChallengeItem();
+}
+function nextChallengeItem(){
+  if(!chActive) return;
+  if(chRemaining.length===0){ finishChallenge(true); return; }
+  currentKey=chRemaining[0];
+  current=genInstance(currentKey);
+  renderCard();
+  updateChProg();
+}
+function updateChProg(){
+  chBar.style.width=Math.round(chSolved/chTotal*100)+'%';
+  chProgTxt.textContent=chSolved+' / '+chTotal+' 解いた'+(chSkips?('　（スキップ '+chSkips+'）'):'');
+}
+function finishChallenge(completed){
+  chActive=false; stopChTimer();
+  var elapsed=CH_LIMIT_MS-chRemainMs;
+  var rec={date:todayStr(), ms:elapsed, solved:chSolved, total:chTotal, skips:chSkips, completed:completed};
+  data.challenge.history.unshift(rec);
+  var isBest=false;
+  if(completed && (data.challenge.best==null || elapsed<data.challenge.best)){ data.challenge.best=elapsed; isBest=true; }
+  save();
+  var head = completed ? (isBest?'🏆 新記録！':'⚡ クリア！') : '⏰ 時間切れ';
+  qcard.className='card mode-high';
+  qcard.innerHTML='<div class="done"><h2>'+head+'</h2>'+
+    '<div style="font-family:Hachi Maru Pop,cursive;font-size:40px;color:#1f6fb0;margin:6px 0;">'+fmtHMS(elapsed)+'</div>'+
+    '<p>'+chSolved+' / '+chTotal+' 問クリア　（スキップ '+chSkips+'）<br>'+
+    (data.challenge.best!=null?'ベスト記録：'+fmtHMS(data.challenge.best):'')+'</p>'+
+    '<div style="margin-top:14px;"><button class="b b-check" id="cAgain">もう一度</button> <button class="b b-skip" id="cHome">ホーム</button> <button class="b b-next" id="cRec">きろく</button></div></div>';
+  $('cAgain').onclick=function(){ enterChallenge(); };
+  $('cHome').onclick=goHome;
+  $('cRec').onclick=goRecords;
+  if(isBest) showCutin('新記録！');
+  renderHome();
+}
+function startChTimer(){ stopChTimer(); paintChRemain(); chTimer=setInterval(function(){ chRemainMs-=1000; if(chRemainMs<=0){chRemainMs=0;paintChRemain();stopChTimer();finishChallenge(false);return;} paintChRemain(); },1000); }
+function stopChTimer(){ if(chTimer){ clearInterval(chTimer); chTimer=null; } }
+function paintChRemain(){
+  chRemainEl.textContent=fmtHMS(chRemainMs);
+  var s=chRemainMs/1000;
+  chRemainBox.className='bigtime remain'+(s<=300?' danger':(s<=1800?' warn':''));
+}
+
+/* ============ 共通：カード描画 ============ */
 function genInstance(key){
-  var arr = recent[key] || (recent[key]=[]);
-  var prev = arr.length ? arr[arr.length-1] : null;
-  var best=null;
+  var arr=recentSig[key]||(recentSig[key]=[]);
+  var prev=arr.length?arr[arr.length-1]:null, best=null;
   for(var t=0;t<80;t++){
-    var seed = ((Math.random()*0x7fffffff)|0) ^ (Date.now() & 0xffff) ^ (t*2654435761);
-    var p;
-    try{ p = GEN[key](makeRng(seed>>>0)); }catch(e){ continue; }
+    var seed=((Math.random()*0x7fffffff)|0)^(Date.now()&0xffff)^(t*2654435761);
+    var p; try{ p=GEN[key](makeRng(seed>>>0)); }catch(e){ continue; }
     if(p.sig===prev) continue;
     if(arr.indexOf(p.sig)!==-1){ best=best||p; continue; }
-    arr.push(p.sig); if(arr.length>10) arr.shift();
-    return p;
+    arr.push(p.sig); if(arr.length>10)arr.shift(); return p;
   }
-  if(best){ arr.push(best.sig); if(arr.length>10) arr.shift(); return best; }
+  if(best){ arr.push(best.sig); if(arr.length>10)arr.shift(); return best; }
   return GEN[key](makeRng((Math.random()*1e9)>>>0));
 }
-
-/* ---- 描画 ---- */
-function renderQuestion(){
-  var key = PROBLEMS[state.pi];
-  currentKey = key;
-  current = genInstance(key);
-  answered=false; timedOut=false; hintStage=0; checkCount=0; pendingAdvance=false;
-  qcard.className = 'card ' + (state.diff==='low'?'mode-low':'mode-high');
-  qnum.textContent = '問題 ' + (state.pi+1) + ' / ' + N;
-  difftag.textContent = '難易度：' + (state.diff==='low'?'低（支援あり）':'高（支援なし）');
-  difftag.className = 'pill ' + (state.diff==='low'?'diff-low':'diff-high');
-  qtitle.textContent = LABELS[key];
-  figs.innerHTML = current.svg || '';
-  stem.innerHTML = current.stem;
+function renderCard(){
+  answered=false; timedOut=false; hintStage=0; checkCount=0; pendingAdvance=false; qStartMs=Date.now();
+  var key=currentKey;
+  var supportLow=(mode==='mastery'&&mKind==='learn'&&mDiff==='low');
+  qcard.className='card '+(supportLow?'mode-low':'mode-high');
+  if(mode==='mastery'){
+    qnum.style.display=''; difftag.style.display=''; timerEl.style.display='';
+    qnum.textContent = mKind==='review' ? '🔁 復習' : ('問題 '+(PROBLEMS.indexOf(key)+1)+' / '+N);
+    difftag.textContent = mKind==='review' ? '復習（間かくをあけて定着）' : ('難易度：'+(mDiff==='low'?'低（支援あり）':'高（支援なし）'));
+    difftag.className='pill '+(mKind==='review'?'diff-high':(mDiff==='low'?'diff-low':'diff-high'));
+    streakBox.style.display=(mKind==='learn')?'':'none';
+  }
+  qtitle.textContent=LABELS[key];
+  figs.innerHTML=current.svg||'';
+  stem.innerHTML=current.stem;
   fields.innerHTML='';
   current.fields.forEach(function(f,i){
     var wrap=document.createElement('div'); wrap.className='field';
-    var lab = f.label ? '<label>'+f.label+'</label>' : '';
-    var ph = (f.type==='set')?'例）2，4，8':(f.type==='setstr')?'例）ア，カ':(f.type==='str')?'例）A':'';
-    wrap.innerHTML = lab + '<input id="f'+i+'" type="text" inputmode="'+((f.type==='int'||f.type==='set')?'numeric':'text')+'" autocomplete="off" placeholder="'+ph+'">' + (f.unit?'<span class="unit">'+f.unit+'</span>':'');
+    var lab=f.label?'<label>'+f.label+'</label>':'';
+    var ph=(f.type==='set')?'例）2，4，8':(f.type==='setstr')?'例）ア，カ':(f.type==='str')?'例）A':(f.type==='frac')?'例）1 3/4 か 7/4':(f.type==='dec')?'例）3.5':'';
+    wrap.innerHTML=lab+'<input id="f'+i+'" type="text" inputmode="'+((f.type==='int'||f.type==='set')?'numeric':'text')+'" autocomplete="off" placeholder="'+ph+'">'+(f.unit?'<span class="unit">'+f.unit+'</span>':'');
     fields.appendChild(wrap);
   });
-  Array.prototype.forEach.call(fields.querySelectorAll('input'), function(inp){
-    inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); onCheck(); }});
-  });
+  Array.prototype.forEach.call(fields.querySelectorAll('input'),function(inp){ inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); onCheck(); }}); });
   feedback.textContent=''; feedback.className='feedback';
-  attemptsEl.textContent = '答え合わせ：あと '+MAX_CHECK+' 回';
+  attemptsEl.textContent='答え合わせ：あと '+MAX_CHECK+' 回';
   hintarea.innerHTML=''; solarea.innerHTML='';
-  var low = (state.diff==='low');
-  btnHint.style.display = low?'':'none';
-  btnSol.style.display = low?'':'none';
-  btnReveal.style.display = 'none';   // 解法は結果表示時に自動で出すため不要
-  btnHint.disabled=false; btnSol.disabled=false;
-  btnCheck.disabled=false;
-  btnNext.disabled=false; btnNext.style.display='none';  // 次へは「正解／2回不正解／時間切れ」で出現
+  btnHint.style.display=supportLow?'':'none';
+  btnSol.style.display=supportLow?'':'none';
+  btnReveal.style.display='none';
+  btnHint.disabled=false; btnSol.disabled=false; btnCheck.disabled=false;
+  if(mode==='challenge'){ btnNext.style.display='none'; btnSkip.style.display=''; }
+  else { btnSkip.style.display='none'; btnNext.style.display='none'; }
   updateStreakDots();
-  renderSidebar();
-  startTimer();
-  save();
+  if(mode==='mastery') renderSidebar();
   var f0=$('f0'); if(f0) f0.focus();
 }
-function updateStreakDots(){ for(var i=0;i<3;i++){ $('d'+i).className = 'dot' + (i<streak?' on':''); } }
+function updateStreakDots(){ for(var i=0;i<3;i++){ $('d'+i).className='dot'+(i<streak&&mKind==='learn'?' on':''); } }
 
-/* ---- タイマー ---- */
-function startTimer(){
-  clearTimer(); timeLeft=TIME_LIMIT; paintTimer();
-  timer = setInterval(function(){ timeLeft--; paintTimer(); if(timeLeft<=0){ clearTimer(); onTimeout(); } },1000);
-}
+/* ---- タイマー（習得モードの1問5分） ---- */
+function startTimer(){ if(mode!=='mastery'){return;} clearTimer(); timeLeft=Q_LIMIT; paintTimer(); timer=setInterval(function(){ timeLeft--; paintTimer(); if(timeLeft<=0){ clearTimer(); onTimeout(); } },1000); }
 function clearTimer(){ if(timer){ clearInterval(timer); timer=null; } }
-function paintTimer(){
-  var m=Math.floor(timeLeft/60), s=timeLeft%60;
-  timerEl.textContent = m+':'+(s<10?'0':'')+s;
-  // 余裕あり=緑 / 半分以下=オレンジ / 残り30秒以下=赤
-  timerEl.className='timer '+(timeLeft<=30?'red':(timeLeft<=TIME_LIMIT/2?'orange':'green'));
-}
+function paintTimer(){ var m=Math.floor(timeLeft/60),s=timeLeft%60; timerEl.textContent=m+':'+(s<10?'0':'')+s; timerEl.className='timer '+(timeLeft<=30?'red':(timeLeft<=Q_LIMIT/2?'orange':'green')); }
 function showNext(){ btnNext.style.display=''; }
 
 /* ---- 採点 ---- */
-function z2h(s){
-  return String(s).replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);})
-                  .replace(/[Ａ-Ｚａ-ｚ]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);});
+function z2h(s){ return String(s).replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);}).replace(/[Ａ-Ｚａ-ｚ]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);}); }
+function setEq(a,b){ if(a.length!==b.length)return false; var A=a.slice().sort(),B=b.slice().sort(); for(var i=0;i<A.length;i++){ if(A[i]!==B[i])return false; } return true; }
+// 帯分数「a b/c」・仮分数「b/c」・整数「n」を [分子,分母] に
+function parseFrac(raw){
+  var s=z2h(raw==null?'':raw).trim().replace(/\s+/g,' ').replace(/[／]/g,'/');
+  var m;
+  if(m=s.match(/^(\d+)\s+(\d+)\/(\d+)$/)) return [parseInt(m[1],10)*parseInt(m[3],10)+parseInt(m[2],10), parseInt(m[3],10)];
+  if(m=s.match(/^(\d+)\/(\d+)$/)) return [parseInt(m[1],10), parseInt(m[2],10)];
+  if(m=s.match(/^(\d+)$/)) return [parseInt(m[1],10), 1];
+  return null;
 }
-function setEq(a,b){ if(a.length!==b.length) return false; var A=a.slice().sort(),B=b.slice().sort(); for(var i=0;i<A.length;i++){ if(A[i]!==B[i]) return false; } return true; }
 function gradeField(f,raw){
-  var v = z2h(raw==null?'':raw).replace(/\s/g,'').trim();
-  if(v==='') return false;
-  if(f.type==='int'){ return /^-?\d+$/.test(v) && parseInt(v,10)===f.answer; }
-  if(f.type==='set'){
-    var toks = v.split(/[,，、]+/).filter(Boolean);
-    if(!toks.every(function(t){return /^-?\d+$/.test(t);})) return false;
-    var nums = toks.map(function(t){return parseInt(t,10);});
-    nums = nums.filter(function(x,i){return nums.indexOf(x)===i;});
-    return setEq(nums, String(f.answer).split(',').map(Number));
-  }
-  if(f.type==='str'){ return v.toUpperCase()===String(f.answer).toUpperCase(); }
-  if(f.type==='setstr'){
-    var t2 = v.split(/[,，、]+/).filter(Boolean);
-    t2 = t2.filter(function(x,i){return t2.indexOf(x)===i;});
-    return setEq(t2, String(f.answer).split(','));
-  }
+  var v=z2h(raw==null?'':raw).replace(/\s/g,'').trim(); if(v==='')return false;
+  if(f.type==='int') return /^-?\d+$/.test(v)&&parseInt(v,10)===f.answer;
+  if(f.type==='dec'){ if(!/^-?\d*\.?\d+$/.test(v))return false; var num=parseFloat(v); return isFinite(num)&&Math.abs(num-parseFloat(f.answer))<1e-9; }
+  if(f.type==='frac'){ var a=parseFrac(raw), b=parseFrac(f.answer); if(!a||!b||a[1]===0||b[1]===0)return false; return a[0]*b[1]===b[0]*a[1]; }
+  if(f.type==='set'){ var t=v.split(/[,，、]+/).filter(Boolean); if(!t.every(function(x){return /^-?\d+$/.test(x);}))return false; var nums=t.map(function(x){return parseInt(x,10);}); nums=nums.filter(function(x,i){return nums.indexOf(x)===i;}); return setEq(nums,String(f.answer).split(',').map(Number)); }
+  if(f.type==='str'){ var vv=v.replace(/曜日?$/,''); return vv.toUpperCase()===String(f.answer).toUpperCase(); }
+  if(f.type==='setstr'){ var t2=v.split(/[,，、]+/).filter(Boolean); t2=t2.filter(function(x,i){return t2.indexOf(x)===i;}); return setEq(t2,String(f.answer).split(',')); }
   return false;
 }
+function gradeAll(){ return current.fields.every(function(f,i){ var inp=$('f'+i); return gradeField(f,inp?inp.value:''); }); }
+function recordSolve(correct){
+  var st=ensureStat(currentKey); st.a++; if(correct)st.c++;
+  var spent=Math.min(Q_LIMIT,Math.max(1,Math.round((Date.now()-qStartMs)/1000)));
+  st.t+=spent;
+  if(mode==='mastery'){ var dr=dayRec(); dr.attempts++; if(correct)dr.correct++; dr.timeSec+=spent; }
+  save();
+}
+
 function onCheck(){
-  if(answered || timedOut || cutinBusy || btnCheck.disabled) return;
+  if(answered||timedOut||cutinBusy||btnCheck.disabled) return;
   checkCount++;
-  var allOk = current.fields.every(function(f,i){ var inp=$('f'+i); return gradeField(f, inp?inp.value:''); });
-  if(allOk){
-    clearTimer(); answered=true; btnCheck.disabled=true;
-    recordStat(currentKey, true);
-    streak++; updateStreakDots(); renderSidebar();
-    feedback.textContent='せいかい！'; feedback.className='feedback ok';
-    attemptsEl.textContent='';
-    pendingAdvance = (streak>=3);           // 3連続なら次で進級／クリア
-    showSolution();                          // 正解でも解法を表示
-    showNext();
-    var word = pendingAdvance ? (state.diff==='low'?'レベルアップ！':'クリア！') : CUTIN_OK[(Math.random()*CUTIN_OK.length)|0];
-    showCutin(word);
+  var ok=gradeAll();
+  if(mode==='challenge') return onCheckChallenge(ok);
+  return onCheckMastery(ok);
+}
+function onCheckMastery(ok){
+  if(ok){
+    clearTimer(); answered=true; btnCheck.disabled=true; recordSolve(true);
+    feedback.textContent='せいかい！'; feedback.className='feedback ok'; attemptsEl.textContent='';
+    if(mKind==='review'){
+      passReview(true); showSolution(); showNext(); showCutin(CUTIN_OK[(Math.random()*CUTIN_OK.length)|0]);
+    } else {
+      streak++; updateStreakDots(); pendingAdvance=(streak>=3);
+      showSolution(); showNext();
+      showCutin(pendingAdvance?(mDiff==='low'?'レベルアップ！':'習得！'):CUTIN_OK[(Math.random()*CUTIN_OK.length)|0]);
+    }
+    renderSidebar(); renderHome();
     return;
   }
-  // 不正解
-  var remain = MAX_CHECK - checkCount;
-  if(remain > 0){
-    // まだチャンスあり。タイマーは止めない。次へ・解法はまだ出さない。
-    feedback.textContent = '検算した？（あと '+remain+' 回）'; feedback.className='feedback ng';
-    attemptsEl.textContent = '答え合わせ：あと '+remain+' 回';
-    btnCheck.disabled=true;
-    setTimeout(function(){ if(!answered && !timedOut) btnCheck.disabled=false; }, 550);
-  }else{
-    // 2回使い切って不正解 → 確定。解法を表示する。
-    clearTimer(); answered=true; btnCheck.disabled=true;
-    recordStat(currentKey, false);
-    streak=0; updateStreakDots(); renderSidebar();
-    feedback.textContent = NG_MSG[(Math.random()*NG_MSG.length)|0]; feedback.className='feedback ng';
-    attemptsEl.textContent = '答え合わせを2回使いました';
-    showSolution();
-    showNext();
+  var remain=MAX_CHECK-checkCount;
+  if(remain>0){
+    feedback.textContent='検算した？（あと '+remain+' 回）'; feedback.className='feedback ng';
+    attemptsEl.textContent='答え合わせ：あと '+remain+' 回';
+    btnCheck.disabled=true; setTimeout(function(){ if(!answered&&!timedOut) btnCheck.disabled=false; },550);
+  } else {
+    clearTimer(); answered=true; btnCheck.disabled=true; recordSolve(false);
+    if(mKind==='review') passReview(false); else { streak=0; updateStreakDots(); }
+    feedback.textContent=NG_MSG[(Math.random()*NG_MSG.length)|0]; feedback.className='feedback ng';
+    attemptsEl.textContent='答え合わせを2回使いました';
+    showSolution(); showNext();
+    renderSidebar(); renderHome();
   }
 }
 function onTimeout(){
   if(answered) return;
-  answered=true; timedOut=true;
-  recordStat(currentKey, false);
-  streak=0; updateStreakDots(); renderSidebar();
+  answered=true; timedOut=true; recordSolve(false);
+  if(mKind==='review') passReview(false); else { streak=0; updateStreakDots(); }
   btnCheck.disabled=true;
-  feedback.textContent = TO_MSG[(Math.random()*TO_MSG.length)|0] + '（時間切れ）';
-  feedback.className='feedback to';
+  feedback.textContent=TO_MSG[(Math.random()*TO_MSG.length)|0]+'（時間切れ）'; feedback.className='feedback to';
   attemptsEl.textContent='';
-  showSolution();                            // 時間切れでも解法を表示
-  showNext();
+  showSolution(); showNext();
+  renderSidebar(); renderHome();
 }
-
-/* ---- ステージ進行 ---- */
-function advanceStage(){
-  var c = ensureCleared(PROBLEMS[state.pi]);
-  if(state.diff==='low'){
-    c.low=true; state.diff='high'; streak=0; save(); renderQuestion();
-  }else{
-    c.high=true; state.pi++; state.diff='low'; streak=0; save();
-    if(state.pi>=N){ showDone(); } else renderQuestion();
+function onCheckChallenge(ok){
+  if(ok){
+    answered=true; btnCheck.disabled=true; recordSolve(true);
+    chSolved++; chRemaining.shift();
+    feedback.textContent='せいかい！'; feedback.className='feedback ok';
+    updateChProg();
+    setTimeout(function(){ if(chActive) nextChallengeItem(); },300);
+  } else {
+    recordSolve(false);
+    feedback.textContent='ちがうよ、もう一回！'; feedback.className='feedback ng';
+    btnCheck.disabled=true; setTimeout(function(){ if(chActive&&!answered) btnCheck.disabled=false; },350);
   }
 }
 
-/* ---- ボタン ---- */
+/* ---- 次へ／スキップ ---- */
 function onNext(){
-  if(transitioning || cutinBusy) return;
+  if(mode!=='mastery'||transitioning||cutinBusy) return;
   transitioning=true;
-  if(pendingAdvance){ pendingAdvance=false; advanceStage(); }
-  else { renderQuestion(); }
-  setTimeout(function(){ transitioning=false; }, 120);
+  if(mKind==='review'){ nextMasteryItem(); }
+  else if(pendingAdvance){ pendingAdvance=false; advanceLearn(); }
+  else { current=genInstance(currentKey); renderCard(); startTimer(); }
+  setTimeout(function(){ transitioning=false; },120);
 }
-function approachHtml(){
-  var ap = APPROACH[currentKey] || '';
-  return ap ? '<div class="approach"><b>🔑 この問題の見分け方</b><br>'+ap+'</div>' : '';
+function onSkip(){
+  if(mode!=='challenge'||!chActive||transitioning) return;
+  transitioning=true;
+  chRemaining.push(chRemaining.shift()); chSkips++;
+  updateChProg();
+  nextChallengeItem();
+  setTimeout(function(){ transitioning=false; },100);
 }
+
+/* ---- ヒント・解法 ---- */
 function onHint(){
-  if(state.diff!=='low' || hintStage>=3) return;
-  if(hintStage===0){
-    // ヒントの最初に「見分け方（キーワード→解法）」を出す
-    var ap=document.createElement('div'); ap.className='hintbox';
-    ap.style.borderLeftColor='#ff6fa5';
-    ap.innerHTML = '<b style="color:#c0286b;">🔑 この問題の見分け方</b><br>' + (APPROACH[currentKey]||'');
-    hintarea.appendChild(ap);
-  }
+  if(!(mode==='mastery'&&mKind==='learn'&&mDiff==='low')||hintStage>=3) return;
+  if(hintStage===0){ var ap=document.createElement('div'); ap.className='hintbox'; ap.style.borderLeftColor='#ff6fa5';
+    ap.innerHTML='<b style="color:#c0286b;">🔑 この問題の見分け方</b><br>'+(APPROACH[currentKey]||''); hintarea.appendChild(ap); }
   var labels=['① まず、何を求める？（考え方）','② つぎに、どの性質・条件を使う？','③ そして、どんな式にすれば解ける？'];
   var div=document.createElement('div'); div.className='hintbox hint-step';
-  div.innerHTML = '<b>'+labels[hintStage]+'</b><br>' + current.hints[hintStage];
-  hintarea.appendChild(div); hintStage++;
-  if(hintStage>=3) btnHint.disabled=true;
+  div.innerHTML='<b>'+labels[hintStage]+'</b><br>'+current.hints[hintStage];
+  hintarea.appendChild(div); hintStage++; if(hintStage>=3) btnHint.disabled=true;
 }
-// 「考え方の流れ（ヒント）」＝解法にも載せる3ステップ
 function hintFlowHtml(){
   var steps=['① まず、何を求める？','② どの性質・条件を使う？','③ どんな式にする？'];
-  var lis = current.hints.map(function(h,i){ return '<li style="margin:4px 0;"><b class="flowh">'+steps[i]+'</b> '+h+'</li>'; }).join('');
-  return '<div class="solflow"><b class="flowh">考え方の流れ（ヒント）</b>'+
-    '<ol style="margin:6px 0 2px 4px;padding-left:16px;list-style:none;">'+lis+'</ol></div>';
+  var lis=current.hints.map(function(h,i){ return '<li style="margin:4px 0;"><b class="flowh">'+steps[i]+'</b> '+h+'</li>'; }).join('');
+  return '<div class="solflow"><b class="flowh">考え方の流れ（ヒント）</b><ol style="margin:6px 0 2px 4px;padding-left:16px;list-style:none;">'+lis+'</ol></div>';
 }
-function answerLine(){
-  return current.fields.map(function(f){
-    var a = String(f.answer);
-    if(f.type==='set'||f.type==='setstr') a = a.split(',').join('，');
-    return (f.label?f.label+'：':'') + '<b>'+a+'</b>' + (f.unit||'');
-  }).join(' ／ ');
-}
-// 解法表示（正解・時間切れ・2回不正解・解法ボタン共通）。ヒントのブロックは消す。
+function approachHtml(){ var ap=APPROACH[currentKey]||''; return ap?'<div class="approach"><b>🔑 この問題の見分け方</b><br>'+ap+'</div>':''; }
+function answerLine(){ return current.fields.map(function(f){ var a=String(f.answer); if(f.type==='set'||f.type==='setstr')a=a.split(',').join('，'); return (f.label?f.label+'：':'')+'<b>'+a+'</b>'+(f.unit||''); }).join(' ／ '); }
 function showSolution(){
-  solarea.innerHTML = '<div class="solbox">'
-    + approachHtml()
-    + '<div style="margin:2px 0 8px;"><b>答え</b> ' + answerLine() + '</div>'
-    + hintFlowHtml()
-    + '<b style="color:#1f6fb0;">くわしい手順</b><br>' + current.solution
-    + '</div>';
-  hintarea.innerHTML = '';        // 解法表示中はヒントのブロックを出さない
-  btnHint.disabled = true;
+  solarea.innerHTML='<div class="solbox">'+approachHtml()+'<div style="margin:2px 0 8px;"><b>答え</b> '+answerLine()+'</div>'+hintFlowHtml()+'<b style="color:#1f6fb0;">くわしい手順</b><br>'+current.solution+'</div>';
+  hintarea.innerHTML=''; btnHint.disabled=true;
 }
-function onSol(){
-  if(state.diff!=='low') return;
-  showConfirm('解法を見ると連続正解は0に戻ります。見る？', function(){
-    streak=0; updateStreakDots();
-    showSolution();
-  });
-}
-function onReset(){
-  showConfirm('さいしょからやり直しますか？（進捗が消えます）', function(){
-    state={pi:0,diff:'low',cleared:{}}; streak=0; wrongStreak=0; recent={}; save(); renderQuestion();
-  });
-}
+function onSol(){ if(!(mode==='mastery'&&mKind==='learn'&&mDiff==='low')) return; showConfirm('解法を見ると連続正解は0に戻ります。見る？',function(){ streak=0; updateStreakDots(); showSolution(); }); }
 
-/* ---- カットイン（テンプレのキャラが応援・表示時間は半分） ---- */
-function showCutin(txt, cb){
+/* ---- カットイン ---- */
+function showCutin(txt){
   cutinBusy=true;
-  var name = CHARS[(Math.random()*CHARS.length)|0];
-  if(CHAR_IMG[name]){ cutinChar.src = CHAR_IMG[name]; cutinChar.style.display=''; }
-  else { cutinChar.style.display='none'; }
-  cutinTxt.textContent = txt.length>10?txt.slice(0,10):txt;
-  cutinEl.classList.add('show');
-  clearTimeout(cutinTimer);
-  cutinTimer=setTimeout(function(){ cutinEl.classList.remove('show'); cutinBusy=false; if(cb) cb(); },750);
+  var nm=CHARS[(Math.random()*CHARS.length)|0];
+  if(CHAR_IMG[nm]){ cutinChar.src=CHAR_IMG[nm]; cutinChar.style.display=''; } else cutinChar.style.display='none';
+  cutinTxt.textContent=txt.length>10?txt.slice(0,10):txt;
+  cutinEl.classList.add('show'); clearTimeout(cutinTimer);
+  cutinTimer=setTimeout(function(){ cutinEl.classList.remove('show'); cutinBusy=false; },750);
 }
-
-/* ---- カスタム確認ダイアログ ---- */
-function showConfirm(msg, onYes){
-  var ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:10000;';
-  var box=document.createElement('div');
-  box.style.cssText='background:#fff;border-radius:18px;padding:22px 24px;max-width:82vw;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3);font-family:Kiwi Maru,serif;';
+function showConfirm(msg,onYes){
+  var ov=document.createElement('div'); ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:10000;';
+  var box=document.createElement('div'); box.style.cssText='background:#fff;border-radius:18px;padding:22px 24px;max-width:82vw;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3);font-family:Kiwi Maru,serif;';
   box.innerHTML='<div style="font-size:16px;line-height:1.7;margin-bottom:16px;">'+msg+'</div>';
-  var yes=document.createElement('button'); yes.textContent='見る／はい';
-  var no=document.createElement('button'); no.textContent='やめる';
+  var yes=document.createElement('button'),no=document.createElement('button'); yes.textContent='見る／はい'; no.textContent='やめる';
   yes.className='b b-sol'; no.className='b b-next'; yes.style.margin='0 6px'; no.style.margin='0 6px';
   box.appendChild(no); box.appendChild(yes); ov.appendChild(box); document.body.appendChild(ov);
-  no.onclick=function(){ document.body.removeChild(ov); };
-  yes.onclick=function(){ document.body.removeChild(ov); onYes&&onYes(); };
+  no.onclick=function(){ document.body.removeChild(ov); }; yes.onclick=function(){ document.body.removeChild(ov); onYes&&onYes(); };
 }
 
-/* ---- クリア画面 ---- */
-function showDone(){
-  clearTimer();
-  qcard.innerHTML = '<div class="done"><h2>🎉 全'+N+'問クリア！ 🎉</h2>'+
-    '<p>第20回「総合」おつかれさま！<br>もう一度やると数字がかわった新しい問題に挑戦できるよ。</p>'+
-    '<button class="b b-check" id="againBtn">もう一度チャレンジ</button></div>';
-  renderSidebar();
-  $('againBtn').onclick=function(){ state={pi:0,diff:'low',cleared:{}}; streak=0; wrongStreak=0; recent={}; save(); location.reload(); };
+/* ---- サイドバー（習得の状況） ---- */
+function renderSidebar(){
+  var now=Date.now(), mc=0, dueN=0, html='';
+  PROBLEMS.forEach(function(k,i){
+    var s=data.srs[k]||{}, status,cls;
+    if(s.status==='mastered'){ mc++; if(s.due<=now){ dueN++; status='復習まち'; cls='b-due'; } else { status='習得ずみ'; cls='b-mastered'; } }
+    else if(s.low){ status='学習中'; cls='b-learning'; }
+    else { status='みクリア'; cls='b-none'; }
+    var tag=LABELS[k].split('｜')[0], theme=LABELS[k].split('｜')[1];
+    var st=data.stats[k], statLine;
+    if(st&&st.a>0){ var r=Math.round(st.c/st.a*100); var rc=r>=80?'g':(r>=50?'o':'r'); statLine='正答率 <span class="rate '+rc+'">'+r+'%</span>（'+st.c+'/'+st.a+'）・平均 '+fmtSec(st.t/st.a); }
+    else statLine='<span style="color:#c2c2cc;">まだ挑戦していません</span>';
+    var due='';
+    if(s.status==='mastered'&&s.due>now){ var d=new Date(s.due); due='<div style="font-size:10px;color:#9aa;">次の復習 '+(d.getMonth()+1)+'/'+d.getDate()+'</div>'; }
+    html+='<button class="prob-item'+(k===currentKey&&mode==='mastery'?' cur':'')+'" data-k="'+k+'">'+
+      '<span class="pi-no">'+(i+1)+'</span>'+
+      '<span class="pi-txt"><b>'+theme+'</b><small>'+tag+'</small><div class="pi-stats">'+statLine+'</div>'+due+'</span>'+
+      '<span class="pi-badge '+cls+'">'+status+'</span></button>';
+  });
+  $('probList').innerHTML=html;
+  $('fracNum').textContent=mc; $('fracDen').textContent=N;
+  $('pbarfill').style.width=Math.round(mc/N*100)+'%';
+  $('lowNote').textContent = dueN>0 ? ('復習まち '+dueN+' 件') : '';
+  Array.prototype.forEach.call(document.querySelectorAll('#probList .prob-item'),function(btn){ btn.onclick=function(){ jumpMastery(btn.getAttribute('data-k')); }; });
+}
+function jumpMastery(k){
+  if(window.innerWidth<=860) setMenu(false);
+  if(mode!=='mastery') return;
+  currentKey=k; var s=ensureSrs(k);
+  mKind = (s.status==='mastered') ? 'review' : 'learn';
+  if(mKind==='learn'){ mDiff = s.low?'high':'low'; streak=0; }
+  current=genInstance(k); renderCard(); startTimer();
 }
 
-/* ---- ウサギSVG ---- */
-function rabbitSVG(){
-  return '<svg width="70" height="70" viewBox="0 0 100 100" aria-hidden="true">'+
-   '<ellipse cx="36" cy="20" rx="9" ry="20" fill="#fff" stroke="#f19bbd" stroke-width="3"/>'+
-   '<ellipse cx="64" cy="20" rx="9" ry="20" fill="#fff" stroke="#f19bbd" stroke-width="3"/>'+
-   '<ellipse cx="36" cy="22" rx="4" ry="13" fill="#ffd3e2"/>'+
-   '<ellipse cx="64" cy="22" rx="4" ry="13" fill="#ffd3e2"/>'+
-   '<circle cx="50" cy="60" r="30" fill="#fff" stroke="#f19bbd" stroke-width="3"/>'+
-   '<circle cx="40" cy="56" r="4" fill="#5a4a55"/><circle cx="60" cy="56" r="4" fill="#5a4a55"/>'+
-   '<ellipse cx="50" cy="66" rx="4" ry="3" fill="#ff8fb1"/>'+
-   '<circle cx="30" cy="66" r="6" fill="#ffc2d6" opacity=".7"/><circle cx="70" cy="66" r="6" fill="#ffc2d6" opacity=".7"/>'+
-   '<path d="M50 69 v6 M50 75 q-7 4 -12 1 M50 75 q7 4 12 1" stroke="#c98" stroke-width="2" fill="none"/>'+
-   '</svg>';
+/* ---- きろく（振り返り） ---- */
+function renderRecords(){
+  var mc=masteredCount(), dc=dueCount();
+  var dr=dayRec();
+  var html='';
+  html+='<div class="kpi-row">'+
+    '<div class="kpi"><div class="n">'+mc+' / '+N+'</div><div class="l">習得ずみ解法</div></div>'+
+    '<div class="kpi"><div class="n">'+dc+'</div><div class="l">今日の復習まち</div></div>'+
+    '<div class="kpi"><div class="n">'+fmtSec(dr.timeSec)+'</div><div class="l">今日の学習時間</div></div>'+
+    '<div class="kpi"><div class="n">'+(data.challenge.best!=null?fmtHMS(data.challenge.best):'--')+'</div><div class="l">チャレンジ ベスト</div></div>'+
+    '</div>';
+  // 習得モード 日次
+  var dates=Object.keys(data.mDaily).sort().reverse();
+  html+='<div class="rec-sec"><h3>📚 習得モードの記録（毎日）</h3>';
+  if(dates.length===0){ html+='<div class="rec-empty">まだ記録がありません</div>'; }
+  else{
+    html+='<table class="rec-table"><tr><th>日づけ</th><th>新しく習得</th><th>復習</th><th>正答率</th><th>学習時間</th></tr>';
+    dates.forEach(function(d){ var r=data.mDaily[d]; var acc=r.attempts?Math.round(r.correct/r.attempts*100)+'%':'-'; html+='<tr><td>'+d+'</td><td>'+r.learned+'</td><td>'+r.reviews+'</td><td>'+acc+'</td><td>'+fmtSec(r.timeSec)+'</td></tr>'; });
+    html+='</table>';
+  }
+  html+='</div>';
+  // チャレンジ 履歴
+  html+='<div class="rec-sec"><h3>⚡ チャレンジモードの記録（タイムアタック）</h3>';
+  var his=data.challenge.history;
+  if(!his||his.length===0){ html+='<div class="rec-empty">まだ記録がありません</div>'; }
+  else{
+    html+='<table class="rec-table"><tr><th>日づけ</th><th>タイム</th><th>クリア数</th><th>スキップ</th><th></th></tr>';
+    his.slice(0,30).forEach(function(r){ var best=(data.challenge.best!=null&&r.completed&&r.ms===data.challenge.best); html+='<tr class="'+(best?'best':'')+'"><td>'+r.date+'</td><td>'+fmtHMS(r.ms)+'</td><td>'+r.solved+'/'+r.total+'</td><td>'+r.skips+'</td><td>'+(r.completed?(best?'🏆ベスト':'完走'):'時間切れ')+'</td></tr>'; });
+    html+='</table>';
+  }
+  html+='</div>';
+  // 復習スケジュール
+  var now=Date.now(), up=[];
+  PROBLEMS.forEach(function(k){ var s=data.srs[k]; if(s&&s.status==='mastered') up.push({k:k,due:s.due}); });
+  up.sort(function(a,b){return a.due-b.due;});
+  html+='<div class="rec-sec"><h3>🗓 復習スケジュール</h3>';
+  if(up.length===0){ html+='<div class="rec-empty">習得した解法がまだありません</div>'; }
+  else{ html+='<table class="rec-table"><tr><th>解法</th><th>次の復習</th></tr>';
+    up.forEach(function(o){ var d=new Date(o.due); var lbl=(o.due<=now)?'<b style="color:#c06a00;">今すぐ</b>':((d.getMonth()+1)+'月'+d.getDate()+'日'); html+='<tr><td style="text-align:left;">'+LABELS[o.k].split('｜')[1]+'</td><td>'+lbl+'</td></tr>'; });
+    html+='</table>'; }
+  html+='</div>';
+  $('recWrap').innerHTML=html;
 }
+
+/* ---- 時間フォーマット ---- */
+function fmtSec(sec){ sec=Math.round(sec); var m=Math.floor(sec/60),s=sec%60; return m+':'+(s<10?'0':'')+s; }
+function fmtHMS(ms){ var s=Math.round(ms/1000); var h=Math.floor(s/3600); s-=h*3600; var m=Math.floor(s/60),ss=s%60; return (h>0?h+':'+(m<10?'0':'')+m:m)+':'+(ss<10?'0':'')+ss; }
+
+/* ---- メニュー開閉 ---- */
+var menuOpen=true;
+function applyMenu(){ document.body.classList.toggle('menu-open',menuOpen); document.body.classList.toggle('menu-closed',!menuOpen); drawerToggle.textContent=menuOpen?'✕ メニューをとじる':'☰ もんだい一覧'; try{ localStorage.setItem('sk_ch_menu',menuOpen?'open':'closed'); }catch(e){} }
+function setMenu(o){ menuOpen=o; applyMenu(); }
+function toggleMenu(){ setMenu(!menuOpen); }
+function initMenu(){ try{ var mm=localStorage.getItem('sk_ch_menu'); menuOpen=mm?(mm==='open'):(window.innerWidth>860); }catch(e){ menuOpen=window.innerWidth>860; } applyMenu(); }
+
+/* ---- リセット ---- */
+function onReset(){ showConfirm('進捗（習得・復習・記録）をすべて消して最初からにしますか？',function(){ data=norm({}); recentSig={}; save(); goHome(); }); }
 
 /* ---- イベント ---- */
-btnCheck.addEventListener('click', onCheck);
-btnNext.addEventListener('click', onNext);
-btnHint.addEventListener('click', onHint);
-btnSol.addEventListener('click', onSol);
-btnReset.addEventListener('click', onReset);
-drawerToggle.addEventListener('click', toggleMenu);
-scrim.addEventListener('click', function(){ setMenu(false); });
+btnCheck.addEventListener('click',onCheck);
+btnNext.addEventListener('click',onNext);
+btnSkip.addEventListener('click',onSkip);
+btnHint.addEventListener('click',onHint);
+btnSol.addEventListener('click',onSol);
+btnReset.addEventListener('click',onReset);
+drawerToggle.addEventListener('click',toggleMenu);
+scrim.addEventListener('click',function(){ setMenu(false); });
+Array.prototype.forEach.call(document.querySelectorAll('.navbtn'),function(b){ b.addEventListener('click',function(){ var v=b.getAttribute('data-view'); if(v==='home')goHome(); else if(v==='mastery')enterMastery(); else if(v==='challenge')enterChallenge(); else if(v==='records')goRecords(); }); });
+$('cardMastery').addEventListener('click',enterMastery);
+$('cardChallenge').addEventListener('click',enterChallenge);
 
-/* ---- 起動：最後に到達した位置・難易度から再開 ---- */
+/* ---- 起動 ---- */
 initMenu();
-renderQuestion();
+goHome();
 
 })();
 </script>
