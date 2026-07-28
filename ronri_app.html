@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ことばの論理トレーニング</title>
+<style>
+  :root{
+    --eq:#1e73e6; --ct:#e63946; --cs:#2a9d3c;
+    --subj:#f3c623; --pred:#f08a24; --mod:#c9ccd3;
+    --bg:#f5f7fb; --card:#fff; --ink:#233; --line:#dfe4ee;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:"Hiragino Maru Gothic ProN","Yu Gothic UI",system-ui,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:640px;margin:0 auto;padding:12px 14px 70px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+  .title{font-weight:800;font-size:1.02rem}
+  .nav{display:flex;gap:6px}
+  .nav button{border:none;border-radius:99px;padding:6px 12px;font-weight:800;font-size:.8rem;cursor:pointer;background:#e7ebf5;color:#556}
+  .nav button.on{background:#5566cc;color:#fff}
+  .badges{font-size:.72rem;color:#667;text-align:right}
+  .bar{height:8px;background:#e6eaf3;border-radius:99px;overflow:hidden;margin:6px 0 12px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,#7db9ff,#2a9d3c);width:0;transition:width .35s}
+  .stagepill{display:inline-block;font-size:.72rem;font-weight:700;color:#fff;background:#5566cc;
+             border-radius:99px;padding:2px 10px;margin-bottom:6px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;
+        box-shadow:0 2px 10px rgba(30,50,90,.05)}
+  .q{font-weight:800;font-size:1.08rem;margin:2px 0 12px}
+  .sub{font-size:.86rem;color:#556;margin-top:-6px;margin-bottom:10px}
+
+  .sentence{font-size:1.25rem;font-weight:700;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0 6px}
+  .tok{background:#eef2fa;border:2px solid #d7deec;border-radius:12px;padding:8px 12px;cursor:pointer;transition:.12s;user-select:none}
+  .tok.sel{background:var(--subj);border-color:#d9a800}
+  .tok.sel2{background:var(--pred);border-color:#c96f10;color:#fff}
+  .tok.src{background:var(--mod);border-color:#9aa}
+  .tok.ok{background:#c9f2cf;border-color:#54c06a}
+  .tok.ng{background:#ffd6da;border-color:#e63946}
+
+  .opts{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .opt{background:#f2f5fc;border:2px solid #d7deec;border-radius:14px;padding:13px 14px;font-size:1.05rem;
+       font-weight:700;text-align:center;cursor:pointer;transition:.12s}
+  .opt.sel{border-color:#5566cc;background:#e7ecff}
+  .opt.ok{background:#c9f2cf;border-color:#54c06a}
+  .opt.ng{background:#ffd6da;border-color:#e63946}
+
+  .signs{display:flex;gap:10px;justify-content:center;margin-top:12px}
+  .sign{flex:1;border-radius:16px;padding:14px 6px;text-align:center;cursor:pointer;border:3px solid transparent;
+        color:#fff;font-weight:800;transition:.12s}
+  .sign small{display:block;font-size:.7rem;font-weight:600;opacity:.95;margin-top:2px}
+  .sign.eq{background:var(--eq)} .sign.ct{background:var(--ct)} .sign.cs{background:var(--cs)}
+  .sign.sel{outline:4px solid #ffd34d;outline-offset:2px}
+  .signsent{font-size:1.15rem;font-weight:700;text-align:center;margin:6px 0}
+  .gap{display:inline-block;min-width:40px;border-bottom:3px dashed #9aa;margin:0 4px}
+
+  .pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:6px 0 12px;min-height:44px}
+  .chip{background:#fff;border:2px solid #cfd7e8;border-radius:12px;padding:8px 14px;font-weight:700;font-size:1.05rem;cursor:pointer}
+  .chip.sel{border-color:#5566cc;background:#e7ecff}
+  .chip.placed{opacity:.32}
+  .boxes{display:flex;gap:10px}
+  .box{flex:1;min-height:90px;border:2px dashed #b9c3d8;border-radius:14px;padding:8px;cursor:pointer;background:#fbfcff}
+  .box h4{margin:0 0 6px;font-size:.85rem;text-align:center;color:#556}
+  .box .drop{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+  .pyramid{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0}
+  .plevel{border:2px dashed #b9c3d8;border-radius:12px;min-height:46px;display:flex;align-items:center;justify-content:center;
+          background:#fbfcff;font-weight:700;cursor:pointer;padding:4px 8px}
+  .pl0{width:92%} .pl1{width:66%} .pl2{width:42%}
+  .pnote{font-size:.72rem;color:#889}
+
+  #arrowlayer{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+
+  .hintbtn{margin-top:14px;background:#fff;border:2px solid #ffd34d;color:#a86f00;border-radius:12px;
+           padding:9px 12px;font-weight:800;cursor:pointer}
+  .hint{margin-top:10px;background:#fff8e1;border:1px solid #ffe08a;border-radius:12px;padding:10px 12px;font-size:.95rem;display:none}
+  .hint.show{display:block}
+  .hint b{color:#a86f00}
+  .actions{display:flex;gap:10px;margin-top:14px}
+  .btn{flex:1;border:none;border-radius:14px;padding:14px;font-size:1.05rem;font-weight:800;cursor:pointer}
+  .btn.primary{background:#2a9d3c;color:#fff}
+  .btn.ghost{background:#eef1f7;color:#445}
+  .btn.reset{flex:0 0 auto;background:#fff;border:2px solid #cfd7e8;color:#667}
+  .btn:disabled{opacity:.45;cursor:default}
+  .feedback{margin-top:12px;font-weight:800;text-align:center;font-size:1.05rem;min-height:1.4em}
+  .feedback.ok{color:#2a9d3c} .feedback.ng{color:#e63946}
+  .explain{margin-top:8px;background:#eef6ff;border:1px solid #cfe2ff;border-radius:12px;padding:10px 12px;font-size:.92rem;display:none}
+  .explain.show{display:block}
+
+  #cutin{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(20,30,60,.35);z-index:50;pointer-events:none}
+  #cutin .pop{background:#fff;border-radius:22px;padding:22px 26px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.25);animation:pop .3s}
+  #cutin .em{font-size:3.4rem}
+  #cutin .msg{font-weight:800;font-size:1.2rem;margin-top:4px}
+  #cutin .mst{color:#2a9d3c;font-weight:800;margin-top:2px}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  .mastery{color:#2a9d3c;font-weight:700}
+
+  /* きろく */
+  .rec h2{font-size:1.1rem;margin:4px 0 12px}
+  .tiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .tile{flex:1;min-width:90px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+  .tile .n{font-size:1.5rem;font-weight:800}
+  .tile .l{font-size:.72rem;color:#778}
+  .tile.g .n{color:#2a9d3c}
+  .daysec h3{font-size:.92rem;margin:14px 0 8px;color:#445}
+  .day{display:grid;grid-template-columns:76px 1fr 66px;align-items:center;gap:8px;margin:5px 0}
+  .day .d{font-size:.78rem;color:#667}
+  .day .track{background:#eef2fa;border-radius:99px;height:16px;overflow:hidden}
+  .day .track > i{display:block;height:100%;background:linear-gradient(90deg,#7db9ff,#2a9d3c)}
+  .day .v{font-size:.78rem;text-align:right;color:#556}
+  .mstlist{display:flex;flex-wrap:wrap;gap:6px}
+  .mstlist span{background:#e6f7ea;border:1px solid #bfe6c8;color:#237a34;border-radius:99px;padding:3px 10px;font-size:.78rem;font-weight:700}
+  .muted{color:#889;font-size:.85rem}
+  .done{text-align:center;padding:24px 10px}
+  .done .em{font-size:2.6rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title">🦝 ことばの論理トレーニング</div>
+    <div class="nav">
+      <button id="navP" class="on" onclick="showPractice()">れんしゅう</button>
+      <button id="navR" onclick="showRecord()">きろく</button>
+    </div>
+  </header>
+  <div class="badges" id="badges"></div>
+  <div class="bar"><i id="progress"></i></div>
+  <div id="app"></div>
+</div>
+
+<div id="cutin"><div class="pop"><div class="em" id="cutem">🦝</div><div class="msg" id="cutmsg"></div><div class="mst" id="cutmst"></div></div></div>
+
+<script>
+const PROBLEMS = [{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"どうぶつ と どうぐ に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["どうぶつ","どうぐ"],"items":[{"w":"いぬ","box":0},{"w":"ねこ","box":0},{"w":"うさぎ","box":0},{"w":"つくえ","box":1},{"w":"いす","box":1},{"w":"えんぴつ","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"くだもの と やさい に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["くだもの","やさい"],"items":[{"w":"りんご","box":0},{"w":"バナナ","box":0},{"w":"みかん","box":0},{"w":"にんじん","box":1},{"w":"トマト","box":1},{"w":"きゅうり","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"のりもの と たべもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["のりもの","たべもの"],"items":[{"w":"バス","box":0},{"w":"電車","box":0},{"w":"ひこうき","box":0},{"w":"パン","box":1},{"w":"ごはん","box":1},{"w":"ラーメン","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"生きもの と 生きていないもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["生きもの","生きていないもの"],"items":[{"w":"とり","box":0},{"w":"さかな","box":0},{"w":"むし","box":0},{"w":"いし","box":1},{"w":"ボール","box":1},{"w":"コップ","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"学校のもの と だいどころのもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["学校のもの","だいどころのもの"],"items":[{"w":"こくばん","box":0},{"w":"ランドセル","box":0},{"w":"きょうかしょ","box":0},{"w":"なべ","box":1},{"w":"ほうちょう","box":1},{"w":"おさら","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"赤いもの と 青いもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["赤いもの","青いもの"],"items":[{"w":"トマト","box":0},{"w":"いちご","box":0},{"w":"ポスト","box":0},{"w":"空","box":1},{"w":"海","box":1},{"w":"青しんごう","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"丸いもの と 四角いもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["丸いもの","四角いもの"],"items":[{"w":"ボール","box":0},{"w":"たまご","box":0},{"w":"お月さま","box":0},{"w":"はこ","box":1},{"w":"本","box":1},{"w":"まど","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"あまいもの と からいもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["あまいもの","からいもの"],"items":[{"w":"ケーキ","box":0},{"w":"あめ","box":0},{"w":"はちみつ","box":0},{"w":"カレー","box":1},{"w":"わさび","box":1},{"w":"こしょう","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"夏のもの と 冬のもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["夏のもの","冬のもの"],"items":[{"w":"うみ","box":0},{"w":"せみ","box":0},{"w":"かきごおり","box":0},{"w":"ゆき","box":1},{"w":"こたつ","box":1},{"w":"マフラー","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"空をとぶもの と 水にすむもの に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["空をとぶもの","水にすむもの"],"items":[{"w":"とり","box":0},{"w":"ちょう","box":0},{"w":"こうもり","box":0},{"w":"さかな","box":1},{"w":"くじら","box":1},{"w":"たこ","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"からだのぶぶん と ふくのぶぶん に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["からだのぶぶん","ふくのぶぶん"],"items":[{"w":"て","box":0},{"w":"あし","box":0},{"w":"あたま","box":0},{"w":"そで","box":1},{"w":"えり","box":1},{"w":"ボタン","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"なかま分け","type":"group","q":"朝すること と 夜すること に分けよう","sub":"カードをタップ → 入れる箱をタップ","boxes":["朝すること","夜すること"],"items":[{"w":"おきる","box":0},{"w":"歯をみがく","box":0},{"w":"朝ごはん","box":0},{"w":"おふろ","box":1},{"w":"ねる","box":1},{"w":"電気をけす","box":1}],"hints":[["vicky","カードを1まいずつ見てね。"],["mimi","「これは何のなかま？」と考えよう。"],["logi","にているものを同じ箱へ入れよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"のりもの","lv":0},{"w":"車","lv":1},{"w":"スポーツカー","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"たべもの","lv":0},{"w":"くだもの","lv":1},{"w":"りんご","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"生きもの","lv":0},{"w":"鳥","lv":1},{"w":"すずめ","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"スポーツ","lv":0},{"w":"球技","lv":1},{"w":"サッカー","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"生きもの","lv":0},{"w":"魚","lv":1},{"w":"まぐろ","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"楽器","lv":0},{"w":"弦楽器","lv":1},{"w":"バイオリン","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"建物","lv":0},{"w":"学校","lv":1},{"w":"小学校","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"植物","lv":0},{"w":"花","lv":1},{"w":"ばら","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"のみもの","lv":0},{"w":"ジュース","lv":1},{"w":"オレンジジュース","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"抽象と具体（ピラミッド）","type":"pyramid","q":"広いことば → せまいことば の順にならべよう","sub":"上（広い）から入れていくよ","levels":["いちばん広い","まんなか","いちばんせまい"],"pool":[{"w":"どうぶつ","lv":0},{"w":"ネコのなかま","lv":1},{"w":"ライオン","lv":2}],"hints":[["logi","いちばん大きい“まとめ言葉”はどれ？"],["mimi","大きい入れものの中に、小さいものが入るよ。"],["vicky","広い→せまい の順にならべよう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「大きい」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["小さい","高い","長い"],"ans":0,"explain":"「大きい」↔「小さい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「高い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["ひくい","大きい","広い"],"ans":0,"explain":"「高い」↔「ひくい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「重い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["かるい","太い","強い"],"ans":0,"explain":"「重い」↔「かるい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「明るい」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["くらい","赤い","広い"],"ans":0,"explain":"「明るい」↔「くらい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「多い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["すくない","長い","高い"],"ans":0,"explain":"「多い」↔「すくない」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「速い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["おそい","近い","強い"],"ans":0,"explain":"「速い」↔「おそい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「新しい」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["ふるい","白い","太い"],"ans":0,"explain":"「新しい」↔「ふるい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「強い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["よわい","高い","広い"],"ans":0,"explain":"「強い」↔「よわい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「広い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["せまい","長い","重い"],"ans":0,"explain":"「広い」↔「せまい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「深い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["あさい","高い","太い"],"ans":0,"explain":"「深い」↔「あさい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「あつい」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["つめたい","からい","甘い"],"ans":0,"explain":"「あつい」↔「つめたい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「長い」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["みじかい","太い","重い"],"ans":0,"explain":"「長い」↔「みじかい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「うれしい」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["かなしい","ねむい","いそがしい"],"ans":0,"explain":"「うれしい」↔「かなしい」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ1 言葉の整理","concept":"反対のことば（↔）","type":"choice","q":"「開ける」の 反対の ことばは？","sub":"反対＝↔（赤）の関係だよ","opts":["しめる","歩く","もつ"],"ans":0,"explain":"「開ける」↔「しめる」","hints":[["logi","反対は ↔（赤）の関係だよ。"],["kame","逆にすると どうなるかな？"],["nonta","はんたいの意味の言葉をさがそう。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["小さな","青い","鳥が","空を","飛んだ。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[2],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[4],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["白い","犬が","元気に","走る。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[1],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["妹が","おいしい","ケーキを","食べた。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["大きな","船が","ゆっくり","進む。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[1],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["お母さんが","台所で","料理を","作る。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["黄色い","花が","きれいに","さいた。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[1],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["ぼくは","公園で","友だちと","遊んだ。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["星が","夜空に","たくさん","光る。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["赤ちゃんが","すやすや","ねむる。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[2],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["雨が","一日中","ふり続けた。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[2],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["先生が","黒板に","字を","書く。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[3],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主語と述語の特定","type":"tap","q":"文をよく読んで、順番にタップしよう","tokens":["電車が","駅に","止まった。"],"steps":[{"prompt":"① まず 主語（だれが・なにが）をタップ","ans":[0],"cls":"sel"},{"prompt":"② つぎに 述語（どうする・どんなだ）をタップ","ans":[2],"cls":"sel2"}],"hints":[["mimi","まず「〜が」「〜は」をさがそう。"],["vicky","一語ずつ 見てね。"],["logi","述語（どうする・どんなだ）は 文の後ろに多いよ。"]]},{"stage":"ステージ2 一文の基本","concept":"主述のねじれ","type":"choice","q":"主語と述語は 合っている？<br>「ぼくの ゆめは 医者に なりたいです。」","sub":"主語と述語だけ つなげて 読んでみて","opts":["合っている（正しい）","ねじれている（おかしい）"],"ans":1,"explain":"主語に ぴったり合う述語に なおそう（例：ゆめは→なることです）。","hints":[["vicky","主語と述語だけ つなげて 読んでみて。"],["kame","「〜は…です」で 言える？"],["logi","主語に ぴったり合う述語かな？"]]},{"stage":"ステージ2 一文の基本","concept":"主述のねじれ","type":"choice","q":"主語と述語は 合っている？<br>「わたしの しゅみは 本を 読むことです。」","sub":"主語と述語だけ つなげて 読んでみて","opts":["合っている（正しい）","ねじれている（おかしい）"],"ans":0,"explain":"主語と述語が きれいに つながっているね。","hints":[["vicky","主語と述語だけ つなげて 読んでみて。"],["kame","「〜は…です」で 言える？"],["logi","主語に ぴったり合う述語かな？"]]},{"stage":"ステージ2 一文の基本","concept":"主述のねじれ","type":"choice","q":"主語と述語は 合っている？<br>「この 花の とくちょうは とても きれいです。」","sub":"主語と述語だけ つなげて 読んでみて","opts":["合っている（正しい）","ねじれている（おかしい）"],"ans":1,"explain":"主語に ぴったり合う述語に なおそう（例：ゆめは→なることです）。","hints":[["vicky","主語と述語だけ つなげて 読んでみて。"],["kame","「〜は…です」で 言える？"],["logi","主語に ぴったり合う述語かな？"]]},{"stage":"ステージ2 一文の基本","concept":"主述のねじれ","type":"choice","q":"主語と述語は 合っている？<br>「妹は とても かわいいです。」","sub":"主語と述語だけ つなげて 読んでみて","opts":["合っている（正しい）","ねじれている（おかしい）"],"ans":0,"explain":"主語と述語が きれいに つながっているね。","hints":[["vicky","主語と述語だけ つなげて 読んでみて。"],["kame","「〜は…です」で 言える？"],["logi","主語に ぴったり合う述語かな？"]]},{"stage":"ステージ2 一文の基本","concept":"主述のねじれ","type":"choice","q":"主語と述語は 合っている？<br>「大切なのは 毎日 つづけます。」","sub":"主語と述語だけ つなげて 読んでみて","opts":["合っている（正しい）","ねじれている（おかしい）"],"ans":1,"explain":"主語に ぴったり合う述語に なおそう（例：ゆめは→なることです）。","hints":[["vicky","主語と述語だけ つなげて 読んでみて。"],["kame","「〜は…です」で 言える？"],["logi","主語に ぴったり合う述語かな？"]]},{"stage":"ステージ2 一文の基本","concept":"主述のねじれ","type":"choice","q":"主語と述語は 合っている？<br>「父の 仕事は 先生です。」","sub":"主語と述語だけ つなげて 読んでみて","opts":["合っている（正しい）","ねじれている（おかしい）"],"ans":0,"explain":"主語と述語が きれいに つながっているね。","hints":[["vicky","主語と述語だけ つなげて 読んでみて。"],["kame","「〜は…です」で 言える？"],["logi","主語に ぴったり合う述語かな？"]]},{"stage":"ステージ2 一文の基本","concept":"主述のねじれ","type":"choice","q":"主語と述語は 合っている？<br>「ぼくの 目標は 一等賞を とりたいです。」","sub":"主語と述語だけ つなげて 読んでみて","opts":["合っている（正しい）","ねじれている（おかしい）"],"ans":1,"explain":"主語に ぴったり合う述語に なおそう（例：ゆめは→なることです）。","hints":[["vicky","主語と述語だけ つなげて 読んでみて。"],["kame","「〜は…です」で 言える？"],["logi","主語に ぴったり合う述語かな？"]]},{"stage":"ステージ3 修飾のかんけい","concept":"目的語（なにを）の特定","type":"tap","q":"「なにを」した？ その言葉をタップ","tokens":["兄が","新しい","本を","読む。"],"steps":[{"prompt":"「〜を」の 言葉を さがしてタップ","ans":[2],"cls":"sel"}],"hints":[["mimi","「〜を」をさがそう。"],["vicky","“何を”したのかな？"],["logi","「を」の前の言葉が目的語だよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"目的語（なにを）の特定","type":"tap","q":"「なにを」した？ その言葉をタップ","tokens":["ねこが","魚を","たべた。"],"steps":[{"prompt":"「〜を」の 言葉を さがしてタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","「〜を」をさがそう。"],["vicky","“何を”したのかな？"],["logi","「を」の前の言葉が目的語だよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"目的語（なにを）の特定","type":"tap","q":"「なにを」した？ その言葉をタップ","tokens":["父が","車を","あらう。"],"steps":[{"prompt":"「〜を」の 言葉を さがしてタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","「〜を」をさがそう。"],["vicky","“何を”したのかな？"],["logi","「を」の前の言葉が目的語だよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"目的語（なにを）の特定","type":"tap","q":"「なにを」した？ その言葉をタップ","tokens":["姉が","手紙を","書く。"],"steps":[{"prompt":"「〜を」の 言葉を さがしてタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","「〜を」をさがそう。"],["vicky","“何を”したのかな？"],["logi","「を」の前の言葉が目的語だよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"目的語（なにを）の特定","type":"tap","q":"「なにを」した？ その言葉をタップ","tokens":["子どもが","ボールを","なげる。"],"steps":[{"prompt":"「〜を」の 言葉を さがしてタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","「〜を」をさがそう。"],["vicky","“何を”したのかな？"],["logi","「を」の前の言葉が目的語だよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"目的語（なにを）の特定","type":"tap","q":"「なにを」した？ その言葉をタップ","tokens":["わたしは","牛乳を","飲む。"],"steps":[{"prompt":"「〜を」の 言葉を さがしてタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","「〜を」をさがそう。"],["vicky","“何を”したのかな？"],["logi","「を」の前の言葉が目的語だよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["白い","犬が","走る。"],"from":0,"to":1,"fromPrompt":"「白い」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["大きな","声で","笑う。"],"from":0,"to":1,"fromPrompt":"「大きな」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["赤い","帽子を","かぶる。"],"from":0,"to":1,"fromPrompt":"「赤い」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["きれいな","花が","さく。"],"from":0,"to":1,"fromPrompt":"「きれいな」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["新しい","くつを","はく。"],"from":0,"to":1,"fromPrompt":"「新しい」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["とても","おもしろい","本。"],"from":0,"to":1,"fromPrompt":"「とても」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["元気に","子どもが","遊ぶ。"],"from":0,"to":2,"fromPrompt":"「元気に」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"修飾の矢印（かかり受け）","type":"link","q":"どの言葉に かかる？ 矢印をむすぼう","sub":"かける言葉をタップ → うける言葉をタップ","tokens":["ゆっくり","川が","流れる。"],"from":0,"to":2,"fromPrompt":"「ゆっくり」は どの言葉を くわしくしている？","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"かかり受けの判別","type":"choice","q":"「赤い 帽子を かぶった 女の子。」<br>「赤い」は どちらに かかる？","opts":["帽子","女の子"],"ans":0,"explain":"「赤い」→「帽子」。つなげて自然な方だよ。","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"かかり受けの判別","type":"choice","q":"「大きな 声で 笑う 男の子。」<br>「大きな」は どちらに かかる？","opts":["声","男の子"],"ans":0,"explain":"「大きな」→「声」。つなげて自然な方だよ。","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"かかり受けの判別","type":"choice","q":"「白い 犬と 走る 少年。」<br>「白い」は どちらに かかる？","opts":["犬","少年"],"ans":0,"explain":"「白い」→「犬」。つなげて自然な方だよ。","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"かかり受けの判別","type":"choice","q":"「急いで 帰る お父さん。」<br>「急いで」は どちらに かかる？","opts":["帰る","お父さん"],"ans":0,"explain":"「急いで」→「帰る」。つなげて自然な方だよ。","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ3 修飾のかんけい","concept":"かかり受けの判別","type":"choice","q":"「青い 空を 見上げる 少女。」<br>「青い」は どちらに かかる？","opts":["空","少女"],"ans":0,"explain":"「青い」→「空」。つなげて自然な方だよ。","hints":[["mimi","その言葉は 何を くわしくしてる？"],["vicky","つなげて読めるのは どっち？"],["logi","ようすの言葉は“もの”に、うごきの言葉は“どうする”にかかるよ。"]]},{"stage":"ステージ4 要点をつかむ","concept":"要点（核の主語述語）","type":"tap","q":"長い文の“核”をさがそう。順番にタップ","tokens":["昨日、","公園で、","友だちと、","ぼくは","サッカーを","した。"],"steps":[{"prompt":"① 主語（だれが・なにが）をタップ","ans":[3],"cls":"sel"},{"prompt":"② 述語（どうした）をタップ","ans":[5],"cls":"sel2"}],"hints":[["mimi","かざりを消して 主語と述語だけ のこそう。"],["vicky","だれが・どうした？"],["logi","文の“核”だけ とり出そう。"]]},{"stage":"ステージ4 要点をつかむ","concept":"要点（核の主語述語）","type":"tap","q":"長い文の“核”をさがそう。順番にタップ","tokens":["朝から、","母は","台所で","パンを","焼いた。"],"steps":[{"prompt":"① 主語（だれが・なにが）をタップ","ans":[1],"cls":"sel"},{"prompt":"② 述語（どうした）をタップ","ans":[4],"cls":"sel2"}],"hints":[["mimi","かざりを消して 主語と述語だけ のこそう。"],["vicky","だれが・どうした？"],["logi","文の“核”だけ とり出そう。"]]},{"stage":"ステージ4 要点をつかむ","concept":"要点（核の主語述語）","type":"tap","q":"長い文の“核”をさがそう。順番にタップ","tokens":["きのう、","妹は","部屋で","絵を","かいた。"],"steps":[{"prompt":"① 主語（だれが・なにが）をタップ","ans":[1],"cls":"sel"},{"prompt":"② 述語（どうした）をタップ","ans":[4],"cls":"sel2"}],"hints":[["mimi","かざりを消して 主語と述語だけ のこそう。"],["vicky","だれが・どうした？"],["logi","文の“核”だけ とり出そう。"]]},{"stage":"ステージ4 要点をつかむ","concept":"要点（核の主語述語）","type":"tap","q":"長い文の“核”をさがそう。順番にタップ","tokens":["さっき、","犬が","庭で","元気に","ほえた。"],"steps":[{"prompt":"① 主語（だれが・なにが）をタップ","ans":[1],"cls":"sel"},{"prompt":"② 述語（どうした）をタップ","ans":[4],"cls":"sel2"}],"hints":[["mimi","かざりを消して 主語と述語だけ のこそう。"],["vicky","だれが・どうした？"],["logi","文の“核”だけ とり出そう。"]]},{"stage":"ステージ4 要点をつかむ","concept":"要点（核の主語述語）","type":"tap","q":"長い文の“核”をさがそう。順番にタップ","tokens":["今朝、","父は","駅まで","急いで","歩いた。"],"steps":[{"prompt":"① 主語（だれが・なにが）をタップ","ans":[1],"cls":"sel"},{"prompt":"② 述語（どうした）をタップ","ans":[4],"cls":"sel2"}],"hints":[["mimi","かざりを消して 主語と述語だけ のこそう。"],["vicky","だれが・どうした？"],["logi","文の“核”だけ とり出そう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"彼は 多読家だ。","s2":"毎日 3冊 読む。","ans":"eq","explainByAns":{"eq":"後ろは 前を くわしく言いかえた具体例。だから ＝（青・たとえば）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"妹は くいしんぼうだ。","s2":"おやつを 3つも 食べる。","ans":"eq","explainByAns":{"eq":"後ろは 前を くわしく言いかえた具体例。だから ＝（青・たとえば）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"父は 早おきだ。","s2":"毎朝 5時に おきる。","ans":"eq","explainByAns":{"eq":"後ろは 前を くわしく言いかえた具体例。だから ＝（青・たとえば）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"この 町は しずかだ。","s2":"車の 音も しない。","ans":"eq","explainByAns":{"eq":"後ろは 前を くわしく言いかえた具体例。だから ＝（青・たとえば）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"ねだんは 安い。","s2":"品質は 良い。","ans":"ct","explainByAns":{"ct":"前とは ぎゃくの内容。だから ↔（赤・しかし）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"体は 小さい。","s2":"力は 強い。","ans":"ct","explainByAns":{"ct":"前とは ぎゃくの内容。だから ↔（赤・しかし）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"見た目は こわい。","s2":"せいかくは やさしい。","ans":"ct","explainByAns":{"ct":"前とは ぎゃくの内容。だから ↔（赤・しかし）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"たくさん 練習した。","s2":"しあいに 負けた。","ans":"ct","explainByAns":{"ct":"前とは ぎゃくの内容。だから ↔（赤・しかし）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"雨が ふった。","s2":"しあいは 中止だ。","ans":"cs","explainByAns":{"cs":"前が りゆう、後ろが けっか。だから →（緑・だから）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"ねぼうした。","s2":"学校に おくれた。","ans":"cs","explainByAns":{"cs":"前が りゆう、後ろが けっか。だから →（緑・だから）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"たくさん 食べた。","s2":"おなかが いっぱいだ。","ans":"cs","explainByAns":{"cs":"前が りゆう、後ろが けっか。だから →（緑・だから）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"かぜを ひいた。","s2":"学校を 休んだ。","ans":"cs","explainByAns":{"cs":"前が りゆう、後ろが けっか。だから →（緑・だから）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"＝↔→ の判別","type":"sign","s1":"よく 勉強した。","s2":"テストで 100点を とった。","ans":"cs","explainByAns":{"cs":"前が りゆう、後ろが けっか。だから →（緑・だから）。"},"hints":[["logi","＝言いかえ ／ ↔反対 ／ →りゆう・けっか。"],["kame","つなぎ言葉を 入れて読もう。"],["nonta","＝→↔ を 1つずつ ためそう。"]]},{"stage":"ステージ5 論理の3パターン","concept":"接続詞の使い分け","type":"choice","q":"雨が ふった。 ＿＿ しあいは 中止だ。<br>＿＿に入る言葉は？","opts":["だから","しかし","つまり"],"ans":0,"explain":"「だから」が正解。前後の関係で決まるよ。","hints":[["logi","前と後ろの 関係を考えよう。"],["kame","入れて読んで しぜんなのは？"],["nonta","だから／しかし／つまり のどれかな。"]]},{"stage":"ステージ5 論理の3パターン","concept":"接続詞の使い分け","type":"choice","q":"ねだんは 安い。 ＿＿ 品質は 良い。<br>＿＿に入る言葉は？","opts":["しかし","だから","つまり"],"ans":0,"explain":"「しかし」が正解。前後の関係で決まるよ。","hints":[["logi","前と後ろの 関係を考えよう。"],["kame","入れて読んで しぜんなのは？"],["nonta","だから／しかし／つまり のどれかな。"]]},{"stage":"ステージ5 論理の3パターン","concept":"接続詞の使い分け","type":"choice","q":"彼は 多読家だ。 ＿＿ 毎日 本を 読む。<br>＿＿に入る言葉は？","opts":["つまり","しかし","だから"],"ans":0,"explain":"「つまり」が正解。前後の関係で決まるよ。","hints":[["logi","前と後ろの 関係を考えよう。"],["kame","入れて読んで しぜんなのは？"],["nonta","だから／しかし／つまり のどれかな。"]]},{"stage":"ステージ5 論理の3パターン","concept":"接続詞の使い分け","type":"choice","q":"ねぼうした。 ＿＿ 学校に おくれた。<br>＿＿に入る言葉は？","opts":["だから","しかし","つまり"],"ans":0,"explain":"「だから」が正解。前後の関係で決まるよ。","hints":[["logi","前と後ろの 関係を考えよう。"],["kame","入れて読んで しぜんなのは？"],["nonta","だから／しかし／つまり のどれかな。"]]},{"stage":"ステージ5 論理の3パターン","concept":"接続詞の使い分け","type":"choice","q":"練習した。 ＿＿ しあいに 負けた。<br>＿＿に入る言葉は？","opts":["しかし","だから","つまり"],"ans":0,"explain":"「しかし」が正解。前後の関係で決まるよ。","hints":[["logi","前と後ろの 関係を考えよう。"],["kame","入れて読んで しぜんなのは？"],["nonta","だから／しかし／つまり のどれかな。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどが指す内容","type":"tap","q":"こそあど言葉が さす言葉を さがそう","tokens":["公園に","犬が","いた。","それは","白かった。"],"steps":[{"prompt":"「それ」がさす言葉をタップ","ans":[1],"cls":"sel"}],"hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどが指す内容","type":"tap","q":"こそあど言葉が さす言葉を さがそう","tokens":["机の上に","本が","ある。","これは","兄のだ。"],"steps":[{"prompt":"「これ」がさす言葉をタップ","ans":[1],"cls":"sel"}],"hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどが指す内容","type":"tap","q":"こそあど言葉が さす言葉を さがそう","tokens":["赤い","風船を","買った。","それを","妹に","あげた。"],"steps":[{"prompt":"「それ」がさす言葉をタップ","ans":[1],"cls":"sel"}],"hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどが指す内容","type":"tap","q":"こそあど言葉が さす言葉を さがそう","tokens":["山が","見える。","あそこまで","歩こう。"],"steps":[{"prompt":"「あそこ」がさす言葉をタップ","ans":[0],"cls":"sel"}],"hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどが指す内容","type":"tap","q":"こそあど言葉が さす言葉を さがそう","tokens":["パンを","食べた。","それは","おいしかった。"],"steps":[{"prompt":"「それ」がさす言葉をタップ","ans":[0],"cls":"sel"}],"hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどの確認","type":"choice","q":"公園に 犬が いた。それは 白かった。<br>「それ」は「犬」を さしている？","opts":["○ 正しい","× ちがう"],"ans":0,"explain":"こそあどは 前に出た言葉を さすよ。","hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどの確認","type":"choice","q":"机に 本が ある。これは 兄のだ。<br>「これ」は「本」を さしている？","opts":["○ 正しい","× ちがう"],"ans":0,"explain":"こそあどは 前に出た言葉を さすよ。","hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどの確認","type":"choice","q":"パンを 食べた。それは おいしかった。<br>「それ」は「パン」を さしている？","opts":["○ 正しい","× ちがう"],"ans":0,"explain":"こそあどは 前に出た言葉を さすよ。","hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ6 こそあど言葉","concept":"こそあどの確認","type":"choice","q":"山が 見える。あそこまで 歩く。<br>「あそこ」は「山」を さしている？","opts":["○ 正しい","× ちがう"],"ans":0,"explain":"こそあどは 前に出た言葉を さすよ。","hints":[["vicky","前の文に もどって 読もう。"],["mimi","「それ」を じっさいの言葉に おきかえてみて。"],["logi","こそあどは 前に出た言葉を さすよ。"]]},{"stage":"ステージ7 話題をつかむ","concept":"話題の特定","type":"choice","q":"パンダは 竹を 食べます。パンダは 中国に います。<br>何について 書いてある？","opts":["パンダ","竹","中国"],"ans":0,"explain":"くり返し 出てくる言葉が 話題だよ。","hints":[["logi","くり返し 出てくる言葉は？"],["mimi","何について 書いてあるかな？"],["vicky","いちばん だいじな言葉をさがそう。"]]},{"stage":"ステージ7 話題をつかむ","concept":"話題の特定","type":"choice","q":"夏は あついです。夏には 海に 行きます。<br>何について 書いてある？","opts":["夏","海","冬"],"ans":0,"explain":"くり返し 出てくる言葉が 話題だよ。","hints":[["logi","くり返し 出てくる言葉は？"],["mimi","何について 書いてあるかな？"],["vicky","いちばん だいじな言葉をさがそう。"]]},{"stage":"ステージ7 話題をつかむ","concept":"話題の特定","type":"choice","q":"この 本は おもしろい。この 本は 長い。<br>何について 書いてある？","opts":["この本","えいが","作文"],"ans":0,"explain":"くり返し 出てくる言葉が 話題だよ。","hints":[["logi","くり返し 出てくる言葉は？"],["mimi","何について 書いてあるかな？"],["vicky","いちばん だいじな言葉をさがそう。"]]},{"stage":"ステージ7 話題をつかむ","concept":"話題の特定","type":"choice","q":"電車は 速い。電車は 便利だ。<br>何について 書いてある？","opts":["電車","バス","じてんしゃ"],"ans":0,"explain":"くり返し 出てくる言葉が 話題だよ。","hints":[["logi","くり返し 出てくる言葉は？"],["mimi","何について 書いてあるかな？"],["vicky","いちばん だいじな言葉をさがそう。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの推論","type":"choice","q":"弟は ドアを バタンと 閉めた。<br>どんな 気持ち？","opts":["おこっている","よろこんでいる","ねむい"],"ans":0,"explain":"動作や ようすの言葉から 気持ちが わかるよ。","hints":[["mimi","どんな 動作や 言葉が あった？"],["vicky","その言葉から 気持ちを 考えよう。"],["logi","行動が 気持ちの ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの推論","type":"choice","q":"妹は にっこり わらった。<br>どんな 気持ち？","opts":["うれしい","かなしい","こわい"],"ans":0,"explain":"動作や ようすの言葉から 気持ちが わかるよ。","hints":[["mimi","どんな 動作や 言葉が あった？"],["vicky","その言葉から 気持ちを 考えよう。"],["logi","行動が 気持ちの ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの推論","type":"choice","q":"ぼくは しくしく 泣いた。<br>どんな 気持ち？","opts":["かなしい","うれしい","おこっている"],"ans":0,"explain":"動作や ようすの言葉から 気持ちが わかるよ。","hints":[["mimi","どんな 動作や 言葉が あった？"],["vicky","その言葉から 気持ちを 考えよう。"],["logi","行動が 気持ちの ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの推論","type":"choice","q":"100点を とって、とび上がった。<br>どんな 気持ち？","opts":["うれしい","かなしい","ねむい"],"ans":0,"explain":"動作や ようすの言葉から 気持ちが わかるよ。","hints":[["mimi","どんな 動作や 言葉が あった？"],["vicky","その言葉から 気持ちを 考えよう。"],["logi","行動が 気持ちの ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの推論","type":"choice","q":"犬が いなくなって、下を 向いた。<br>どんな 気持ち？","opts":["かなしい","うれしい","おこっている"],"ans":0,"explain":"動作や ようすの言葉から 気持ちが わかるよ。","hints":[["mimi","どんな 動作や 言葉が あった？"],["vicky","その言葉から 気持ちを 考えよう。"],["logi","行動が 気持ちの ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの推論","type":"choice","q":"大きな 音に、ビクッと した。<br>どんな 気持ち？","opts":["おどろいた","うれしい","ねむい"],"ans":0,"explain":"動作や ようすの言葉から 気持ちが わかるよ。","hints":[["mimi","どんな 動作や 言葉が あった？"],["vicky","その言葉から 気持ちを 考えよう。"],["logi","行動が 気持ちの ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの根拠さがし","type":"tap","q":"気持ちの“しるし”になる言葉は？","tokens":["弟は","ドアを","バタンと","閉めた。"],"steps":[{"prompt":"気持ちが わかる言葉をタップ","ans":[2],"cls":"sel"}],"hints":[["mimi","気持ちが わかる言葉は どれ？"],["vicky","その一語を よく見てね。"],["logi","ようすや 音の言葉が ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの根拠さがし","type":"tap","q":"気持ちの“しるし”になる言葉は？","tokens":["妹は","にっこり","わらった。"],"steps":[{"prompt":"気持ちが わかる言葉をタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","気持ちが わかる言葉は どれ？"],["vicky","その一語を よく見てね。"],["logi","ようすや 音の言葉が ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの根拠さがし","type":"tap","q":"気持ちの“しるし”になる言葉は？","tokens":["ぼくは","しくしく","泣いた。"],"steps":[{"prompt":"気持ちが わかる言葉をタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","気持ちが わかる言葉は どれ？"],["vicky","その一語を よく見てね。"],["logi","ようすや 音の言葉が ヒントだよ。"]]},{"stage":"ステージ8 気持ちを読む","concept":"気持ちの根拠さがし","type":"tap","q":"気持ちの“しるし”になる言葉は？","tokens":["大きな 音に、","ビクッと","した。"],"steps":[{"prompt":"気持ちが わかる言葉をタップ","ans":[1],"cls":"sel"}],"hints":[["mimi","気持ちが わかる言葉は どれ？"],["vicky","その一語を よく見てね。"],["logi","ようすや 音の言葉が ヒントだよ。"]]}];
+
+const CHAR = {
+  nonta:{n:"ノンタ",e:"🦝"}, vicky:{n:"ビッキー",e:"🐿️"}, mimi:{n:"ミミちゃん",e:"🐰"},
+  logi:{n:"ロジ博士",e:"🦉"}, kame:{n:"カメ吉",e:"🐢"}
+};
+const CLEAR_STREAK = 3;   // 同じたんげんを 3回れんぞく正解で つぎへ
+
+/* ---------- 永続化 ---------- */
+const STORE_KEY='ronri_v1';
+function loadStore(){ try{return JSON.parse(localStorage.getItem(STORE_KEY))||{}}catch(e){return {}} }
+function saveStore(){ try{localStorage.setItem(STORE_KEY, JSON.stringify(store))}catch(e){} }
+let store = loadStore();
+store.days   = store.days   || {};
+store.totals = store.totals || {a:0,c:0,t:0};
+store.cleared = store.cleared || {};                  // クリアした単元
+if(typeof store.unitIdx!=='number') store.unitIdx=0;  // いま取り組む単元（続きから再開）
+
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+/* ---------- 状態（単元じゅんに進む・復習なし） ---------- */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+// 同じタイプ（＝同じ概念）の問題を「単元」としてまとめる。出てきた順。
+const UNITS=[];
+PROBLEMS.forEach((p,i)=>{ let u=UNITS.find(x=>x.concept===p.concept); if(!u){u={concept:p.concept,stage:p.stage,idxs:[]};UNITS.push(u);} u.idxs.push(i); });
+let curList=[];      // 現在の単元の問題index
+let curPtr=0;        // 現在の単元内の位置
+let consec=0;        // 現在の単元での連続正解
+let unitCleared=false;
+let sel = {};
+let tStart = 0;
+let answered = false;
+
+function enterUnit(){
+  consec=0; unitCleared=false; curPtr=0;
+  if(store.unitIdx<UNITS.length) curList=shuffle(UNITS[store.unitIdx].idxs);
+}
+
+const app=document.getElementById('app');
+
+function updateChrome(){
+  const total=UNITS.length, done=Math.min(store.unitIdx,total);
+  document.getElementById('progress').style.width=((done+consec/CLEAR_STREAK)/total*100)+'%';
+  const dots='●'.repeat(consec)+'○'.repeat(Math.max(0,CLEAR_STREAK-consec));
+  const uname=store.unitIdx<total?UNITS[store.unitIdx].concept:'—';
+  document.getElementById('badges').innerHTML=
+    `たんげん ${Math.min(store.unitIdx+1,total)}/${total}：${uname}　<span class="mastery">れんぞく ${dots}</span>`;
+}
+
+/* ================= れんしゅう ================= */
+function render(){
+  if(store.unitIdx>=UNITS.length){ renderAllDone(); return; }
+  if(!curList.length) enterUnit();
+  updateChrome();
+  sel={}; answered=false;
+  const p=PROBLEMS[curList[curPtr]];
+  let body='';
+  if(p.type==='group')   body=viewGroup(p);
+  if(p.type==='pyramid') body=viewPyramid(p);
+  if(p.type==='choice')  body=viewChoice(p);
+  if(p.type==='tap')     body=viewTap(p);
+  if(p.type==='link')    body=viewLink(p);
+  if(p.type==='sign')    body=viewSign(p);
+
+  app.innerHTML=`
+    <div class="stagepill">${p.stage}</div>
+    <div class="card">
+      <div class="q">${p.q||''}</div>
+      ${p.sub?`<div class="sub">${p.sub}</div>`:''}
+      <div id="qbody">${body}</div>
+      <button class="hintbtn" id="hintbtn">🔑 ヒント</button>
+      <div class="hint" id="hint"></div>
+      <div class="feedback" id="fb"></div>
+      <div class="explain" id="explain"></div>
+      <div class="actions">
+        <button class="btn reset" id="reset">やりなおし</button>
+        <button class="btn primary" id="check">こたえ合わせ</button>
+        <button class="btn ghost" id="next" style="display:none">つぎへ →</button>
+      </div>
+    </div>`;
+  wire(p);
+  tStart=performance.now();
+}
+
+function viewGroup(p){
+  sel.place={};
+  const chips=p.items.map((it,i)=>`<span class="chip" data-w="${i}">${it.w}</span>`).join('');
+  const boxes=p.boxes.map((b,bi)=>`<div class="box" data-box="${bi}"><h4>${b}</h4><div class="drop" data-drop="${bi}"></div></div>`).join('');
+  return `<div class="pool" id="pool">${chips}</div><div class="boxes">${boxes}</div>`;
+}
+function viewPyramid(p){
+  sel.pplace={};
+  const order=shuffle(p.pool.map((x,i)=>i));
+  const pool=order.map(i=>`<span class="chip" data-w="${i}">${p.pool[i].w}</span>`).join('');
+  const levels=p.levels.map((l,li)=>`<div class="plevel pl${li}" data-lv="${li}"><span class="pnote">${l}</span></div>`).join('');
+  return `<div class="pool" id="pool">${pool}</div><div class="pyramid">${levels}</div>`;
+}
+function viewChoice(p){
+  return `<div class="opts">${p.opts.map((o,i)=>`<div class="opt" data-i="${i}">${o}</div>`).join('')}</div>`;
+}
+function viewTap(p){
+  sel.step=0; sel.pick=null;
+  const toks=p.tokens.map((t,i)=>`<span class="tok" data-i="${i}">${t}</span>`).join('');
+  return `<div class="sub" id="stepprompt">${p.steps[0].prompt}</div><div class="sentence" id="sent">${toks}</div>`;
+}
+function viewLink(p){
+  sel.from=null; sel.to=null;
+  const toks=p.tokens.map((t,i)=>`<span class="tok" data-i="${i}">${t}</span>`).join('');
+  return `<div class="sub" id="stepprompt">${p.fromPrompt}</div>
+          <div style="position:relative"><svg id="arrowlayer"></svg><div class="sentence" id="sent">${toks}</div></div>`;
+}
+function viewSign(p){
+  return `<div class="signsent">${p.s1} <span class="gap"></span> ${p.s2}</div>
+    <div class="signs">
+      <div class="sign eq" data-s="eq">＝<small>つまり／たとえば</small></div>
+      <div class="sign ct" data-s="ct">↔<small>しかし</small></div>
+      <div class="sign cs" data-s="cs">→<small>だから</small></div>
+    </div>`;
+}
+
+function wire(p){
+  const hintbtn=document.getElementById('hintbtn');
+  const hint=document.getElementById('hint');
+  let hintStep=0;
+  hintbtn.onclick=()=>{
+    if(hintStep>=p.hints.length)return;
+    const [who,txt]=p.hints[hintStep++]; const c=CHAR[who];
+    hint.innerHTML+=`<div><b>${c.e} ${c.n}：</b>${txt}</div>`;
+    hint.classList.add('show');
+    if(hintStep>=p.hints.length) hintbtn.textContent='🔑 ヒントぜんぶ出たよ';
+  };
+
+  if(p.type==='group')   wireGroup(p);
+  if(p.type==='pyramid') wirePyramid(p);
+  if(p.type==='choice')  wireChoice(p);
+  if(p.type==='tap')     wireTap(p);
+  if(p.type==='link')    wireLink(p);
+  if(p.type==='sign')    wireSign(p);
+
+  document.getElementById('reset').onclick=()=>{ if(!answered) render(); };
+  document.getElementById('check').onclick=()=>doCheck(p);
+  document.getElementById('next').onclick=()=>{
+    if(unitCleared){ store.unitIdx++; saveStore(); enterUnit(); }
+    else { curPtr=(curPtr+1)%curList.length; }
+    render();
+  };
+}
+
+function wireGroup(p){
+  let picked=null;
+  const pool=document.getElementById('pool');
+  // 置いたカードも タップで えらび直せる（別の箱へ 移動できる）
+  pool.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+    if(answered)return;
+    pool.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel'); picked=+c.dataset.w;
+  });
+  document.querySelectorAll('.box').forEach(b=>b.onclick=()=>{
+    if(answered||picked==null)return;
+    const bi=+b.dataset.box, w=picked;
+    const old=document.querySelector(`.box .drop .chip[data-w="${w}"]`); if(old) old.remove();
+    sel.place[w]=bi;
+    const chip=pool.querySelector(`.chip[data-w="${w}"]`);
+    chip.classList.remove('sel'); chip.classList.add('placed');
+    const clone=document.createElement('span');
+    clone.className='chip'; clone.textContent=p.items[w].w; clone.dataset.w=w;
+    clone.style.pointerEvents='none';   // 箱のタップを じゃましない
+    b.querySelector('.drop').appendChild(clone);
+    picked=null;
+  });
+}
+function wirePyramid(p){
+  let picked=null;
+  const pool=document.getElementById('pool');
+  pool.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+    if(answered||c.classList.contains('placed'))return;
+    pool.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel'); picked=+c.dataset.w;
+  });
+  document.querySelectorAll('.plevel').forEach(l=>l.onclick=()=>{
+    if(answered||picked==null)return;
+    const lv=+l.dataset.lv;
+    if(sel.pplace[lv]!=null){ pool.querySelector(`.chip[data-w="${sel.pplace[lv]}"]`).classList.remove('placed'); }
+    sel.pplace[lv]=picked;
+    l.innerHTML=`<span>${p.pool[picked].w}</span>`;
+    pool.querySelector(`.chip[data-w="${picked}"]`).classList.add('placed');
+    picked=null;
+  });
+}
+function wireChoice(p){
+  document.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{
+    if(answered)return;
+    document.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+    o.classList.add('sel'); sel.choice=+o.dataset.i;
+  });
+}
+function wireTap(p){
+  document.querySelectorAll('#sent .tok').forEach(t=>t.onclick=()=>{
+    if(answered||t.classList.contains('locked'))return;
+    const step=p.steps[sel.step];
+    document.querySelectorAll('#sent .tok:not(.locked)').forEach(x=>x.classList.remove('sel','sel2'));
+    t.classList.add(step.cls); sel.pick=+t.dataset.i;
+  });
+}
+function wireLink(p){
+  const sent=document.getElementById('sent');
+  sent.querySelectorAll('.tok').forEach(t=>t.onclick=()=>{
+    if(answered)return;
+    const i=+t.dataset.i;
+    if(sel.from==null){ sent.querySelectorAll('.tok').forEach(x=>x.classList.remove('src')); t.classList.add('src'); sel.from=i; sel.to=null; clearArrow(); }
+    else if(sel.to==null && i!==sel.from){ sel.to=i; drawArrow(sel.from,sel.to); }
+    else { sent.querySelectorAll('.tok').forEach(x=>x.classList.remove('src')); t.classList.add('src'); sel.from=i; sel.to=null; clearArrow(); }
+  });
+}
+function wireSign(p){
+  document.querySelectorAll('.sign').forEach(s=>s.onclick=()=>{
+    if(answered)return;
+    document.querySelectorAll('.sign').forEach(x=>x.classList.remove('sel'));
+    s.classList.add('sel'); sel.sign=s.dataset.s;
+  });
+}
+
+function clearArrow(){const l=document.getElementById('arrowlayer'); if(l) l.innerHTML='';}
+function drawArrow(fromI,toI){
+  const layer=document.getElementById('arrowlayer'); if(!layer)return;
+  const cont=layer.parentElement.getBoundingClientRect();
+  const a=document.querySelector(`#sent .tok[data-i="${fromI}"]`).getBoundingClientRect();
+  const b=document.querySelector(`#sent .tok[data-i="${toI}"]`).getBoundingClientRect();
+  const x1=a.left+a.width/2-cont.left, y1=a.top-cont.top;
+  const x2=b.left+b.width/2-cont.left, y2=b.top-cont.top;
+  layer.setAttribute('width',cont.width); layer.setAttribute('height',cont.height);
+  layer.innerHTML=`<defs><marker id="ah" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#5566cc"/></marker></defs>
+    <path d="M${x1},${y1} C ${x1},${y1-30} ${x2},${y2-30} ${x2},${y2}" stroke="#5566cc" stroke-width="3" fill="none" marker-end="url(#ah)"/>`;
+}
+
+/* ---------- 判定（1回制：間違えたら即こたえ） ---------- */
+function doCheck(p){
+  if(answered)return;
+  let correct=false;
+  if(p.type==='group'){
+    if(Object.keys(sel.place).length!==p.items.length){ toast('まだ入れていないカードがあるよ'); return; }
+    correct=p.items.every((it,i)=>sel.place[i]===it.box);
+  }
+  if(p.type==='pyramid'){
+    if(Object.keys(sel.pplace).length!==p.levels.length){ toast('ぜんぶの段に入れてね'); return; }
+    correct=p.pool.every((x,i)=>sel.pplace[x.lv]===i);
+  }
+  if(p.type==='choice'){ if(sel.choice==null){ toast('えらんでね'); return; } correct=sel.choice===p.ans; }
+  if(p.type==='tap'){
+    if(sel.pick==null){ toast('タップしてね'); return; }
+    const step=p.steps[sel.step];
+    const stepOk=step.ans.includes(sel.pick);
+    if(stepOk && sel.step<p.steps.length-1){
+      const t=document.querySelector(`#sent .tok[data-i="${sel.pick}"]`);
+      t.classList.add('locked','ok'); t.classList.remove('sel','sel2');
+      sel.step++; sel.pick=null;
+      document.getElementById('stepprompt').innerHTML=p.steps[sel.step].prompt;
+      const fb=document.getElementById('fb'); fb.textContent='①せいかい！つぎの言葉をタップ'; fb.className='feedback ok';
+      return;
+    }
+    correct=stepOk;
+  }
+  if(p.type==='link'){ if(sel.from==null||sel.to==null){ toast('矢印をむすんでね'); return; } correct=(sel.from===p.from&&sel.to===p.to); }
+  if(p.type==='sign'){ if(sel.sign==null){ toast('記号をえらんでね'); return; } correct=sel.sign===p.ans; }
+
+  answered=true;
+  const elapsed=performance.now()-tStart;
+  const justCleared=recordAnswer(p, correct, elapsed);
+
+  const fb=document.getElementById('fb');
+  fb.textContent = correct ? 'せいかい！' : 'ざんねん…こたえを見てみよう';
+  fb.className = 'feedback ' + (correct?'ok':'ng');
+  revealAnswer(p, correct);
+  document.getElementById('reset').style.display='none';
+  document.getElementById('check').style.display='none';
+  document.getElementById('next').style.display='block';
+  if(correct) cutin(p, justCleared);
+}
+
+function revealAnswer(p, correct){
+  const ex=document.getElementById('explain'); let html='';
+  if(p.type==='choice'){
+    document.querySelectorAll('.opt').forEach((o,i)=>{ if(i===p.ans)o.classList.add('ok'); else if(i===sel.choice)o.classList.add('ng'); });
+    html=`こたえ：<b>${p.opts[p.ans]}</b>`+(p.explain?`<br>${p.explain}`:'');
+  }
+  if(p.type==='sign'){
+    document.querySelector(`.sign[data-s="${p.ans}"]`).classList.add('sel');
+    html=p.explainByAns[p.ans];
+  }
+  if(p.type==='tap'){
+    const step=p.steps[sel.step];
+    step.ans.forEach(i=>document.querySelector(`#sent .tok[data-i="${i}"]`).classList.add('ok'));
+    if(!correct && sel.pick!=null && !step.ans.includes(sel.pick)) document.querySelector(`#sent .tok[data-i="${sel.pick}"]`).classList.add('ng');
+    html=`正しい言葉を みどりで しめしたよ。`;
+  }
+  if(p.type==='link'){
+    drawArrow(p.from,p.to);
+    document.querySelector(`#sent .tok[data-i="${p.from}"]`).classList.add('ok');
+    document.querySelector(`#sent .tok[data-i="${p.to}"]`).classList.add('ok');
+    html=`「${p.tokens[p.from]}」→「${p.tokens[p.to]}」だよ。`;
+  }
+  if(p.type==='group'){
+    document.querySelectorAll('.box .drop .chip').forEach(c=>{ const w=+c.dataset.w; c.classList.add(sel.place[w]===p.items[w].box?'ok':'ng'); });
+    html='正しい分けかたを 色でしめしたよ。';
+  }
+  if(p.type==='pyramid'){
+    document.querySelectorAll('.plevel').forEach(l=>{ const lv=+l.dataset.lv; const w=sel.pplace[lv]; l.style.borderColor=(p.pool[w]&&p.pool[w].lv===lv)?'#54c06a':'#e63946'; });
+    html='上から 広い→せまい の順だよ。';
+  }
+  if(html){ ex.innerHTML=html; ex.classList.add('show'); }
+}
+
+function recordAnswer(p, ok, elapsedMs){
+  unitCleared=false;
+  if(ok){
+    consec++;
+    if(consec>=CLEAR_STREAK && store.unitIdx<UNITS.length){ store.cleared[UNITS[store.unitIdx].concept]=true; unitCleared=true; }
+  } else { consec=0; }
+  const d=todayStr();
+  store.days[d]=store.days[d]||{a:0,c:0,t:0};
+  store.days[d].a++; if(ok)store.days[d].c++; store.days[d].t+=elapsedMs;
+  store.totals.a++; if(ok)store.totals.c++; store.totals.t+=elapsedMs;
+  saveStore(); updateChrome();
+  return unitCleared;
+}
+
+function cutin(p, justCleared){
+  const praises=[["nonta","よく読めたね！"],["nonta","かんぺき！"],["mimi","できたね！"],["logi","論理的だ！"],["vicky","ばっちり！"]];
+  const [who,msg]=praises[Math.random()*praises.length|0];
+  document.getElementById('cutem').textContent=CHAR[who].e;
+  document.getElementById('cutmsg').textContent=msg;
+  document.getElementById('cutmst').textContent = justCleared ? `★「${p.concept}」クリア！つぎのたんげんへ` : `れんぞく ${consec}/${CLEAR_STREAK}`;
+  const ci=document.getElementById('cutin'); ci.style.display='flex';
+  setTimeout(()=>ci.style.display='none', justCleared?1700:1000);
+}
+
+let toastT=null;
+function toast(m){ const fb=document.getElementById('fb'); fb.textContent=m; fb.className='feedback ng';
+  clearTimeout(toastT); toastT=setTimeout(()=>{ if(fb.textContent===m)fb.textContent=''; },1500); }
+
+function renderAllDone(){
+  document.getElementById('progress').style.width='100%';
+  document.getElementById('badges').innerHTML='ぜんぶ クリア！';
+  app.innerHTML=`<div class="card done">
+    <div class="em">🎉🦝🐿️🐰🦉🐢</div>
+    <h2>ぜんぶの たんげんを クリア！</h2>
+    <p class="muted">よく がんばったね。「きろく」で ふりかえろう。</p>
+    <button class="btn primary" style="max-width:240px;margin:10px auto 0" onclick="restartAll()">はじめから やり直す</button>
+  </div>`;
+}
+function restartAll(){ store.unitIdx=0; store.cleared={}; saveStore(); enterUnit(); render(); }
+
+/* ================= きろく ================= */
+function showRecord(){
+  document.getElementById('navR').classList.add('on');
+  document.getElementById('navP').classList.remove('on');
+  document.getElementById('progress').parentElement.style.visibility='hidden';
+  const t=store.totals;
+  const rate=t.a? Math.round(t.c/t.a*100):0;
+  const totalSec=Math.round(t.t/1000);
+  const avgSec=t.a? (t.t/t.a/1000).toFixed(1):'0.0';
+  const totalMin=Math.floor(totalSec/60), totRem=totalSec%60;
+
+  const days=Object.keys(store.days).sort();
+  const maxA=Math.max(1,...days.map(d=>store.days[d].a));
+  const dayRows = days.length? days.slice().reverse().map(d=>{
+    const o=store.days[d]; const w=Math.round(o.a/maxA*100);
+    const md=d.slice(5).replace('-','/');
+    return `<div class="day"><div class="d">${md}</div><div class="track"><i style="width:${w}%"></i></div><div class="v">${o.a}問<br><span style="color:#2a9d3c">正解${o.c}</span></div></div>`;
+  }).join('') : `<p class="muted">まだ記録がありません。れんしゅうを始めよう。</p>`;
+
+  const cl=Object.keys(store.cleared);
+  const clHtml = cl.length? `<div class="mstlist">${cl.map(m=>`<span>★${m}</span>`).join('')}</div>` : `<p class="muted">まだクリアした単元はありません（同じタイプを3回れんぞく正解でクリア）。</p>`;
+
+  app.innerHTML=`<div class="rec">
+    <h2>📒 きろく</h2>
+    <div class="tiles">
+      <div class="tile"><div class="n">${t.a}</div><div class="l">処理数（といた数）</div></div>
+      <div class="tile g"><div class="n">${t.c}</div><div class="l">正解数</div></div>
+      <div class="tile"><div class="n">${rate}<small>%</small></div><div class="l">正解率</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="n">${totalMin}<small>分</small>${totRem}<small>秒</small></div><div class="l">処理時間（合計）</div></div>
+      <div class="tile"><div class="n">${avgSec}<small>秒</small></div><div class="l">1問あたり平均</div></div>
+      <div class="tile g"><div class="n">${Math.min(store.unitIdx,UNITS.length)}<small>/${UNITS.length}</small></div><div class="l">クリア単元</div></div>
+    </div>
+    <div class="daysec">
+      <h3>日ごとの取り組み数</h3>
+      ${dayRows}
+    </div>
+    <div class="daysec">
+      <h3>クリアした単元</h3>
+      ${clHtml}
+    </div>
+    <div class="actions"><button class="btn ghost" onclick="resetAll()">記録をぜんぶ消す</button></div>
+  </div>`;
+}
+function resetAll(){
+  if(!confirm('記録・クリア状況・進み具合を ぜんぶ消します。よろしいですか？'))return;
+  store={days:{},totals:{a:0,c:0,t:0},cleared:{},unitIdx:0}; saveStore(); consec=0; enterUnit(); showRecord(); updateChrome();
+}
+
+/* 進行バーはれんしゅう時だけ表示 */
+function showPractice(){
+  document.getElementById('navP').classList.add('on');
+  document.getElementById('navR').classList.remove('on');
+  document.getElementById('progress').parentElement.style.visibility='visible';
+  render();
+}
+
+enterUnit(); render();
+</script>
+</body>
+</html>
