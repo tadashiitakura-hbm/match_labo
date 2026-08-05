@@ -183,6 +183,17 @@
   .home-card .stat b{font-family:'Hachi Maru Pop',cursive;font-size:20px;color:var(--pink-d);}
   .home-card.ch .stat b{color:var(--blue-d);}
   .home-hero{text-align:center;font-size:14px;color:#8a8a95;margin:2px auto 14px;}
+  .home-weak{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:560px;margin:0 auto 16px;}
+  .home-weak .wbox{flex:1 1 170px;border-radius:16px;padding:12px 14px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.07);}
+  .home-weak .wbox.bad{background:linear-gradient(135deg,#fff0f0,#ffe6ee);}
+  .home-weak .wbox.good{background:linear-gradient(135deg,#eefaf0,#e6fff2);}
+  .home-weak .wbox .n{font-family:'Hachi Maru Pop',cursive;font-size:36px;line-height:1;}
+  .home-weak .wbox.bad .n{color:var(--red);}
+  .home-weak .wbox.good .n{color:#2c8f45;}
+  .home-weak .wbox .l{font-size:12px;color:#777;margin-top:4px;}
+  .home-card.wc h3{color:#c0392b;} .home-card.wd h3{color:#b8860b;}
+  .home-card.wc .stat b,.home-card.wd .stat b{color:#c0392b;}
+  .home-card.wc:hover{border-color:#ffcaca;} .home-card.wd:hover{border-color:#ffe6ad;}
   /* ===== チャレンジ大タイマー ===== */
   .chHeader{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;background:var(--card);border-radius:18px;
     padding:14px 16px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,.07);}
@@ -215,6 +226,8 @@
   .rec-table th,.rec-table td{border-bottom:1px solid #eee;padding:7px 8px;font-size:13px;text-align:center;}
   .rec-table th{color:#8a8a95;font-weight:500;background:#faf9ff;}
   .rec-table tr.best td{background:#fff3f8;font-weight:700;}
+  .rec-table td.tl{text-align:left;}
+  .reset-rec{margin-top:10px;background:#ffe0e0;color:#b02020;border:none;border-radius:10px;padding:8px 14px;font-family:'Kiwi Maru',serif;font-size:13px;cursor:pointer;}
   .rec-empty{color:#b0b0bb;font-size:13px;text-align:center;padding:16px;}
   .kpi-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
   .kpi{flex:1 1 150px;background:linear-gradient(135deg,#fff0f6,#eef6ff);border-radius:14px;padding:12px;text-align:center;}
@@ -224,11 +237,13 @@
 </head>
 <body>
   <h1>解法チャレンジ 4年上</h1>
-  <div class="sub">予習シリーズ 4年上 ／ 習得モード（間隔をあけてくり返し）・チャレンジモード（全解法タイムアタック）</div>
+  <div class="sub">予習シリーズ 4年上 ／ 苦手チェック・にがて復習・習得モード・チャレンジ（ランダム出題）</div>
 
   <div class="topnav" id="topnav">
     <button class="navbtn" data-view="home">🏠 ホーム</button>
     <button class="navbtn" data-view="mastery">📚 習得モード</button>
+    <button class="navbtn" data-view="weakcheck">🔍 苦手チェック</button>
+    <button class="navbtn" data-view="weakdrill">🔥 にがて復習</button>
     <button class="navbtn" data-view="challenge">⚡ チャレンジ</button>
     <button class="navbtn" data-view="records">📈 きろく</button>
   </div>
@@ -236,7 +251,18 @@
   <!-- ===== ホーム ===== -->
   <div id="homeView">
     <div class="home-hero" id="homeHero"></div>
+    <div class="home-weak" id="homeWeak"></div>
     <div class="home-cards">
+      <div class="home-card wc" id="cardWeakCheck">
+        <h3>🔍 苦手チェック</h3>
+        <p>全<b id="wcTotal">73</b>解法を <b>1問ずつ通して</b> 解いて、いまの苦手をあぶり出します。<b>まちがえた問題</b>と <b>1分をこえた問題</b> に、自動で🚩がつきます。</p>
+        <div class="stat" id="weakCheckStat"></div>
+      </div>
+      <div class="home-card wd" id="cardWeakDrill">
+        <h3>🔥 にがて復習</h3>
+        <p>🚩がついた問題だけを毎日くり返し。<b>60秒いない</b>で解けて、<b>直近10問の正答率が90%いじょう</b>になったら🚩が消えます。</p>
+        <div class="stat" id="weakDrillStat"></div>
+      </div>
       <div class="home-card" id="cardMastery">
         <h3>📚 習得モード</h3>
         <p>3問れんぞく正解で「習得」。習得した解法は <b>1日後・3日後・1週間後・その後2週間ごと</b> にまた出てきて、くり返しで完全定着させます。</p>
@@ -244,7 +270,7 @@
       </div>
       <div class="home-card ch" id="cardChallenge">
         <h3>⚡ チャレンジモード</h3>
-        <p>最初の単元から <b>1解法1問</b> ですべて解くタイムアタック。残り時間と前回の記録を見ながら、前回のタイムをこえよう！スキップもできます。</p>
+        <p>全解法を <b>ランダムな順</b> に <b>1解法1問</b> で解くタイムアタック。むずかしい問題は <b>スキップ</b> でき、スキップした問題は最後にまた出てきます。前回のタイムをこえよう！</p>
         <div class="stat" id="challengeStat">まだ記録はありません</div>
       </div>
     </div>
@@ -309,6 +335,7 @@
             </div>
           </div>
         </div>
+        <div class="card mode-high" id="doneScreen" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -2613,8 +2640,38 @@ function load(){
   try{ var d=JSON.parse(localStorage.getItem(KEY)); if(d&&d.srs){ return norm(d); } }catch(e){}
   return norm({});
 }
-function norm(d){ d.srs=d.srs||{}; d.stats=d.stats||{}; d.mDaily=d.mDaily||{}; d.challenge=d.challenge||{best:null,history:[]}; d.menu=d.menu||null; return d; }
+function norm(d){ d.srs=d.srs||{}; d.stats=d.stats||{}; d.mDaily=d.mDaily||{}; d.challenge=d.challenge||{best:null,history:[]}; d.menu=d.menu||null; d.flags=d.flags||{}; d.flagLog=d.flagLog||[]; return d; }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){} }
+
+/* ---- 苦手（フラグ）管理 ---- */
+var SLOW_SEC=60;            // 60秒いじょう＝おそい（🚩）／60秒みまん＝はやい
+var CLEAR_MIN=5;           // 🚩解除に必要な直近の最低回数
+var flagJustCleared=false;
+function ensureFlag(k){ if(!data.flags[k]) data.flags[k]={on:false,reason:null,since:0,recent:[],clearedAt:0}; return data.flags[k]; }
+function flagOnCount(){ var c=0; PROBLEMS.forEach(function(k){ if(data.flags[k]&&data.flags[k].on)c++; }); return c; }
+function flaggedKeys(){ return PROBLEMS.filter(function(k){ return data.flags[k]&&data.flags[k].on; }); }
+function recentAcc(fl){ var r=fl.recent,n=r.length; if(!n)return 0; var c=0; for(var i=0;i<n;i++)if(r[i].ok)c++; return c/n; }
+function recentAvgSec(fl){ var r=fl.recent,n=r.length; if(!n)return 0; var s=0; for(var i=0;i<n;i++)s+=r[i].sec; return Math.round(s/n); }
+function recordFlag(k, ok, sec){
+  flagJustCleared=false;
+  var fl=ensureFlag(k);
+  fl.recent.push({ok:!!ok,sec:sec,ts:Date.now()}); if(fl.recent.length>10)fl.recent.shift();
+  var slow=(sec>=SLOW_SEC), wrong=!ok;
+  if(wrong||slow){
+    if(!fl.on){ fl.on=true; fl.since=Date.now(); data.flagLog.push({k:k,ts:Date.now(),type:'flag'}); }
+    fl.reason=(wrong&&slow)?'wrong+slow':(wrong?'wrong':'slow');
+  }
+  if(fl.on){
+    var n=fl.recent.length, acc=recentAcc(fl);
+    // 「60秒みまんで正解」かつ「直近(最大10問)の正答率90%いじょう」かつ「直近5回いじょうの記録」で解除
+    if(ok && sec<SLOW_SEC && n>=CLEAR_MIN && acc>=0.9){
+      fl.on=false; fl.reason=null; fl.clearedAt=Date.now();
+      data.flagLog.push({k:k,ts:Date.now(),type:'clear'});
+      flagJustCleared=true;
+    }
+  }
+}
+function clearsWithin(ms){ var now=Date.now(),c=0; (data.flagLog||[]).forEach(function(e){ if(e.type==='clear'&&e.ts>=now-ms)c++; }); return c; }
 function ensureSrs(k){ if(!data.srs[k]) data.srs[k]={status:'new',stage:0,due:0,low:false,high:false}; return data.srs[k]; }
 function ensureStat(k){ if(!data.stats[k]) data.stats[k]={a:0,c:0,t:0}; return data.stats[k]; }
 function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
@@ -2637,25 +2694,36 @@ var view='home', mode=null;
 var current=null,currentKey=null,answered=false,timedOut=false,checkCount=0,cutinBusy=false,transitioning=false;
 var streak=0,hintStage=0,mDiff='low',mKind='learn',pendingAdvance=false;
 var chRemaining=[],chSolved=0,chSkips=0,chTotal=0,chActive=false,chRemainMs=0,chTimer=null,chPaused=false;
-var qStartMs=0,timer=null,timeLeft=0,cutinTimer=null,recentSig={};
+var wcQueue=[],wcIdx=0,wdQueue=[];      // 苦手チェック／にがて復習
+var qStartMs=0,timer=null,timeLeft=0,upSec=0,cutinTimer=null,recentSig={};
 
 /* ============ ルーター ============ */
 function showView(v){
   view=v;
   $('homeView').style.display = v==='home'?'':'none';
-  $('playView').style.display = (v==='mastery'||v==='challenge')?'':'none';
+  $('playView').style.display = (v==='mastery'||v==='challenge'||v==='weakcheck'||v==='weakdrill')?'':'none';
   $('recordsView').style.display = v==='records'?'':'none';
   Array.prototype.forEach.call(document.querySelectorAll('.navbtn'),function(b){ b.classList.toggle('active', b.getAttribute('data-view')===v); });
-  if(v!=='mastery'&&v!=='challenge') clearTimer();
+  clearTimer();
   if(v!=='challenge'){ stopChTimer(); chActive=false; chPaused=false; document.getElementById('chPause').classList.remove('show'); }
 }
 function goHome(){ showView('home'); renderHome(); }
 function goRecords(){ showView('records'); renderRecords(); }
+/* 「おわり画面」は専用コンテナに表示（#qcard の構造・ボタンを壊さない） */
+function showDone(inner){ clearTimer(); var d=$('doneScreen'); d.className='card mode-high'; d.innerHTML=inner; d.style.display=''; qcard.style.display='none'; }
+function hideDone(){ var d=$('doneScreen'); if(d) d.style.display='none'; qcard.style.display=''; }
 
 /* ============ ホーム ============ */
 function renderHome(){
   var mc=masteredCount(), dc=dueCount();
   $('homeHero').textContent = '全'+N+'解法（予習シリーズ4年上）。毎日つづけて完全定着させよう！';
+  var wcT=$('wcTotal'); if(wcT) wcT.textContent=N;
+  var fon=flagOnCount(), res24=clearsWithin(DAY);
+  $('homeWeak').innerHTML =
+    '<div class="wbox bad"><div class="n">'+fon+'</div><div class="l">いまの苦手（🚩）</div></div>'+
+    '<div class="wbox good"><div class="n">'+res24+'</div><div class="l">24時間で解消できた</div></div>';
+  $('weakCheckStat').innerHTML = '全'+N+'解法を1問ずつチェック';
+  $('weakDrillStat').innerHTML = fon>0 ? ('のこりの苦手 <b>'+fon+'</b> 問') : 'いまは苦手なし。まずはチェックを！';
   $('masteryStat').innerHTML = '習得 <b>'+mc+'</b> / '+N+' 解法　・　今日の復習まち <b>'+dc+'</b> 件';
   var ch=data.challenge;
   $('challengeStat').innerHTML = ch.best!=null
@@ -2701,10 +2769,8 @@ function masteryDoneMsg(){
   var d=new Date(next); return 'いまの分はすべて習得＆復習ずみ！つぎの復習は '+(d.getMonth()+1)+'月'+d.getDate()+'日ごろに出てきます。';
 }
 function masteryDone(msg){
-  clearTimer();
-  qcard.className='card mode-high';
-  qcard.innerHTML='<div class="done"><h2>📚 今日はここまで</h2><p>'+msg+'</p>'+
-    '<div style="margin-top:14px;"><button class="b b-check" id="mHome">ホームへ</button> <button class="b b-next" id="mRec">きろくを見る</button></div></div>';
+  showDone('<div class="done"><h2>📚 今日はここまで</h2><p>'+msg+'</p>'+
+    '<div style="margin-top:14px;"><button class="b b-check" id="mHome">ホームへ</button> <button class="b b-next" id="mRec">きろくを見る</button></div></div>');
   $('mHome').onclick=goHome; $('mRec').onclick=goRecords;
   renderSidebar(); renderHome();
 }
@@ -2736,8 +2802,9 @@ function enterChallenge(){
   btnSkip.style.display='';
   startChallenge();
 }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0; var t=a[i];a[i]=a[j];a[j]=t; } return a; }
 function startChallenge(){
-  chRemaining=PROBLEMS.slice(); chSolved=0; chSkips=0; chTotal=N; chActive=true; chPaused=false; chRemainMs=CH_LIMIT_MS;
+  chRemaining=shuffle(PROBLEMS.slice()); chSolved=0; chSkips=0; chTotal=N; chActive=true; chPaused=false; chRemainMs=CH_LIMIT_MS;
   document.getElementById('chPause').classList.remove('show');
   chBestEl.textContent = data.challenge.best!=null ? fmtHMS(data.challenge.best) : '--:--';
   startChTimer();
@@ -2769,12 +2836,11 @@ function finishChallenge(status){
   if(completed && (data.challenge.best==null || elapsed<data.challenge.best)){ data.challenge.best=elapsed; isBest=true; }
   save();
   var head = status==='clear' ? (isBest?'🏆 新記録！':'⚡ クリア！') : status==='abort' ? '■ 中断しました' : '⏰ 時間切れ';
-  qcard.className='card mode-high';
-  qcard.innerHTML='<div class="done"><h2>'+head+'</h2>'+
+  showDone('<div class="done"><h2>'+head+'</h2>'+
     '<div style="font-family:Hachi Maru Pop,cursive;font-size:40px;color:#1f6fb0;margin:6px 0;">'+fmtHMS(elapsed)+'</div>'+
     '<p>'+chSolved+' / '+chTotal+' 問クリア　（スキップ '+chSkips+'）<br>'+
     (data.challenge.best!=null?'ベスト記録：'+fmtHMS(data.challenge.best):'')+'</p>'+
-    '<div style="margin-top:14px;"><button class="b b-check" id="cAgain">もう一度</button> <button class="b b-skip" id="cHome">ホーム</button> <button class="b b-next" id="cRec">きろく</button></div></div>';
+    '<div style="margin-top:14px;"><button class="b b-check" id="cAgain">もう一度</button> <button class="b b-skip" id="cHome">ホーム</button> <button class="b b-next" id="cRec">きろく</button></div></div>');
   $('cAgain').onclick=function(){ enterChallenge(); };
   $('cHome').onclick=goHome;
   $('cRec').onclick=goRecords;
@@ -2787,6 +2853,80 @@ function paintChRemain(){
   chRemainEl.textContent=fmtHMS(chRemainMs);
   var s=chRemainMs/1000;
   chRemainBox.className='bigtime remain'+(s<=300?' danger':(s<=1800?' warn':''));
+}
+
+/* ============ 苦手チェックモード（全問1問ずつ） ============ */
+function enterWeakCheck(){
+  mode='weakcheck'; showView('weakcheck');
+  chHeader.style.display='none'; topbar.style.display=''; sidebar.style.display='none'; drawerToggle.style.display='none';
+  setMenu(false); streakBox.style.display='none';
+  wcQueue=PROBLEMS.slice(); wcIdx=0;
+  nextWeakCheck();
+}
+function nextWeakCheck(){
+  if(wcIdx>=wcQueue.length){ weakCheckDone(); return; }
+  currentKey=wcQueue[wcIdx]; current=genInstance(currentKey);
+  renderCard(); startCountUp();
+}
+function weakCheckDone(){
+  clearTimer(); topbar.style.display='none';
+  var f=flaggedKeys();
+  var list = f.length ? f.map(function(k){return '・'+LABELS[k].split('｜')[1];}).join('<br>') : 'なし！すばらしい！🎉';
+  showDone('<div class="done"><h2>🔍 苦手チェック かんりょう</h2>'+
+    '<p>今回🚩がついた苦手：<b style="color:#c0392b;">'+f.length+'</b> 問</p>'+
+    '<div style="font-size:13px;color:#666;text-align:left;max-width:400px;margin:8px auto;line-height:1.7;">'+list+'</div>'+
+    '<div style="margin-top:14px;">'+(f.length?'<button class="b b-check" id="wGo">🔥 にがて復習をする</button> ':'')+'<button class="b b-next" id="wHome">ホームへ</button></div></div>');
+  var wg=$('wGo'); if(wg) wg.onclick=enterWeakDrill; $('wHome').onclick=goHome;
+  renderHome();
+}
+
+/* ============ にがて復習モード（フラグ問題の反復） ============ */
+function enterWeakDrill(){
+  mode='weakdrill'; showView('weakdrill');
+  chHeader.style.display='none'; topbar.style.display=''; sidebar.style.display='none'; drawerToggle.style.display='none';
+  setMenu(false); streakBox.style.display='none';
+  wdQueue=flaggedKeys();
+  if(wdQueue.length===0){ weakDrillDone(true); return; }
+  nextWeakDrill();
+}
+function nextWeakDrill(){
+  wdQueue=wdQueue.filter(function(k){ return data.flags[k]&&data.flags[k].on; });   // 解除ずみを外す
+  if(wdQueue.length===0){ weakDrillDone(false); return; }
+  currentKey=wdQueue[0]; wdQueue.push(wdQueue.shift());     // ラウンドロビン
+  current=genInstance(currentKey); renderCard(); startCountUp();
+}
+function weakDrillDone(noneAtStart){
+  clearTimer(); topbar.style.display='none';
+  var msg = noneAtStart ? '🚩がついた苦手はいまありません。まずは「🔍 苦手チェック」をしてみよう！' : 'ぜんぶの🚩が消えました！かんぺき！🎉';
+  showDone('<div class="done"><h2>🔥 にがて復習</h2><p>'+msg+'</p>'+
+    '<div style="margin-top:14px;"><button class="b b-check" id="wdHome">ホームへ</button> <button class="b b-next" id="wdRec">きろくを見る</button></div></div>');
+  $('wdHome').onclick=goHome; $('wdRec').onclick=goRecords; renderHome();
+}
+function onCheckWeak(ok){
+  var maxTry=(mode==='weakcheck')?1:MAX_CHECK;
+  if(ok){
+    clearTimer(); answered=true; btnCheck.disabled=true;
+    recordSolve(true,{flag:true});
+    feedback.textContent='せいかい！'; feedback.className='feedback ok'; attemptsEl.textContent='';
+    showSolution(); showNext();
+    if(mode==='weakdrill'&&flagJustCleared) showCutin('🚩 消えた！');
+    else showCutin(CUTIN_OK[(Math.random()*CUTIN_OK.length)|0]);
+    renderHome();
+    return;
+  }
+  var remain=maxTry-checkCount;
+  if(remain>0){
+    feedback.textContent='検算した？（あと '+remain+' 回）'; feedback.className='feedback ng';
+    attemptsEl.textContent='答え合わせ：あと '+remain+' 回';
+    btnCheck.disabled=true; setTimeout(function(){ if(!answered&&!timedOut) btnCheck.disabled=false; },500);
+  } else {
+    clearTimer(); answered=true; btnCheck.disabled=true;
+    recordSolve(false,{flag:true});
+    feedback.textContent=NG_MSG[(Math.random()*NG_MSG.length)|0]; feedback.className='feedback ng';
+    attemptsEl.textContent = (mode==='weakcheck') ? '' : '答え合わせを2回使いました';
+    showSolution(); showNext();
+    renderHome();
+  }
 }
 
 /* ============ 共通：カード描画 ============ */
@@ -2804,16 +2944,26 @@ function genInstance(key){
   return GEN[key](makeRng((Math.random()*1e9)>>>0));
 }
 function renderCard(){
+  hideDone();
   answered=false; timedOut=false; hintStage=0; checkCount=0; pendingAdvance=false; qStartMs=Date.now();
   var key=currentKey;
-  var supportLow=(mode==='mastery'&&mKind==='learn'&&mDiff==='low');
-  qcard.className='card '+(supportLow?'mode-low':'mode-high');
+  var support=(mode==='mastery'&&mKind==='learn'&&mDiff==='low')||(mode==='weakdrill');
+  qcard.className='card '+(support?'mode-low':'mode-high');
   if(mode==='mastery'){
     qnum.style.display=''; difftag.style.display=''; timerEl.style.display='';
     qnum.textContent = mKind==='review' ? '🔁 復習' : ('問題 '+(PROBLEMS.indexOf(key)+1)+' / '+N);
     difftag.textContent = mKind==='review' ? '復習（間かくをあけて定着）' : ('難易度：'+(mDiff==='low'?'低（支援あり）':'高（支援なし）'));
     difftag.className='pill '+(mKind==='review'?'diff-high':(mDiff==='low'?'diff-low':'diff-high'));
     streakBox.style.display=(mKind==='learn')?'':'none';
+  } else if(mode==='weakcheck'||mode==='weakdrill'){
+    qnum.style.display=''; difftag.style.display=''; timerEl.style.display=''; streakBox.style.display='none';
+    if(mode==='weakcheck'){
+      qnum.textContent='🔍 苦手チェック '+(wcIdx+1)+' / '+wcQueue.length;
+      difftag.textContent='まちがい・1分こえで🚩'; difftag.className='pill diff-high';
+    } else {
+      qnum.textContent='🔥 にがて復習（のこり '+wdQueue.length+' 問）';
+      difftag.textContent='60秒いない＆直近90%で🚩解除'; difftag.className='pill diff-low';
+    }
   }
   qtitle.textContent=LABELS[key];
   figs.innerHTML=current.svg||'';
@@ -2828,10 +2978,10 @@ function renderCard(){
   });
   Array.prototype.forEach.call(fields.querySelectorAll('input'),function(inp){ inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); onCheck(); }}); });
   feedback.textContent=''; feedback.className='feedback';
-  attemptsEl.textContent='答え合わせ：あと '+MAX_CHECK+' 回';
+  attemptsEl.textContent = (mode==='weakcheck') ? '答え合わせ：1回勝負！' : ('答え合わせ：あと '+MAX_CHECK+' 回');
   hintarea.innerHTML=''; solarea.innerHTML='';
-  btnHint.style.display=supportLow?'':'none';
-  btnSol.style.display=supportLow?'':'none';
+  btnHint.style.display=support?'':'none';
+  btnSol.style.display=support?'':'none';
   btnReveal.style.display='none';
   btnHint.disabled=false; btnSol.disabled=false; btnCheck.disabled=false;
   if(mode==='challenge'){ btnNext.style.display='none'; btnSkip.style.display=''; }
@@ -2842,10 +2992,14 @@ function renderCard(){
 }
 function updateStreakDots(){ for(var i=0;i<3;i++){ $('d'+i).className='dot'+(i<streak&&mKind==='learn'?' on':''); } }
 
-/* ---- タイマー（習得モードの1問5分） ---- */
+/* ---- タイマー（習得モードの1問5分＝カウントダウン） ---- */
 function startTimer(){ if(mode!=='mastery'){return;} clearTimer(); timeLeft=Q_LIMIT; paintTimer(); timer=setInterval(function(){ timeLeft--; paintTimer(); if(timeLeft<=0){ clearTimer(); onTimeout(); } },1000); }
 function clearTimer(){ if(timer){ clearInterval(timer); timer=null; } }
 function paintTimer(){ var m=Math.floor(timeLeft/60),s=timeLeft%60; timerEl.textContent=m+':'+(s<10?'0':'')+s; timerEl.className='timer '+(timeLeft<=30?'red':(timeLeft<=Q_LIMIT/2?'orange':'green')); }
+/* ---- カウントアップ（苦手チェック／にがて復習：60秒が目安） ---- */
+function startCountUp(){ clearTimer(); timerEl.style.display=''; upSec=0; paintUp(); timer=setInterval(function(){ upSec++; paintUp(); },1000); }
+function paintUp(){ var m=Math.floor(upSec/60),s=upSec%60; timerEl.textContent=m+':'+(s<10?'0':'')+s; timerEl.className='timer '+(upSec>=SLOW_SEC?'red':(upSec>=40?'orange':'green')); }
+function supportMode(){ return (mode==='mastery'&&mKind==='learn'&&mDiff==='low')||mode==='weakdrill'; }
 function showNext(){ btnNext.style.display=''; }
 
 /* ---- 採点 ---- */
@@ -2871,11 +3025,13 @@ function gradeField(f,raw){
   return false;
 }
 function gradeAll(){ return current.fields.every(function(f,i){ var inp=$('f'+i); return gradeField(f,inp?inp.value:''); }); }
-function recordSolve(correct){
-  var st=ensureStat(currentKey); st.a++; if(correct)st.c++;
-  var spent=Math.min(Q_LIMIT,Math.max(1,Math.round((Date.now()-qStartMs)/1000)));
-  st.t+=spent;
-  if(mode==='mastery'){ var dr=dayRec(); dr.attempts++; if(correct)dr.correct++; dr.timeSec+=spent; }
+function recordSolve(correct, opts){
+  opts=opts||{};
+  var rawSec=Math.max(1,Math.round((Date.now()-qStartMs)/1000));
+  var spent=Math.min(Q_LIMIT,rawSec);
+  var st=ensureStat(currentKey); st.a++; if(correct)st.c++; st.t+=spent;
+  if(mode!=='challenge'){ var dr=dayRec(); dr.attempts++; if(correct)dr.correct++; dr.timeSec+=spent; }
+  if(opts.flag) recordFlag(currentKey, correct, rawSec);
   save();
 }
 
@@ -2884,11 +3040,13 @@ function onCheck(){
   checkCount++;
   var ok=gradeAll();
   if(mode==='challenge') return onCheckChallenge(ok);
+  if(mode==='weakcheck'||mode==='weakdrill') return onCheckWeak(ok);
   return onCheckMastery(ok);
 }
 function onCheckMastery(ok){
+  var trackFlag=(mKind==='review'||mDiff==='high');
   if(ok){
-    clearTimer(); answered=true; btnCheck.disabled=true; recordSolve(true);
+    clearTimer(); answered=true; btnCheck.disabled=true; recordSolve(true,{flag:trackFlag});
     feedback.textContent='せいかい！'; feedback.className='feedback ok'; attemptsEl.textContent='';
     if(mKind==='review'){
       passReview(true); showSolution(); showNext(); showCutin(CUTIN_OK[(Math.random()*CUTIN_OK.length)|0]);
@@ -2906,7 +3064,7 @@ function onCheckMastery(ok){
     attemptsEl.textContent='答え合わせ：あと '+remain+' 回';
     btnCheck.disabled=true; setTimeout(function(){ if(!answered&&!timedOut) btnCheck.disabled=false; },550);
   } else {
-    clearTimer(); answered=true; btnCheck.disabled=true; recordSolve(false);
+    clearTimer(); answered=true; btnCheck.disabled=true; recordSolve(false,{flag:trackFlag});
     if(mKind==='review') passReview(false); else { streak=0; updateStreakDots(); }
     feedback.textContent=NG_MSG[(Math.random()*NG_MSG.length)|0]; feedback.className='feedback ng';
     attemptsEl.textContent='答え合わせを2回使いました';
@@ -2916,7 +3074,7 @@ function onCheckMastery(ok){
 }
 function onTimeout(){
   if(answered) return;
-  answered=true; timedOut=true; recordSolve(false);
+  answered=true; timedOut=true; recordSolve(false,{flag:(mKind==='review'||mDiff==='high')});
   if(mKind==='review') passReview(false); else { streak=0; updateStreakDots(); }
   btnCheck.disabled=true;
   feedback.textContent=TO_MSG[(Math.random()*TO_MSG.length)|0]+'（時間切れ）'; feedback.className='feedback to';
@@ -2942,7 +3100,10 @@ function onCheckChallenge(ok){
 
 /* ---- 次へ／スキップ ---- */
 function onNext(){
-  if(mode!=='mastery'||transitioning||cutinBusy) return;
+  if(transitioning||cutinBusy) return;
+  if(mode==='weakcheck'){ transitioning=true; wcIdx++; nextWeakCheck(); setTimeout(function(){ transitioning=false; },120); return; }
+  if(mode==='weakdrill'){ transitioning=true; nextWeakDrill(); setTimeout(function(){ transitioning=false; },120); return; }
+  if(mode!=='mastery') return;
   transitioning=true;
   if(mKind==='review'){ nextMasteryItem(); }
   else if(pendingAdvance){ pendingAdvance=false; advanceLearn(); }
@@ -2960,7 +3121,7 @@ function onSkip(){
 
 /* ---- ヒント・解法 ---- */
 function onHint(){
-  if(!(mode==='mastery'&&mKind==='learn'&&mDiff==='low')||hintStage>=3) return;
+  if(!supportMode()||hintStage>=3) return;
   if(hintStage===0){ var ap=document.createElement('div'); ap.className='hintbox'; ap.style.borderLeftColor='#ff6fa5';
     ap.innerHTML='<b style="color:#c0286b;">🔑 この問題の見分け方</b><br>'+(APPROACH[currentKey]||''); hintarea.appendChild(ap); }
   var labels=['① まず、何を求める？（考え方）','② つぎに、どの性質・条件を使う？','③ そして、どんな式にすれば解ける？'];
@@ -2979,7 +3140,11 @@ function showSolution(){
   solarea.innerHTML='<div class="solbox">'+approachHtml()+'<div style="margin:2px 0 8px;"><b>答え</b> '+answerLine()+'</div>'+hintFlowHtml()+'<b style="color:#1f6fb0;">くわしい手順</b><br>'+current.solution+'</div>';
   hintarea.innerHTML=''; btnHint.disabled=true;
 }
-function onSol(){ if(!(mode==='mastery'&&mKind==='learn'&&mDiff==='low')) return; showConfirm('解法を見ると連続正解は0に戻ります。見る？',function(){ streak=0; updateStreakDots(); showSolution(); }); }
+function onSol(){
+  if(!supportMode()) return;
+  if(mode==='weakdrill'){ showSolution(); return; }
+  showConfirm('解法を見ると連続正解は0に戻ります。見る？',function(){ streak=0; updateStreakDots(); showSolution(); });
+}
 
 /* ---- カットイン ---- */
 function showCutin(txt, opts){
@@ -3080,7 +3245,29 @@ function renderRecords(){
     up.forEach(function(o){ var d=new Date(o.due); var lbl=(o.due<=now)?'<b style="color:#c06a00;">今すぐ</b>':((d.getMonth()+1)+'月'+d.getDate()+'日'); html+='<tr><td style="text-align:left;">'+LABELS[o.k].split('｜')[1]+'</td><td>'+lbl+'</td></tr>'; });
     html+='</table>'; }
   html+='</div>';
+  // 保護者向け：苦手（🚩）の記録
+  html+='<div class="rec-sec"><h3>👨‍👩‍👧 保護者向け：苦手（🚩）の記録</h3>';
+  var fk=flaggedKeys();
+  html+='<div style="font-size:13px;color:#555;margin-bottom:8px;">いまの苦手：<b style="color:#c0392b;">'+fk.length+'</b> 問　／　24時間で解消できた：<b style="color:#2c8f45;">'+clearsWithin(DAY)+'</b> 問</div>';
+  if(fk.length){
+    html+='<table class="rec-table"><tr><th>解法</th><th>フラグ理由</th><th>直近の正答率</th><th>直近の平均時間</th></tr>';
+    fk.forEach(function(k){ var fl=data.flags[k]; var acc=Math.round(recentAcc(fl)*100); var rz=fl.reason==='wrong'?'まちがい':(fl.reason==='slow'?'1分こえ':'まちがい＋おそい');
+      html+='<tr><td class="tl">'+LABELS[k].split('｜')[1]+'</td><td>'+rz+'</td><td>'+acc+'%</td><td>'+recentAvgSec(fl)+'秒</td></tr>'; });
+    html+='</table>';
+  } else { html+='<div class="rec-empty">いまは🚩がついた苦手はありません</div>'; }
+  // 日々の苦手／解消の履歴
+  var fdays={};
+  (data.flagLog||[]).forEach(function(e){ var d=new Date(e.ts); var ds=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); if(!fdays[ds])fdays[ds]={f:0,c:0}; if(e.type==='flag')fdays[ds].f++; else fdays[ds].c++; });
+  var fdk=Object.keys(fdays).sort().reverse();
+  if(fdk.length){
+    html+='<div style="height:8px;"></div><table class="rec-table"><tr><th>日づけ</th><th>新たに苦手（🚩）</th><th>解消できた</th></tr>';
+    fdk.forEach(function(d){ html+='<tr><td>'+d+'</td><td>'+fdays[d].f+'</td><td>'+fdays[d].c+'</td></tr>'; });
+    html+='</table>';
+  }
+  html+='<div style="text-align:center;"><button class="reset-rec" id="btnResetRec">学習記録をすべてリセット</button></div>';
+  html+='</div>';
   $('recWrap').innerHTML=html;
+  var brr=$('btnResetRec'); if(brr) brr.onclick=onReset;
 }
 
 /* ---- 時間フォーマット ---- */
@@ -3109,9 +3296,11 @@ scrim.addEventListener('click',function(){ setMenu(false); });
 $('btnPause').addEventListener('click',pauseChallenge);
 $('btnAbort').addEventListener('click',abortChallenge);
 $('btnResume').addEventListener('click',resumeChallenge);
-Array.prototype.forEach.call(document.querySelectorAll('.navbtn'),function(b){ b.addEventListener('click',function(){ var v=b.getAttribute('data-view'); if(v==='home')goHome(); else if(v==='mastery')enterMastery(); else if(v==='challenge')enterChallenge(); else if(v==='records')goRecords(); }); });
+Array.prototype.forEach.call(document.querySelectorAll('.navbtn'),function(b){ b.addEventListener('click',function(){ var v=b.getAttribute('data-view'); if(v==='home')goHome(); else if(v==='mastery')enterMastery(); else if(v==='weakcheck')enterWeakCheck(); else if(v==='weakdrill')enterWeakDrill(); else if(v==='challenge')enterChallenge(); else if(v==='records')goRecords(); }); });
 $('cardMastery').addEventListener('click',enterMastery);
 $('cardChallenge').addEventListener('click',enterChallenge);
+$('cardWeakCheck').addEventListener('click',enterWeakCheck);
+$('cardWeakDrill').addEventListener('click',enterWeakDrill);
 
 /* ---- 起動 ---- */
 initMenu();
