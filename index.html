@@ -183,6 +183,9 @@
   .home-card .stat b{font-family:'Hachi Maru Pop',cursive;font-size:20px;color:var(--pink-d);}
   .home-card.ch .stat b{color:var(--blue-d);}
   .home-hero{text-align:center;font-size:14px;color:#8a8a95;margin:2px auto 14px;}
+  .home-foot{text-align:center;margin:22px auto 4px;}
+  .cache-clear{background:#fff;color:#b02020;border:2px solid #ffd0d0;border-radius:999px;padding:9px 18px;font-family:'Kiwi Maru',serif;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .cache-clear:hover{background:#fff2f2;border-color:#ffb0b0;}
   .home-weak{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:560px;margin:0 auto 16px;}
   .home-weak .wbox{flex:1 1 170px;border-radius:16px;padding:12px 14px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.07);}
   .home-weak .wbox.bad{background:linear-gradient(135deg,#fff0f0,#ffe6ee);}
@@ -280,6 +283,9 @@
         <p>全解法を <b>ランダムな順</b> に <b>1解法1問</b> で解くタイムアタック。むずかしい問題は <b>スキップ</b> でき、スキップした問題は最後にまた出てきます。前回のタイムをこえよう！</p>
         <div class="stat" id="challengeStat">まだ記録はありません</div>
       </div>
+    </div>
+    <div class="home-foot">
+      <button class="cache-clear" id="btnCacheClear">🧹 キャッシュ・記録をぜんぶクリア（新品にする）</button>
     </div>
   </div>
 
@@ -3340,10 +3346,10 @@ function renderRecords(){
     fdk.forEach(function(d){ html+='<tr><td>'+d+'</td><td>'+fdays[d].f+'</td><td>'+fdays[d].c+'</td></tr>'; });
     html+='</table>';
   }
-  html+='<div style="text-align:center;"><button class="reset-rec" id="btnResetRec">学習記録をすべてリセット</button></div>';
+  html+='<div style="text-align:center;"><button class="reset-rec" id="btnResetRec">🧹 キャッシュ・記録をすべてクリア（新品にする）</button></div>';
   html+='</div>';
   $('recWrap').innerHTML=html;
-  var brr=$('btnResetRec'); if(brr) brr.onclick=onReset;
+  var brr=$('btnResetRec'); if(brr) brr.onclick=onClearCache;
 }
 
 /* ---- 時間フォーマット ---- */
@@ -3359,6 +3365,17 @@ function initMenu(){ try{ var mm=localStorage.getItem('sk_ch_menu'); menuOpen=mm
 
 /* ---- リセット ---- */
 function onReset(){ showConfirm('進捗（習得・復習・記録）をすべて消して最初からにしますか？',function(){ data=norm({}); recentSig={}; save(); goHome(); }); }
+/* キャッシュ＝保存データを完全消去して新品の状態に戻す（過去の記録が残らないように） */
+function onClearCache(){
+  showConfirm('キャッシュ（保存されている過去の記録）をぜんぶ消して、<b>新品の状態</b>にもどします。<br>習得・苦手（🚩）・チャレンジ・履歴などがすべて消えます。よろしいですか？',function(){
+    try{
+      var keys=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && k.indexOf('sk_ch')===0) keys.push(k); }
+      keys.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    }catch(e){}
+    data=norm({}); recentSig={}; wcQueue=[]; wcIdx=0; wdQueue=[]; wdAuto=false; wcRun=null;
+    try{ location.reload(); }catch(e){ goHome(); }
+  });
+}
 
 /* ---- イベント ---- */
 btnCheck.addEventListener('click',onCheck);
@@ -3377,6 +3394,7 @@ $('cardMastery').addEventListener('click',enterMastery);
 $('cardChallenge').addEventListener('click',enterChallenge);
 $('cardWeakCheck').addEventListener('click',enterWeakCheck);
 $('cardWeakDrill').addEventListener('click',enterWeakDrill);
+$('btnCacheClear').addEventListener('click',onClearCache);
 
 /* ---- 起動 ---- */
 initMenu();
