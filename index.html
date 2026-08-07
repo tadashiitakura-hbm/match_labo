@@ -194,6 +194,13 @@
   .home-card.wc h3{color:#c0392b;} .home-card.wd h3{color:#b8860b;}
   .home-card.wc .stat b,.home-card.wd .stat b{color:#c0392b;}
   .home-card.wc:hover{border-color:#ffcaca;} .home-card.wd:hover{border-color:#ffe6ad;}
+  .wd-picklist{display:flex;flex-direction:column;gap:8px;max-width:470px;margin:10px auto;}
+  .wd-pick{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff4f4;border:2px solid #ffd0d0;border-radius:12px;padding:11px 14px;cursor:pointer;font-family:'Kiwi Maru',serif;text-align:left;transition:.1s;}
+  .wd-pick:hover{background:#ffe6e6;border-color:#ffb0b0;transform:translateY(-1px);}
+  .wd-pick.done{background:#eef7f0;border-color:#cfe9d6;}
+  .wd-pick .wd-name{font-size:14px;color:#333;font-weight:500;}
+  .wd-pick .wd-meta{font-size:12px;color:#c0392b;white-space:nowrap;}
+  .wd-pick.done .wd-meta{color:#2c8f45;}
   /* ===== チャレンジ大タイマー ===== */
   .chHeader{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;background:var(--card);border-radius:18px;
     padding:14px 16px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,.07);}
@@ -2695,7 +2702,7 @@ var view='home', mode=null;
 var current=null,currentKey=null,answered=false,timedOut=false,checkCount=0,cutinBusy=false,transitioning=false;
 var streak=0,hintStage=0,mDiff='low',mKind='learn',pendingAdvance=false;
 var chRemaining=[],chSolved=0,chSkips=0,chTotal=0,chActive=false,chRemainMs=0,chTimer=null,chPaused=false;
-var wcQueue=[],wcIdx=0,wdQueue=[],wcRun=null;      // 苦手チェック／にがて復習
+var wcQueue=[],wcIdx=0,wdQueue=[],wdAuto=false,wcRun=null;      // 苦手チェック／にがて復習
 var qStartMs=0,timer=null,timeLeft=0,upSec=0,cutinTimer=null,recentSig={};
 
 /* ============ ルーター ============ */
@@ -2900,45 +2907,50 @@ function onCheckWeakCheck(ok){
   renderHome();
 }
 
-/* ============ にがて復習モード（3日間・習得方式） ============ */
+/* ============ にがて復習モード（3日間・習得方式／単元選択制） ============ */
 function enterWeakDrill(){
   mode='weakdrill'; showView('weakdrill');
   chHeader.style.display='none'; sidebar.style.display='none'; drawerToggle.style.display='none'; setMenu(false);
-  weakDrillListScreen();
+  weakDrillMenu();
 }
-// 開始まえに「苦手単元一覧」を表示（進捗も確認できる）
-function weakDrillListScreen(){
-  topbar.style.display='none';
-  var fk=flaggedKeys(), due=dueWeakUnits(), t=todayStr();
+// 苦手単元の一覧＝選択メニュー。単元をえらんで練習する（当日クリア済みでも選べる）
+function weakDrillMenu(){
+  clearTimer(); topbar.style.display='none';
+  var fk=flaggedKeys(), t=todayStr();
   if(fk.length===0){
     showDone('<div class="done"><h2>🔥 にがて復習</h2><p>🚩がついた苦手はいまありません。まずは「🔍 苦手チェック」をしてみよう！</p>'+
       '<div style="margin-top:14px;"><button class="b b-check" id="wdHome">ホームへ</button></div></div>');
     $('wdHome').onclick=goHome; return;
   }
-  var rows=fk.map(function(k){ var fl=data.flags[k]; var doneT=(fl.lastDoneDay===t);
-    return '<tr><td class="tl">'+LABELS[k].split('｜')[1]+'</td><td>'+fl.days.length+' / '+DRILL_DAYS+' 日</td><td>'+(doneT?'✅ 今日ずみ':'▶ 今日やる')+'</td></tr>'; }).join('');
-  var startBtn = due.length ? '<button class="b b-check" id="wdStart">▶ 今日のにがて復習をはじめる（'+due.length+'単元）</button> ' : '';
-  var note = due.length ? '' : '<p style="color:#2c8f45;">今日の分はぜんぶ終わりました！また明日つづけよう。</p>';
-  showDone('<div class="done"><h2>🔥 にがて復習（苦手単元一覧）</h2>'+
-    '<p>苦手 <b style="color:#c0392b;">'+fk.length+'</b> 単元　／　'+DRILL_DAYS+'日クリアで🚩が消えます</p>'+note+
-    '<table class="rec-table" style="max-width:470px;margin:8px auto;"><tr><th>単元</th><th>進み</th><th>今日</th></tr>'+rows+'</table>'+
-    '<div style="margin-top:12px;">'+startBtn+'<button class="b b-next" id="wdHome2">ホームへ</button></div></div>');
-  var ws=$('wdStart'); if(ws) ws.onclick=function(){ wdQueue=dueWeakUnits(); topbar.style.display=''; nextWeakDrill(); };
+  var due=dueWeakUnits();
+  var picks=fk.map(function(k){ var fl=data.flags[k]; var doneT=(fl.lastDoneDay===t);
+    return '<button class="wd-pick'+(doneT?' done':'')+'" data-k="'+k+'"><span class="wd-name">'+LABELS[k].split('｜')[1]+'</span>'+
+      '<span class="wd-meta">'+fl.days.length+' / '+DRILL_DAYS+'日'+(doneT?'　✅今日ずみ':'')+'</span></button>'; }).join('');
+  var auto = due.length ? '<button class="b b-check" id="wdAuto">▶ 今日やる分をまとめて（'+due.length+'単元）</button> ' : '';
+  showDone('<div class="done"><h2>🔥 にがて復習（単元をえらぶ）</h2>'+
+    '<p>苦手 <b style="color:#c0392b;">'+fk.length+'</b> 単元　／　'+DRILL_DAYS+'日クリアで🚩が消えます<br>単元をえらんで、<b>3問れんぞく正解</b>でその日クリア！</p>'+
+    '<div class="wd-picklist">'+picks+'</div>'+
+    '<div style="margin-top:12px;">'+auto+'<button class="b b-next" id="wdHome2">ホームへ</button></div></div>');
+  Array.prototype.forEach.call(document.querySelectorAll('#doneScreen .wd-pick'),function(btn){ btn.onclick=function(){ startWeakDrillUnit(btn.getAttribute('data-k')); }; });
+  var wa=$('wdAuto'); if(wa) wa.onclick=startWeakDrillAuto;
   $('wdHome2').onclick=goHome;
 }
+function startWeakDrillUnit(k){ wdAuto=false; wdQueue=[k]; topbar.style.display=''; nextWeakDrill(); }
+function startWeakDrillAuto(){ wdAuto=true; wdQueue=dueWeakUnits(); topbar.style.display=''; nextWeakDrill(); }
 function nextWeakDrill(){
   var t=todayStr();
-  wdQueue=wdQueue.filter(function(k){ var fl=data.flags[k]; return fl&&fl.on&&fl.lastDoneDay!==t; });   // 解除・今日ずみを外す
-  if(wdQueue.length===0){ weakDrillAllDone(); return; }
+  if(wdAuto){ wdQueue=wdQueue.filter(function(k){ var fl=data.flags[k]; return fl&&fl.on&&fl.lastDoneDay!==t; }); }   // まとめ：解除・今日ずみを外す
+  else       { wdQueue=wdQueue.filter(function(k){ var fl=data.flags[k]; return fl&&fl.on; }); }                       // 単元選択：解除ずみだけ外す
+  if(wdQueue.length===0){ if(wdAuto) weakDrillAllDone(); else weakDrillMenu(); return; }
   currentKey=wdQueue[0]; streak=0; pendingAdvance=false;
   current=genInstance(currentKey); renderCard(); startCountUp();
 }
 function weakDrillAllDone(){
   clearTimer(); topbar.style.display='none';
-  var msg = flaggedKeys().length===0 ? 'ぜんぶの🚩が消えました！かんぺき！🎉' : '今日の分はぜんぶ終わりました！また明日つづけよう。';
+  var msg = flaggedKeys().length===0 ? 'ぜんぶの🚩が消えました！かんぺき！🎉' : '今日やる分はぜんぶ終わりました！　残っている苦手は一覧からいつでも練習できます。';
   showDone('<div class="done"><h2>🔥 にがて復習</h2><p>'+msg+'</p>'+
-    '<div style="margin-top:14px;"><button class="b b-check" id="wdHome">ホームへ</button> <button class="b b-next" id="wdRec">きろくを見る</button></div></div>');
-  $('wdHome').onclick=goHome; $('wdRec').onclick=goRecords; renderHome();
+    '<div style="margin-top:14px;"><button class="b b-check" id="wdMenu">単元をえらぶ</button> <button class="b b-skip" id="wdHome">ホーム</button> <button class="b b-next" id="wdRec">きろく</button></div></div>');
+  $('wdMenu').onclick=weakDrillMenu; $('wdHome').onclick=goHome; $('wdRec').onclick=goRecords; renderHome();
 }
 function onCheckWeakDrill(ok){
   if(ok){
@@ -3002,7 +3014,7 @@ function renderCard(){
   } else if(mode==='weakdrill'){
     qnum.style.display=''; difftag.style.display=''; timerEl.style.display=''; streakBox.style.display='';
     var fld=data.flags[key]||{days:[]};
-    qnum.textContent='🔥 にがて復習（のこり '+wdQueue.length+' 単元）';
+    qnum.textContent='🔥 '+LABELS[key].split('｜')[1];
     difftag.textContent='この単元 '+(fld.days?fld.days.length:0)+' / '+DRILL_DAYS+' 日　・　3問れんぞくでクリア';
     difftag.className='pill diff-low';
   }
@@ -3027,7 +3039,7 @@ function renderCard(){
   btnHint.disabled=false; btnSol.disabled=false; btnCheck.disabled=false;
   btnNext.style.display='none';
   btnSkip.style.display=(mode==='challenge'||mode==='weakdrill')?'':'none';
-  if(mode==='weakdrill') btnSkip.textContent='単元スキップ'; else btnSkip.textContent='スキップ';
+  if(mode==='weakdrill') btnSkip.textContent=(wdAuto?'この単元をスキップ':'単元をえらび直す'); else btnSkip.textContent='スキップ';
   updateStreakDots();
   if(mode==='mastery') renderSidebar();
   var f0=$('f0'); if(f0) f0.focus();
@@ -3146,7 +3158,7 @@ function onNext(){
   if(transitioning||cutinBusy) return;
   if(mode==='weakcheck'){ transitioning=true; wcIdx++; nextWeakCheck(); setTimeout(function(){ transitioning=false; },120); return; }
   if(mode==='weakdrill'){ transitioning=true;
-    if(pendingAdvance){ pendingAdvance=false; nextWeakDrill(); }
+    if(pendingAdvance){ pendingAdvance=false; if(wdAuto) nextWeakDrill(); else weakDrillMenu(); }
     else { current=genInstance(currentKey); renderCard(); startCountUp(); }
     setTimeout(function(){ transitioning=false; },120); return; }
   if(mode!=='mastery') return;
@@ -3159,10 +3171,9 @@ function onNext(){
 function onSkip(){
   if(transitioning||cutinBusy) return;
   if(mode==='weakdrill'){
-    if(!wdQueue.length) return;
     transitioning=true;
-    wdQueue.push(wdQueue.shift());     // この単元を今日のキューの最後に回す
-    nextWeakDrill();
+    if(wdAuto){ if(wdQueue.length){ wdQueue.push(wdQueue.shift()); } nextWeakDrill(); }   // まとめ：次の単元へ回す
+    else { weakDrillMenu(); }                                                             // 単元選択：一覧にもどる
     setTimeout(function(){ transitioning=false; },100);
     return;
   }
