@@ -1526,8 +1526,11 @@
       const x = ox + n * s + d * D, y = oy - (r + 1) * s - d * D;
       g += '<polygon points="' + x + ',' + y + ' ' + (x + D) + ',' + (y - D) + ' ' + (x + D) + ',' + (y - D + s) + ' ' + x + ',' + (y + s) + '" fill="#ffb8ca" stroke="#c0286b" stroke-width="1"/>';
     }
-    const wv = ox + n * s + n * D + 20;
-    return '<svg viewBox="0 0 ' + Math.max(220, wv) + ' 170" class="fig" role="img" aria-label="' + n + '×' + n + '×' + n + 'の立方体">' + g + '</svg>';
+    // 実際の描画範囲（左上＝top面の奥、右下＝front面の右下）から直接viewBoxを決める
+    const topY = oy - n * s - n * D, rightX = ox + n * s + n * D;
+    const pad = 12;
+    const vbx = ox - pad, vby = topY - pad, vbw = Math.max(220, (rightX - ox) + 2 * pad), vbh = (oy - topY) + 2 * pad;
+    return '<svg viewBox="' + vbx + ' ' + vby + ' ' + vbw + ' ' + vbh + '" class="fig" role="img" aria-label="' + n + '×' + n + '×' + n + 'の立方体">' + g + '</svg>';
   }
 
   /* =========================================================
@@ -1770,7 +1773,20 @@
   function pA(cx,cy,ang,len){ return [cx+len*Math.cos(drad(ang)), cy-len*Math.sin(drad(ang))]; }
   function ln(P,Q,dash){ return '<line x1="'+P[0].toFixed(1)+'" y1="'+P[1].toFixed(1)+'" x2="'+Q[0].toFixed(1)+'" y2="'+Q[1].toFixed(1)+'" stroke="#333" stroke-width="1.7"'+(dash?' stroke-dasharray="5 3"':'')+'/>'; }
   function txt(P,s,col){ return '<text x="'+P[0].toFixed(1)+'" y="'+P[1].toFixed(1)+'" font-size="13" fill="'+(col||'#c0286b')+'" text-anchor="middle" dominant-baseline="middle">'+s+'</text>'; }
-  function svgWrap(g,w,h){ return '<svg viewBox="0 0 '+w+' '+h+'" class="fig" role="img" aria-label="角の図">'+g+'</svg>'; }
+  /* 固定キャンバスでも文字のはみ出しを防ぐため、上下左右に小さな余白を付ける */
+  function svgWrap(g,w,h){ var p=6; return '<svg viewBox="'+(-p)+' '+(-p)+' '+(w+2*p)+' '+(h+2*p)+'" class="fig" role="img" aria-label="角の図">'+g+'</svg>'; }
+  /* 図形の実座標から自動でバウンディングボックスを計算し、見切れを防ぐviewBoxを作る */
+  function bboxVB(pts, pad) {
+    pad = (pad == null) ? 30 : pad;
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    pts.forEach(function (p) {
+      if (p[0] < minX) minX = p[0]; if (p[0] > maxX) maxX = p[0];
+      if (p[1] < minY) minY = p[1]; if (p[1] > maxY) maxY = p[1];
+    });
+    minX -= pad; minY -= pad; maxX += pad; maxY += pad;
+    return minX.toFixed(1) + ' ' + minY.toFixed(1) + ' ' + (maxX - minX).toFixed(1) + ' ' + (maxY - minY).toFixed(1);
+  }
+  function svgWrapVB(g, vb, label) { return '<svg viewBox="' + vb + '" class="fig" role="img" aria-label="' + (label || '図') + '">' + g + '</svg>'; }
 
   /* --- k3_straight 1直線の角 --- */
   GEN.k3_straight = function (rng) {
@@ -1813,12 +1829,13 @@
     for(let t=0;t<200;t++){ a=ri(rng,25,90); b=ri(rng,25,90); ans=180-a-b; if(ans>=20) break; }
     const cx=155,cy=110,L=120;
     const r1=180-a, r2=b;
-    const g = ln(pA(cx,cy,0,L),pA(cx,cy,180,L)) + ln(pA(cx,cy,r1,L),pA(cx,cy,r1+180,L)) + ln(pA(cx,cy,r2,L),pA(cx,cy,r2+180,L))
+    const P1=pA(cx,cy,0,L), P2=pA(cx,cy,180,L), Q1=pA(cx,cy,r1,L), Q2=pA(cx,cy,r1+180,L), R1=pA(cx,cy,r2,L), R2=pA(cx,cy,r2+180,L);
+    const g = ln(P1,P2) + ln(Q1,Q2) + ln(R1,R2)
       + txt(pA(cx,cy,(180+r1)/2,46), a+'°','#1f6fb0')
       + txt(pA(cx,cy,(r1+r2)/2,52), 'ア','#c0286b')
       + txt(pA(cx,cy,r2/2,46), b+'°','#1f6fb0');
     return {
-      title:'対頂角・一直線', stem:'下の図のように、3本の直線が1つの点で交わっています。'+H('アの角の大きさは何度')+'ですか。', svg: svgWrap(g,310,170),
+      title:'対頂角・一直線', stem:'下の図のように、3本の直線が1つの点で交わっています。'+H('アの角の大きさは何度')+'ですか。', svg: svgWrapVB(g,bboxVB([P1,P2,Q1,Q2,R1,R2],26),'交わる直線の図'),
       fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
       hints:['1点で交わる直線どうしの角。上側の '+a+'°・ア・'+b+'° は一直線の上にならんでいます。','一直線の角は180°。'+a+'＋ア＋'+b+'＝180。','ア＝180−'+a+'−'+b+'。'],
       solution:'上側の3つの角は一直線の上にあるので、'+a+'＋ア＋'+b+'＝180。<br>ア＝180−'+a+'−'+b+'＝<b>'+ans+'（度）</b>。', sig:'k3v:'+a+':'+b
@@ -2154,7 +2171,7 @@
     const ans=180-b-c;
     const B=[60,150], C=[265,150], A=apexFrom(B,C,b,c);
     const g = poly([B,C,A]) + angLabel(B,A,C,b+'°','#1f6fb0') + angLabel(C,A,B,c+'°','#1f6fb0') + angLabel(A,B,C,'ア','#c0286b');
-    return { title:'三角形の内角の和', stem:'右の図のアの角の大きさは'+H('何度')+'ですか。', svg:svgWrap(g,320,175),
+    return { title:'三角形の内角の和', stem:'右の図のアの角の大きさは'+H('何度')+'ですか。', svg:svgWrapVB(g,bboxVB([B,C,A],34),'三角形の図'),
       fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
       hints:['三角形の3つの角（内角）に注目します。','<b>三角形の内角の和は180°</b>。'+b+'＋'+c+'＋ア＝180。','ア＝180−（'+b+'＋'+c+'）。'],
       solution:'三角形の内角の和は180°。ア＝180−（'+b+'＋'+c+'）＝<b>'+ans+'（度）</b>。', sig:'k8in:'+b+':'+c };
@@ -2168,7 +2185,7 @@
     const g = poly([B,C,A]) + ln(C,Cext)
       + angLabel(A,B,C,aA+'°','#1f6fb0') + angLabel(B,A,C,bB+'°','#1f6fb0')
       + angLabel(C,Cext,A,'ア','#c0286b');
-    return { title:'三角形の外角の定理', stem:'右の図のアの角（外角）の大きさは'+H('何度')+'ですか。', svg:svgWrap(g,320,175),
+    return { title:'三角形の外角の定理', stem:'右の図のアの角（外角）の大きさは'+H('何度')+'ですか。', svg:svgWrapVB(g,bboxVB([B,C,A,Cext],34),'三角形の図'),
       fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
       hints:['三角形の外側にできる角（外角）に注目します。','<b>外角＝となりにない2つの内角の和</b>（外角の定理）。ア＝'+aA+'＋'+bB+'。','ア＝'+aA+'＋'+bB+'。'],
       solution:'外角の定理より、ア＝'+aA+'＋'+bB+'＝<b>'+ans+'（度）</b>。', sig:'k8ex:'+aA+':'+bB };
@@ -2186,7 +2203,7 @@
       stem='右の図の三角形は二等辺三角形です（同じ印の辺は長さが等しい）。アの角の大きさは'+H('何度')+'ですか。'; }
     else { g += angLabel(B,A,C,base+'°','#1f6fb0') + angLabel(A,B,C,'ア','#c0286b'); ans=apex;
       stem='右の図の三角形は二等辺三角形です（同じ印の辺は長さが等しい）。アの角の大きさは'+H('何度')+'ですか。'; }
-    return { title:'二等辺三角形の角', stem:stem, svg:svgWrap(g,320,175),
+    return { title:'二等辺三角形の角', stem:stem, svg:svgWrapVB(g,bboxVB([B,C,A],34),'二等辺三角形の図'),
       fields:[{label:'ア',unit:'度',answer:ans,type:'int'}],
       hints:['二等辺三角形は<b>2つの底角が等しい</b>。印のついた辺（等しい辺）の向かいの角が等しい底角です。',
         apexGiven?('頂角が'+apex+'°。底角2つは等しいので、（180−'+apex+'）÷2。'):('底角が'+base+'°。もう1つの底角も'+base+'°。頂角＝180−'+base+'×2。'),
