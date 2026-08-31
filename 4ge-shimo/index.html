@@ -1441,6 +1441,18 @@ const PROBLEMS = [
 
 
 /* ====================== アプリ部 ====================== */
+// 各問題のタイトル（GEN[key]のtitleは数字によらず固定なので、一度生成してキャッシュする）
+const _titleCache={};
+function problemTitle(key){
+  if(_titleCache[key])return _titleCache[key];
+  try{
+    const q=GEN[key](makeRng(1));
+    _titleCache[key]=q.title;
+    return q.title;
+  }catch(e){
+    return '';
+  }
+}
 const KEY='sk_ch4ge_v1';
 const N=PROBLEMS.length;
 const SRS=[1,3,7,14];
@@ -1631,8 +1643,9 @@ function renderHome(main){
   for(let r=1;r<=curRound;r++){
     const label=r===5?'第5回（総合）':`第${r}回`;
     const st=roundState(r);
-    const pillClass=st==='mastered'?'pill mastered':(st==='progress'?'pill progress':'pill');
-    roundRows+=`<div class="stat-row"><span>${label}</span><span class="${pillClass}">${ROUND_STATE_LABEL[st]}</span></div>`;
+    const pillClass=st==='mastered'?'pill mastered':'pill progress';
+    const stPill=st==='none'?'':`<span class="${pillClass}">${ROUND_STATE_LABEL[st]}</span>`;
+    roundRows+=`<div class="stat-row"><span>${label}</span>${stPill}</div>`;
   }
   main.innerHTML=`
     <div class="card"><b>いまの状況</b>
@@ -1669,9 +1682,10 @@ function renderList(main){
       const label = r===5 ? '第5回（総合）' : `第${r}回`;
       const unlocked=isRoundUnlocked(r);
       const st=unlocked?roundState(r):'none';
+      const stPill = unlocked ? (st==='none'?'' : `<span class="${st==='mastered'?'pill mastered':'pill progress'}">${ROUND_STATE_LABEL[st]}</span>`) : '<span class="small-note">まだ解放されていません</span>';
       html+=`<div class="card ${unlocked?'mode-card':''}" data-r="${r}" style="${unlocked?'':'opacity:.55;'}">
         <h3>${unlocked?label:`🔒 ${label}`}</h3>
-        ${unlocked?`<span class="${st==='mastered'?'pill mastered':(st==='progress'?'pill progress':'pill')}">${ROUND_STATE_LABEL[st]}</span>`:'<span class="small-note">まだ解放されていません</span>'}
+        ${stPill}
       </div>`;
     });
     html+='</div>';
@@ -1710,10 +1724,12 @@ function renderList(main){
         const st=masteryState(p.key);
         const flagged=DATA.flags[p.key]&&DATA.flags[p.key].on;
         const roundTag = r===5 && cat==='basic' ? `第${p.round}回・` : '';
-        const pillClass = st==='mastered' ? 'pill mastered' : (st==='progress' ? 'pill progress' : 'pill');
+        const pillClass = st==='mastered' ? 'pill mastered' : 'pill progress';
+        const stPill = st==='none' ? '' : ` <span class="${pillClass}">${ROUND_STATE_LABEL[st]}</span>`;
+        const ptitle=problemTitle(p.key);
         html+=`<div class="card mode-card qcard" data-mk="${p.key}">
-          <div>${roundTag}${CAT_LABEL[p.cat]} ${p.no}</div>
-          <div style="margin-top:4px;"><span class="${pillClass}">${ROUND_STATE_LABEL[st]}</span>${flagged?' <span class="pill on">🚩</span>':''}</div>
+          <div>${roundTag}${CAT_LABEL[p.cat]} ${p.no}${stPill}${flagged?' <span class="pill on">🚩</span>':''}</div>
+          <div class="small-note" style="margin-top:2px;">${ptitle}</div>
         </div>`;
       });
       html+='</div></div>';
@@ -1781,10 +1797,17 @@ function renderQuestionCard(main,q,opts){
   }
   wrap.querySelector('#btnSol').onclick=()=>{
     showSolution();
+    highlightNext();
   };
   function showSolution(){
     const area=wrap.querySelector('#solArea');
     area.innerHTML=`<div class="solution-box"><b>【解法】</b><br>${q.solution}</div>`;
+  }
+  function highlightNext(){
+    const checkBtn=wrap.querySelector('#btnCheck');
+    if(checkBtn){checkBtn.classList.remove('primary');checkBtn.classList.add('ghost');}
+    const nextBtn=wrap.querySelector('.nextbtn');
+    if(nextBtn){nextBtn.classList.remove('ghost');nextBtn.classList.add('primary');}
   }
 
   function checkAnswer(){
@@ -1800,11 +1823,13 @@ function renderQuestionCard(main,q,opts){
       solved=true;
       showSolution();
       showCutin();
+      highlightNext();
       if(opts.onResult)opts.onResult(true,elapsed);
     } else {
       if(checkCount>=MAX_CHECK||opts.singleCheck){
         judge.innerHTML=`<div class="judge-ng">✕ ざんねん…（${elapsed}秒）</div>`;
         showSolution();
+        highlightNext();
         if(opts.onResult)opts.onResult(false,elapsed);
       } else {
         judge.innerHTML=`<div class="judge-ng">✕ ちがうよ。検算した？もう一度たしかめてみよう。</div>`;
@@ -1856,7 +1881,7 @@ function renderMastery(main){
   renderQuestionCard(main,q,{
     badge:`${isFocus?'（問題一覧から）':''}第${target.round}回 ／ ${stageLabel} ／ 進捗 ${isReview?'復習1問':(s.stage===0? s.low+'/'+DRILL_STREAK : s.high+'/'+DRILL_STREAK)}`,
     showHint,
-    extraButtons:'<button class="ghost small" id="btnNext">つぎの問題</button>',
+    extraButtons:'<button class="ghost small nextbtn" id="btnNext">つぎの問題</button>',
     onResult:(correct,sec)=>{
       recordAttempt(target.key,correct,sec);
       if(correct){
@@ -1914,7 +1939,7 @@ function renderWeakCheck(main){
     badge:`苦手チェック ${RUNTIME.wcIdx+1}/${RUNTIME.wcQueue.length}（第${p.round}回）`,
     showHint:false,
     singleCheck:true,
-    extraButtons:'<button class="ghost small" id="btnNext">つぎへ</button>',
+    extraButtons:'<button class="ghost small nextbtn" id="btnNext">つぎへ</button>',
     onResult:(correct,sec)=>{
       recordAttempt(key,correct,sec);
       RUNTIME.wcResult.answered++;
