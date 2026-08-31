@@ -1635,10 +1635,12 @@ function renderHeaderStatus(){
 
 // ---------- ホーム ----------
 function renderHome(main){
-  const masteredCount=PROBLEMS.filter(p=>getSrs(p.key).status==='mastered').length;
+  const curRound=currentRound();
+  const unlockedProblems=PROBLEMS.filter(p=>isRoundUnlocked(p.round));
+  const unlockedTotal=unlockedProblems.length;
+  const masteredCount=unlockedProblems.filter(p=>getSrs(p.key).status==='mastered').length;
   const weakCount=Object.values(DATA.flags).filter(f=>f.on).length;
   const dueCount=PROBLEMS.filter(p=>isDueToday(p.key)).length;
-  const curRound=currentRound();
   let roundRows='';
   for(let r=1;r<=curRound;r++){
     const label=r===5?'第5回（総合）':`第${r}回`;
@@ -1649,8 +1651,8 @@ function renderHome(main){
   }
   main.innerHTML=`
     <div class="card"><b>いまの状況</b>
-      <div class="stat-row"><span>習得ずみ</span><span>${masteredCount} / ${N}</span></div>
-      <div class="progressbar"><div style="width:${(masteredCount/N*100).toFixed(0)}%"></div></div>
+      <div class="stat-row"><span>習得ずみ</span><span>${masteredCount} / ${unlockedTotal}</span></div>
+      <div class="progressbar"><div style="width:${(unlockedTotal?masteredCount/unlockedTotal*100:0).toFixed(0)}%"></div></div>
       <div class="stat-row"><span>苦手フラグ🚩</span><span>${weakCount}</span></div>
       <div class="stat-row"><span>今日の復習</span><span>${dueCount}問</span></div>
       <div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px;">
