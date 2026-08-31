@@ -49,6 +49,9 @@ table.rec th,table.rec td{border-bottom:1px solid var(--line);padding:6px 4px;te
 .pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.78em;background:#eee;}
 .pill.on{background:#ffe0d0;color:var(--warn);}
 .pill.mastered{background:#ffd9e6;color:#c2185b;}
+.pill.progress{background:#fff3d6;color:#b8860b;}
+.qcard{padding:14px;}
+.qcard > div:first-child{font-weight:bold;}
 #cutin{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:50;}
 #cutin .msg{background:#fff;padding:26px 40px;border-radius:20px;font-size:1.6em;font-family:'Hachi Maru Pop',cursive;color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.2);}
 footer{text-align:center;padding:20px;color:#9a8a7a;font-size:.8em;}
@@ -1458,6 +1461,25 @@ function today(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}
 function todayObj(){const d=new Date();d.setHours(0,0,0,0);return d;}
 function daysBetween(a,b){return Math.round((b-a)/86400000);}
 
+// ---------- 週送りスケジュール ----------
+// 2026-08-31(月)を第1週の開始とし、1週間で1回ずつ解放する
+const SCHEDULE_START=new Date(2026,7,31); // 月は0始まりなので8月=7
+const SCHEDULE_TOTAL_ROUNDS=5;
+function currentWeekIndex(){
+  // 開始週を0とする経過週数（0始まり）。開始日より前は0扱い。
+  const now=todayObj();
+  const diffDays=Math.floor((now-SCHEDULE_START)/86400000);
+  const w=Math.floor(diffDays/7);
+  return Math.max(0,w);
+}
+function currentRound(){
+  // 第1週=第1回。全回解放後は最終回のまま。
+  return Math.min(SCHEDULE_TOTAL_ROUNDS,currentWeekIndex()+1);
+}
+function isRoundUnlocked(r){
+  return r<=currentRound();
+}
+
 function loadData(){
   let raw=null;
   try{raw=localStorage.getItem(KEY);}catch(e){}
@@ -1536,19 +1558,27 @@ function isDueToday(key){
   if(!s.due)return true;
   return s.due<=today();
 }
-// 習得までの残り問題数（低段階の残り＋高段階3問／高段階の残り）。習得済みはnull。
-function remainingToMaster(key){
+// 習得状況の3段階: 'none'(ひょうじなし・未着手) / 'progress'(チャレンジ中) / 'mastered'(クリア)
+function masteryState(key){
   const s=getSrs(key);
-  if(s.status==='mastered')return null;
-  if(s.stage===0)return (DRILL_STREAK-s.low)+DRILL_STREAK;
-  return DRILL_STREAK-s.high;
+  if(s.status==='mastered')return 'mastered';
+  if(s.stage===0 && s.low===0 && s.high===0)return 'none';
+  return 'progress';
+}
+const ROUND_STATE_LABEL={none:'ひょうじなし',progress:'チャレンジ中',mastered:'クリア'};
+// 回ぜんたいの状態: その回の全問がmasteredなら'mastered'、1問でも着手済みなら'progress'、それ以外'none'
+function roundState(r){
+  const ps=PROBLEMS.filter(p=>p.round===r);
+  if(!ps.length)return 'none';
+  if(ps.every(p=>masteryState(p.key)==='mastered'))return 'mastered';
+  if(ps.some(p=>masteryState(p.key)!=='none'))return 'progress';
+  return 'none';
 }
 
 // ---------- ルーター ----------
 const MODES=[
   {id:'home',label:'ホーム'},
   {id:'list',label:'問題一覧'},
-  {id:'mastery',label:'習得モード'},
   {id:'weakcheck',label:'苦手チェック'},
   {id:'weakdrill',label:'にがて復習'},
   {id:'challenge',label:'チャレンジ'},
@@ -1596,16 +1626,27 @@ function renderHome(main){
   const masteredCount=PROBLEMS.filter(p=>getSrs(p.key).status==='mastered').length;
   const weakCount=Object.values(DATA.flags).filter(f=>f.on).length;
   const dueCount=PROBLEMS.filter(p=>isDueToday(p.key)).length;
+  const curRound=currentRound();
+  let roundRows='';
+  for(let r=1;r<=curRound;r++){
+    const label=r===5?'第5回（総合）':`第${r}回`;
+    const st=roundState(r);
+    const pillClass=st==='mastered'?'pill mastered':(st==='progress'?'pill progress':'pill');
+    roundRows+=`<div class="stat-row"><span>${label}</span><span class="${pillClass}">${ROUND_STATE_LABEL[st]}</span></div>`;
+  }
   main.innerHTML=`
     <div class="card"><b>いまの状況</b>
       <div class="stat-row"><span>習得ずみ</span><span>${masteredCount} / ${N}</span></div>
       <div class="progressbar"><div style="width:${(masteredCount/N*100).toFixed(0)}%"></div></div>
       <div class="stat-row"><span>苦手フラグ🚩</span><span>${weakCount}</span></div>
       <div class="stat-row"><span>今日の復習</span><span>${dueCount}問</span></div>
+      <div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px;">
+        <div class="small-note" style="margin-bottom:4px;">週送りスケジュール（第1回〜第${curRound}回が解放ずみ）</div>
+        ${roundRows}
+      </div>
     </div>
     <div class="grid">
       <div class="card mode-card" data-m="list"><h3>📋 問題一覧</h3><div class="small-note">回・例題／基本問題／練習問題からえらんで解く</div></div>
-      <div class="card mode-card" data-m="mastery"><h3>📘 習得モード</h3><div class="small-note">全${N}解法を順に習得＋SRS復習</div></div>
       <div class="card mode-card" data-m="weakcheck"><h3>🔍 苦手チェック</h3><div class="small-note">全${N}解法を1問ずつ1回勝負でテスト</div></div>
       <div class="card mode-card" data-m="weakdrill"><h3>🎯 にがて復習</h3><div class="small-note">🚩のついた解法を3日連続クリアで解消</div></div>
       <div class="card mode-card" data-m="challenge"><h3>⏱ チャレンジ</h3><div class="small-note">全解法シャッフル・タイムアタック</div></div>
@@ -1622,21 +1663,31 @@ function renderList(main){
   if(!RUNTIME.listView)RUNTIME.listView='browse';
   if(RUNTIME.listView==='browse'){
     const rounds=[1,2,3,4,5];
-    let html='<div class="card"><h3>問題一覧</h3><p class="small-note">回・カテゴリをえらぶと、その中の問題一覧が出ます。</p></div>';
+    let html='<div class="card"><h3>問題一覧</h3><p class="small-note">回をえらぶと、その中の問題一覧が出ます。まだ解放されていない回は🔒です。</p></div>';
     html+='<div class="grid">';
     rounds.forEach(r=>{
       const label = r===5 ? '第5回（総合）' : `第${r}回`;
-      html+=`<div class="card mode-card" data-r="${r}"><h3>${label}</h3></div>`;
+      const unlocked=isRoundUnlocked(r);
+      const st=unlocked?roundState(r):'none';
+      html+=`<div class="card ${unlocked?'mode-card':''}" data-r="${r}" style="${unlocked?'':'opacity:.55;'}">
+        <h3>${unlocked?label:`🔒 ${label}`}</h3>
+        ${unlocked?`<span class="${st==='mastered'?'pill mastered':(st==='progress'?'pill progress':'pill')}">${ROUND_STATE_LABEL[st]}</span>`:'<span class="small-note">まだ解放されていません</span>'}
+      </div>`;
     });
     html+='</div>';
     main.innerHTML=html;
-    main.querySelectorAll('.mode-card').forEach(el=>{
+    main.querySelectorAll('.mode-card[data-r]').forEach(el=>{
       el.onclick=()=>{RUNTIME.listView='round';RUNTIME.listRound=parseInt(el.dataset.r,10);go('list');};
     });
     return;
   }
   if(RUNTIME.listView==='round'){
     const r=RUNTIME.listRound;
+    if(!isRoundUnlocked(r)){
+      main.innerHTML=`<div class="card"><h3>🔒 まだ解放されていません</h3><p class="small-note">この回は週送りスケジュールでまだ解放されていません。</p><button class="ghost small" id="btnBackRounds">← 回をえらび直す</button></div>`;
+      document.getElementById('btnBackRounds').onclick=()=>{RUNTIME.listView='browse';go('list');};
+      return;
+    }
     let items;
     if(r===5){
       // 総合回：基本問題は第1〜4回のbasicをまとめて再掲、練習問題はround5のpractice
@@ -1656,47 +1707,25 @@ function renderList(main){
       if(!items[cat].length)return;
       html+=`<div class="card"><h4>${CAT_LABEL[cat]}</h4><div class="grid">`;
       items[cat].forEach(p=>{
-        const mastered=getSrs(p.key).status==='mastered';
-        const remain=remainingToMaster(p.key);
+        const st=masteryState(p.key);
         const flagged=DATA.flags[p.key]&&DATA.flags[p.key].on;
         const roundTag = r===5 && cat==='basic' ? `第${p.round}回・` : '';
-        html+=`<div class="card" style="padding:10px;">
-          <div class="mode-card" data-k="${p.key}" style="cursor:pointer;">${roundTag}${CAT_LABEL[p.cat]} ${p.no}${mastered?' <span class="pill mastered">習得ずみ</span>':` <span class="pill">あと${remain}問</span>`}${flagged?' <span class="pill on">🚩</span>':''}</div>
-          <div style="margin-top:6px;"><button class="ghost small" data-mk="${p.key}">📘 習得モードで解く</button></div>
+        const pillClass = st==='mastered' ? 'pill mastered' : (st==='progress' ? 'pill progress' : 'pill');
+        html+=`<div class="card mode-card qcard" data-mk="${p.key}">
+          <div>${roundTag}${CAT_LABEL[p.cat]} ${p.no}</div>
+          <div style="margin-top:4px;"><span class="${pillClass}">${ROUND_STATE_LABEL[st]}</span>${flagged?' <span class="pill on">🚩</span>':''}</div>
         </div>`;
       });
       html+='</div></div>';
     });
     main.innerHTML=html;
     document.getElementById('btnBackRounds').onclick=()=>{RUNTIME.listView='browse';go('list');};
-    main.querySelectorAll('.mode-card[data-k]').forEach(el=>{
-      el.onclick=()=>{RUNTIME.listView='solve';RUNTIME.listKey=el.dataset.k;go('list');};
-    });
-    main.querySelectorAll('button[data-mk]').forEach(el=>{
-      el.onclick=(e)=>{
-        e.stopPropagation();
+    main.querySelectorAll('.qcard[data-mk]').forEach(el=>{
+      el.onclick=()=>{
         RUNTIME={masteryFocusKey:el.dataset.mk};
         go('mastery',true);
       };
     });
-    return;
-  }
-  if(RUNTIME.listView==='solve'){
-    const key=RUNTIME.listKey;
-    const p=PROBLEMS.find(x=>x.key===key);
-    const rng=makeRng(Date.now()^Math.floor(Math.random()*1e9));
-    const q=GEN[key](rng);
-    const roundLabel = p.round===5?'第5回（総合）':`第${p.round}回`;
-    renderQuestionCard(main,q,{
-      badge:`問題一覧：${roundLabel} ／ ${CAT_LABEL[p.cat]} ${p.no}`,
-      showHint:true,
-      extraButtons:'<button class="ghost small" id="btnListBack">一覧にもどる</button> <button class="ghost small" id="btnListNext">べつの数字でもう一度</button>',
-      onResult:(correct,sec)=>{
-        recordAttempt(key,correct,sec);
-      }
-    });
-    document.getElementById('btnListBack').onclick=()=>{RUNTIME.listView='round';go('list');};
-    document.getElementById('btnListNext').onclick=()=>{go('list');};
     return;
   }
 }
@@ -1808,14 +1837,15 @@ function renderMastery(main){
     }
   }
   if(!target){
-    const dueList=PROBLEMS.filter(p=>isDueToday(p.key));
+    const unlocked=PROBLEMS.filter(p=>isRoundUnlocked(p.round));
+    const dueList=unlocked.filter(p=>isDueToday(p.key));
     if(dueList.length){ target=dueList[0]; isReview=true; }
     else {
-      target=PROBLEMS.find(p=>getSrs(p.key).status!=='mastered');
+      target=unlocked.find(p=>getSrs(p.key).status!=='mastered');
     }
   }
   if(!target){
-    main.innerHTML=`<div class="card"><h3>🎉 全${N}解法、習得完了！</h3><p>すごい！復習が出てきたらまたここに表示されます。</p></div>`;
+    main.innerHTML=`<div class="card"><h3>🎉 解放ずみの解法、習得完了！</h3><p>すごい！つぎの回が解放されたらまたここに表示されます。</p></div>`;
     return;
   }
   const s=getSrs(target.key);
@@ -1858,7 +1888,7 @@ function renderMastery(main){
 // ---------- 苦手チェック ----------
 function renderWeakCheck(main){
   if(!RUNTIME.wcQueue){
-    RUNTIME.wcQueue=PROBLEMS.map(p=>p.key);
+    RUNTIME.wcQueue=PROBLEMS.filter(p=>isRoundUnlocked(p.round)).map(p=>p.key);
     RUNTIME.wcIdx=0;
     RUNTIME.wcResult={answered:0,correct:0,newFlag:0};
   }
@@ -1881,7 +1911,7 @@ function renderWeakCheck(main){
   const rng=makeRng(Date.now()^Math.floor(Math.random()*1e9));
   const q=GEN[key](rng);
   renderQuestionCard(main,q,{
-    badge:`苦手チェック ${RUNTIME.wcIdx+1}/${N}（第${p.round}回）`,
+    badge:`苦手チェック ${RUNTIME.wcIdx+1}/${RUNTIME.wcQueue.length}（第${p.round}回）`,
     showHint:false,
     singleCheck:true,
     extraButtons:'<button class="ghost small" id="btnNext">つぎへ</button>',
@@ -1924,7 +1954,7 @@ go=function(mode,keepRuntime){
 
 // ---------- にがて復習 ----------
 function renderWeakDrill(main){
-  const weakList=PROBLEMS.filter(p=>DATA.flags[p.key]&&DATA.flags[p.key].on);
+  const weakList=PROBLEMS.filter(p=>DATA.flags[p.key]&&DATA.flags[p.key].on&&isRoundUnlocked(p.round));
   if(!weakList.length){
     main.innerHTML=`<div class="card"><h3>いま苦手はありません🎉</h3><p>苦手チェックをして、にがてを見つけよう。</p></div>`;
     return;
@@ -1990,19 +2020,20 @@ function renderWeakDrill(main){
 // ---------- チャレンジモード ----------
 function renderChallenge(main){
   if(!RUNTIME.chQueue){
-    RUNTIME.chQueue=PROBLEMS.map(p=>p.key).sort(()=>Math.random()-0.5);
-    RUNTIME.chIdx=0; RUNTIME.chSkips=[]; RUNTIME.chStart=Date.now(); RUNTIME.chSolved=0;
+    RUNTIME.chQueue=PROBLEMS.filter(p=>isRoundUnlocked(p.round)).map(p=>p.key).sort(()=>Math.random()-0.5);
+    RUNTIME.chIdx=0; RUNTIME.chSkips=[]; RUNTIME.chStart=Date.now(); RUNTIME.chSolved=0; RUNTIME.chTotal=RUNTIME.chQueue.length;
   }
+  const total=RUNTIME.chTotal;
   const elapsedMs=Date.now()-RUNTIME.chStart;
   if(elapsedMs>=CH_LIMIT_MS||(RUNTIME.chIdx>=RUNTIME.chQueue.length&&!RUNTIME.chSkips.length)){
     const ms=elapsedMs;
     const best=DATA.challenge.best;
-    const isNewBest=(best==null||ms<best)&&RUNTIME.chSolved>=N;
+    const isNewBest=(best==null||ms<best)&&RUNTIME.chSolved>=total;
     if(isNewBest)DATA.challenge.best=ms;
-    DATA.challenge.history.push({date:today(),ms,solved:RUNTIME.chSolved,total:N,skips:RUNTIME.chSkips.length,status:RUNTIME.chSolved>=N?'clear':'timeup'});
+    DATA.challenge.history.push({date:today(),ms,solved:RUNTIME.chSolved,total:total,skips:RUNTIME.chSkips.length,status:RUNTIME.chSolved>=total?'clear':'timeup'});
     save();
     main.innerHTML=`<div class="card"><h3>チャレンジ 終了</h3>
-      <div class="stat-row"><span>結果</span><span>${RUNTIME.chSolved}/${N} 問正解</span></div>
+      <div class="stat-row"><span>結果</span><span>${RUNTIME.chSolved}/${total} 問正解</span></div>
       <div class="stat-row"><span>タイム</span><span>${(ms/1000).toFixed(1)}秒</span></div>
       ${isNewBest?'<div class="judge-ok">🏆 自己ベスト更新！</div>':''}
       <div class="btnrow"><button class="primary" onclick="go('home')">ホームへ</button></div>
