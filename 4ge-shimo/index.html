@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>解法チャレンジ 4年下</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff7ec; --card:#ffffff; --ink:#3a2e26; --accent:#ff8a4c; --accent2:#4caf9e;
+  --line:#e8ddd0; --warn:#e6543a; --ok:#3fae6a;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Kiwi Maru','Hiragino Maru Gothic ProN',sans-serif;background:var(--bg);color:var(--ink);}
+header{background:linear-gradient(135deg,#ff9a5c,#ff7a3c);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+header h1{font-size:1.3em;margin:0;font-family:'Hachi Maru Pop',cursive;}
+header .sub{font-size:.8em;opacity:.9;}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;background:#fff2df;border-bottom:2px solid var(--line);}
+nav button{border:none;background:#fff;border:2px solid var(--line);border-radius:20px;padding:8px 14px;font-size:.92em;cursor:pointer;font-family:inherit;color:var(--ink);}
+nav button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+main{max-width:820px;margin:0 auto;padding:16px;}
+.card{background:var(--card);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.mode-card{cursor:pointer;border:2px solid var(--line);transition:transform .1s;}
+.mode-card:hover{transform:translateY(-2px);border-color:var(--accent);}
+.mode-card h3{margin:0 0 6px;}
+.stat-row{display:flex;justify-content:space-between;font-size:.9em;color:#7a6a5a;margin-top:4px;}
+.stem{font-size:1.1em;line-height:1.7;margin-bottom:14px;}
+.field-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.field-row label{min-width:120px;color:#6a5a4a;}
+.field-row input{padding:8px 10px;border:2px solid var(--line);border-radius:8px;font-size:1em;font-family:inherit;width:160px;}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+button.primary{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:1em;cursor:pointer;font-family:inherit;}
+button.ghost{background:#fff;border:2px solid var(--line);border-radius:10px;padding:10px 16px;cursor:pointer;font-family:inherit;}
+button.small{padding:6px 12px;font-size:.85em;border-radius:8px;}
+.hint-box{background:#fff8ec;border:2px dashed #ffcf9e;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:.92em;}
+.solution-box{background:#eefaf3;border:2px solid #bfe8d0;border-radius:10px;padding:12px 14px;margin-top:10px;line-height:1.7;}
+.judge-ok{color:var(--ok);font-weight:bold;}
+.judge-ng{color:var(--warn);font-weight:bold;}
+.flagged{color:var(--warn);}
+.svgwrap{text-align:center;margin:10px 0;}
+.progressbar{height:10px;background:#eee2d2;border-radius:6px;overflow:hidden;margin:6px 0;}
+.progressbar > div{height:100%;background:var(--accent2);}
+.small-note{font-size:.8em;color:#8a7a6a;}
+table.rec{width:100%;border-collapse:collapse;font-size:.88em;}
+table.rec th,table.rec td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.78em;background:#eee;}
+.pill.on{background:#ffe0d0;color:var(--warn);}
+.pill.mastered{background:#dff5e6;color:var(--ok);}
+#cutin{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:50;}
+#cutin .msg{background:#fff;padding:26px 40px;border-radius:20px;font-size:1.6em;font-family:'Hachi Maru Pop',cursive;color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.2);}
+footer{text-align:center;padding:20px;color:#9a8a7a;font-size:.8em;}
+.timer{font-size:1.3em;font-weight:bold;color:var(--accent);}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>解法チャレンジ 4年下</h1>
+    <div class="sub">予習シリーズ4年下（第1〜5回）／苦手チェック・にがて復習・習得モード・チャレンジ</div>
+  </div>
+  <div class="sub" id="headerStatus"></div>
+</header>
+<nav id="navbar"></nav>
+<main id="main"></main>
+<div id="cutin"><div class="msg" id="cutinMsg">すごい！</div></div>
+<footer>解法チャレンジ 4年下 — 家庭学習用（データはこの端末のブラウザ内にのみ保存されます）</footer>
+
+<script>
+'use strict';
+/* ==========================================================
+   解法チャレンジ 4年下 — 単一HTML版
+   4年上（sk_ch_v30）と同じ設計思想: 生成器方式 + SRS学習
+   保存キー: sk_ch4ge_v1（4年上とは別キーなので混在しない）
+========================================================== */
+
+// ---------- ユーティリティ ----------
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a||1;}
+function lcm(a,b){return Math.abs(a*b)/gcd(a,b);}
+function reduceFrac(n,d){if(d<0){n=-n;d=-d;}const g=gcd(n,d);return [n/g,d/g];}
+function randInt(rng,lo,hi){return lo+Math.floor(rng()*(hi-lo+1));}
+function choice(rng,arr){return arr[randInt(rng,0,arr.length-1)];}
+function fracStr(n,d){[n,d]=reduceFrac(n,d);if(d===1)return `${n}`;const whole=Math.trunc(n/d);const rem=n-whole*d;if(whole!==0&&rem!==0)return `${whole} ${Math.abs(rem)}/${d}`;return `${n}/${d}`;}
+function toHalfWidth(s){return String(s).replace(/[０-９．－]/g,ch=>{
+  if(ch==='．')return '.'; if(ch==='－')return '-';
+  return String.fromCharCode(ch.charCodeAt(0)-0xFEE0);
+});}
+function fracEq(userStr,n,d){
+  if(userStr==null)return false;
+  let s=toHalfWidth(String(userStr).trim()).replace(/\s+/g,' ').trim();
+  [n,d]=reduceFrac(n,d);
+  let un,ud;
+  if(/^-?\d+$/.test(s)){un=parseInt(s,10);ud=1;}
+  else if(/^-?\d+\s+\d+\/\d+$/.test(s)){
+    const neg=s.startsWith('-');const parts=s.replace('-','').split(' ');
+    const whole=parseInt(parts[0],10);const [a,b]=parts[1].split('/').map(Number);
+    un=(whole*b+a)*(neg?-1:1);ud=b;
+  } else if(/^-?\d+\/\d+$/.test(s)){
+    const neg=s.startsWith('-');const [a,b]=s.replace('-','').split('/').map(Number);
+    un=a*(neg?-1:1);ud=b;
+  } else return false;
+  [un,ud]=reduceFrac(un,ud);
+  return un===n&&ud===d;
+}
+function decEq(userStr,val,tol){
+  if(userStr==null)return false;
+  const s=toHalfWidth(String(userStr).trim());
+  const x=parseFloat(s);
+  if(Number.isNaN(x))return false;
+  tol=tol==null?1e-6:tol;
+  return Math.abs(x-val)<=tol;
+}
+function intEq(userStr,val){
+  if(userStr==null)return false;
+  const s=toHalfWidth(String(userStr).trim());
+  if(!/^-?\d+$/.test(s))return false;
+  return parseInt(s,10)===val;
+}
+function makeRng(seed){
+  let s=seed>>>0;
+  return function(){
+    s^=s<<13;s^=s>>>17;s^=s<<5;s>>>=0;
+    return s/4294967296;
+  };
+}
+
+/* ====================== 生成器（gen.jsの内容を移植） ====================== */
+// 解法チャレンジ 4年下（第1〜5回）— 問題生成器
+// 4年上と同じ方式: GEN[key](rng) => {title, stem, fields, svg, hints, solution, sig}
+// rng: () => [0,1) の乱数関数（シード可能）
+
+'use strict';
+
+// ---------- ユーティリティ ----------
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; }
+function lcm(a, b) { return Math.abs(a * b) / gcd(a, b); }
+function reduceFrac(n, d) { if (d < 0) { n = -n; d = -d; } const g = gcd(n, d); return [n / g, d / g]; }
+function randInt(rng, lo, hi) { return lo + Math.floor(rng() * (hi - lo + 1)); }
+function choice(rng, arr) { return arr[randInt(rng, 0, arr.length - 1)]; }
+function shuffle(rng, arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = randInt(rng, 0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function fracStr(n, d) {
+  [n, d] = reduceFrac(n, d);
+  if (d === 1) return `${n}`;
+  const whole = Math.trunc(n / d);
+  const rem = n - whole * d;
+  if (whole !== 0 && rem !== 0) return `${whole} ${Math.abs(rem)}/${d}`;
+  return `${n}/${d}`;
+}
+function fracEq(userStr, n, d) {
+  // ユーザー入力（帯分数 "1 3/4" or 仮分数 "7/4" or 整数）を n/d と比較
+  if (userStr == null) return false;
+  let s = String(userStr).trim();
+  s = s.replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0));
+  s = s.replace(/\s+/g, ' ').trim();
+  [n, d] = reduceFrac(n, d);
+  let un, ud;
+  if (/^-?\d+$/.test(s)) { un = parseInt(s, 10); ud = 1; }
+  else if (/^-?\d+\s+\d+\/\d+$/.test(s)) {
+    const neg = s.startsWith('-');
+    const parts = s.replace('-', '').split(' ');
+    const whole = parseInt(parts[0], 10);
+    const [a, b] = parts[1].split('/').map(Number);
+    un = (whole * b + a) * (neg ? -1 : 1); ud = b;
+  } else if (/^-?\d+\/\d+$/.test(s)) {
+    const neg = s.startsWith('-');
+    const [a, b] = s.replace('-', '').split('/').map(Number);
+    un = a * (neg ? -1 : 1); ud = b;
+  } else return false;
+  [un, ud] = reduceFrac(un, ud);
+  return un === n && ud === d;
+}
+function decEq(userStr, val, tol) {
+  if (userStr == null) return false;
+  let s = String(userStr).trim().replace(/[０-９．]/g, ch => {
+    if (ch === '．') return '.';
+    return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
+  });
+  const x = parseFloat(s);
+  if (Number.isNaN(x)) return false;
+  tol = tol == null ? 1e-9 : tol;
+  return Math.abs(x - val) <= tol;
+}
+function intEq(userStr, val) {
+  if (userStr == null) return false;
+  let s = String(userStr).trim().replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0));
+  if (!/^-?\d+$/.test(s)) return false;
+  return parseInt(s, 10) === val;
+}
+
+// ============================================================
+// 第1回 小数と分数
+// ============================================================
+
+// k1_conv: 分数→小数／小数→分数の変換＋大小比較
+function gen_k1_conv(rng) {
+  // 分母を有限小数化できるもの(2,4,5,8,10,20,25,40)からランダムに選ぶ
+  const dens = [2, 4, 5, 8, 10, 16, 20, 25];
+  let d = choice(rng, dens);
+  let n = randInt(rng, 1, d * 2 - 1);
+  if (n % d === 0) n += 1;
+  [n, d] = reduceFrac(n, d);
+  // 小数値
+  const decVal = n / d;
+  const decStr = (Math.round(decVal * 100000) / 100000).toString();
+
+  const sig = `k1_conv_${n}_${d}`;
+  const stem = `分数 <b>${fracStr(n, d)}</b> を小数で表しなさい。（わりきれるまで計算すること）`;
+  const answer = decVal;
+  const fields = [{ id: 'a1', label: '答え', type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
+  const hints = [
+    '分数を小数にするには、分子÷分母を計算します。',
+    `${n}÷${d} を筆算します。`,
+    'わり切れるまで計算し、小数で表します。'
+  ];
+  const solution = `${n} ÷ ${d} = ${decVal}<br>よって答えは <b>${decVal}</b>`;
+  return { title: '分数と小数の変換', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k1_mul: 3つ以上の分数のかけ算・わり算
+function gen_k1_mul(rng) {
+  // a/b × c/d ÷ e/f の形
+  function rf() { return [randInt(rng, 1, 9), randInt(rng, 2, 9)]; }
+  let [a, b] = rf(), [c, d] = rf(), [e, f] = rf();
+  // わり算は逆数のかけ算に
+  // 答え = a*c*f / (b*d*e)
+  let num = a * c * f, den = b * d * e;
+  if (num === 0) num = 1;
+  [num, den] = reduceFrac(num, den);
+  const sig = `k1_mul_${a}_${b}_${c}_${d}_${e}_${f}`;
+  const stem = `次の計算をしなさい。<br><b>${a}/${b} × ${c}/${d} ÷ ${e}/${f}</b>`;
+  const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, num, den) }];
+  const hints = [
+    'わり算は、わる数の逆数をかける形に直します。',
+    `${a}/${b} × ${c}/${d} × ${f}/${e} の形にしてから、まとめて計算します。`,
+    '約分できるところは先に約分してから、分子どうし・分母どうしをかけます。'
+  ];
+  const solution = `÷${e}/${f} は ×${f}/${e} に直せるので、<br>${a}/${b} × ${c}/${d} × ${f}/${e} = ${a * c * f}/${b * d * e} = <b>${fracStr(num, den)}</b>`;
+  return { title: '3つ以上の分数のかけ算・わり算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k1_mix: 整数・小数・分数の混合計算
+function gen_k1_mix(rng) {
+  // 小数を分数に統一して計算: A(整数) + B(小数) - C/D(分数)
+  const intPart = randInt(rng, 1, 9);
+  const decNum = randInt(rng, 1, 9); // 0.decNum
+  const [cn, cd] = [randInt(rng, 1, 4), choice(rng, [4, 5, 8, 10])];
+  // 全部を分数に：整数=intPart/1、小数=decNum/10、分数=cn/cd
+  // 通分してまとめる
+  const den10 = 10;
+  const L = lcm(lcm(1, den10), cd);
+  let total = intPart * L + decNum * (L / den10) - cn * (L / cd);
+  let num = total, den = L;
+  [num, den] = reduceFrac(num, den);
+  const sig = `k1_mix_${intPart}_${decNum}_${cn}_${cd}`;
+  const stem = `次の計算をしなさい。<br><b>${intPart} + 0.${decNum} − ${cn}/${cd}</b>`;
+  const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, num, den) }];
+  const hints = [
+    '小数と分数が混ざっているときは、どちらかにそろえます。',
+    '小数を分数に直し、分母をそろえて通分します。',
+    `0.${decNum} = ${decNum}/10 に直してから、${cn}/${cd} と通分して計算します。`
+  ];
+  const solution = `0.${decNum} = ${decNum}/10<br>${intPart} + ${decNum}/10 − ${cn}/${cd} を通分すると<br>= ${intPart * L}/${L} + ${decNum * (L / den10)}/${L} − ${cn * (L / cd)}/${L} = ${total}/${L} = <b>${fracStr(num, den)}</b>`;
+  return { title: '整数・小数・分数の混合計算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k1_int: 分数の積を整数にする最小の分数
+function gen_k1_int(rng) {
+  // 8/15 のような分数に、分母=2数のLCM/分子=2数のGCDの分数をかけると整数になる、の逆算パターンを2数で
+  // 問題: a/b に x/y をかけて整数になる最小の分数 x/y を求める
+  const bases = [[2, 3], [3, 4], [2, 5], [3, 5], [4, 5], [2, 7]];
+  const [p, q] = choice(rng, bases);
+  const b = p * randInt(rng, 2, 4);
+  const a = q * randInt(rng, 2, 4);
+  // a/b (未約分の可能性あり) を約分
+  let [an, ad] = reduceFrac(a, b);
+  // 最小の x/y: y = an（分子の値）、x = ad の倍数のうち... 実際には x/y = ad/an が最小
+  const x = ad, y = an;
+  const sig = `k1_int_${an}_${ad}`;
+  const stem = `${fracStr(an, ad)} にできるだけ小さい分数をかけて、積を整数にします。かける分数を求めなさい。`;
+  const fields = [{ id: 'a1', label: 'かける分数', type: 'frac', check: (v) => fracEq(v, x, y) }];
+  const hints = [
+    '分数×分数を整数にするには、分母を消し、余計な数をかけすぎないようにします。',
+    `分母${ad}を消すには、分子に${ad}を持つ分数をかけます。`,
+    `かける分数の分母は、もとの分数の分子${an}にすると、それ以上約分できず最小になります。`
+  ];
+  const solution = `${fracStr(an, ad)} × ${x}/${y} = ${an * x}/${ad * y} = ${(an * x) / (ad * y)}（整数）<br>これより小さい分数ではわりきれないので、答えは <b>${fracStr(x, y)}</b>`;
+  return { title: '分数の積を整数にする', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 第2回 分配とやりとりの問題
+// ============================================================
+
+// k2_wake_nohanpa: 分配算(はんぱなし) 和と倍数から2量を求める
+function gen_k2_wake_nohanpa(rng) {
+  const ratio = randInt(rng, 2, 5); // 兄=弟×ratio
+  const small = randInt(rng, 3, 20);
+  const sum = small * (ratio + 1);
+  const sig = `k2_wa_${ratio}_${small}`;
+  const stem = `姉と妹であめを合わせて${sum}個持っています。姉の個数は妹の個数の${ratio}倍です。妹の個数を求めなさい。`;
+  const fields = [{ id: 'a1', label: '妹の個数', type: 'int', check: (v) => intEq(v, small) }];
+  const hints = [
+    '線分図をかいて、妹を1、姉を◯倍として全体を表します。',
+    `全体は妹の(${ratio}+1)倍にあたります。`,
+    `${sum} ÷ ${ratio + 1} で妹の個数が求まります。`
+  ];
+  const solution = `妹を1とすると姉は${ratio}なので、合計は(${ratio}+1)＝${ratio + 1}にあたる。<br>${sum} ÷ ${ratio + 1} = <b>${small}</b>（個）`;
+  return { title: '分配算（はんぱなし）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k2_wake_hanpa: 分配算(はんぱあり)
+function gen_k2_wake_hanpa(rng) {
+  const ratio = randInt(rng, 2, 4);
+  const extra = randInt(rng, 2, 15) * 2; // 偶数にして割り切れやすく
+  const small = randInt(rng, 5, 20);
+  const big = small * ratio + extra;
+  const sum = small + big;
+  const sig = `k2_wh_${ratio}_${extra}_${small}`;
+  const stem = `兄と弟の持っているカードは合わせて${sum}枚です。兄の枚数は弟の枚数の${ratio}倍より${extra}枚多いです。弟の枚数を求めなさい。`;
+  const fields = [{ id: 'a1', label: '弟の枚数', type: 'int', check: (v) => intEq(v, small) }];
+  const hints = [
+    '「◯倍より多い」のときは、多い分（はんぱ）を先に引いてから考えます。',
+    `合計から${extra}枚を引くと、ちょうど弟の(${ratio}+1)倍になります。`,
+    `(${sum} − ${extra}) ÷ ${ratio + 1} を計算します。`
+  ];
+  const solution = `合計${sum}枚から、はんぱの${extra}枚を引くと ${sum - extra}枚。<br>これが弟の(${ratio}+1)倍にあたるので、<br>(${sum} − ${extra}) ÷ ${ratio + 1} = <b>${small}</b>（枚）`;
+  return { title: '分配算（はんぱあり）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k2_wake_fuhen: 不変量に注目する分配算
+function gen_k2_wake_fuhen(rng) {
+  // 2人が同額出し合ってプレゼントを買う。残額の差が変わらない
+  const diff = randInt(rng, 10, 40) * 10; // 最初の所持金の差
+  const pay = randInt(rng, 20, 60) * 10;  // 出し合う額(同額)
+  const a_after_ratio = randInt(rng, 2, 4); // 残額の比：兄:弟 = ratio:1
+  // 兄の残り = 弟の残り × ratio、兄の残り - 弟の残り = diff（不変）
+  const small_after = diff / (a_after_ratio - 1);
+  if (!Number.isInteger(small_after) || small_after <= 0) return gen_k2_wake_fuhen(rng);
+  const big_after = small_after * a_after_ratio;
+  const bigStart = big_after + pay;
+  const smallStart = small_after + pay;
+  const sig = `k2_wf_${diff}_${pay}_${a_after_ratio}`;
+  const stem = `姉は${bigStart}円、妹は${smallStart}円持っていました。2人が同じ金額ずつ出し合って${pay}円のプレゼントを買ったところ、残ったお金は姉が妹の${a_after_ratio}倍になりました。2人が出した金額を求めなさい。`;
+  const fields = [{ id: 'a1', label: '1人分の金額', type: 'int', check: (v) => intEq(v, pay / 2) }];
+  const hints = [
+    '同じ金額ずつ出すので、2人の残額の「差」は変わりません。',
+    `最初の差は ${bigStart} − ${smallStart} = ${diff}円のままです。`,
+    `残額の比が${a_after_ratio}:1なので、差の${diff}円が(${a_after_ratio}-1)にあたります。妹の残りを求めてから、出した金額を逆算します。`
+  ];
+  const solution = `2人が同額出しても差は変わらないので、残額の差は最初と同じ ${diff}円。<br>残額の比は${a_after_ratio}:1なので、差${diff}円は(${a_after_ratio}−1)＝${a_after_ratio - 1}にあたる。<br>妹の残り＝${diff}÷${a_after_ratio - 1}＝${small_after}円<br>妹が出した金額＝${smallStart}−${small_after}＝<b>${pay / 2}円</b>`;
+  return { title: '分配算（不変量に注目）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k2_wake3: 3量以上の分配算
+function gen_k2_wake3(rng) {
+  // A:B:C の倍数関係が連鎖する形（A=2B, B=3C 的な）
+  const r1 = randInt(rng, 2, 4); // A = r1 * B
+  const r2 = randInt(rng, 2, 4); // B = r2 * C
+  const cVal = randInt(rng, 3, 10);
+  const bVal = cVal * r2;
+  const aVal = bVal * r1;
+  const sum = aVal + bVal + cVal;
+  const sig = `k2_w3_${r1}_${r2}_${cVal}`;
+  const stem = `A, B, Cの3人が合わせて${sum}個のクリップを持っています。AはBの${r1}倍、BはCの${r2}倍持っています。Cの個数を求めなさい。`;
+  const fields = [{ id: 'a1', label: 'Cの個数', type: 'int', check: (v) => intEq(v, cVal) }];
+  const hints = [
+    'いちばん小さい量（C）を1として、他をすべてCの何倍かで表します。',
+    `B＝C×${r2}、A＝B×${r1}＝C×${r1 * r2} となります。`,
+    `全部をCの倍数で表すと、合計は C×(${r1 * r2}+${r2}+1) になります。`
+  ];
+  const solution = `Cを1とすると、B＝${r2}、A＝${r1}×${r2}＝${r1 * r2}<br>合計は Cの(${r1 * r2}+${r2}+1)＝${r1 * r2 + r2 + 1}倍<br>${sum} ÷ ${r1 * r2 + r2 + 1} = <b>${cVal}</b>（個）`;
+  return { title: '分配算（3量以上）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k2_yari_wa: やりとり算（和に注目）
+function gen_k2_yari_wa(rng) {
+  // 2人が同じ枚数だけやりとりし、最終的に等しくなる
+  const after = randInt(rng, 10, 30) * 2; // 最終的に2人とも同じ枚数
+  const move = randInt(rng, 2, 15);
+  const aStart = after + move;
+  const bStart = after - move;
+  const sig = `k2_yw_${after}_${move}`;
+  const stem = `姉と弟が折り紙を持っています。姉が弟に${move}枚あげたところ、2人とも${after}枚ずつになりました。姉は最初何枚持っていましたか。`;
+  const fields = [{ id: 'a1', label: '姉のはじめの枚数', type: 'int', check: (v) => intEq(v, aStart) }];
+  const hints = [
+    '2人の合計枚数は、やりとりしても変わりません。',
+    `合計は ${after}×2 ＝ ${after * 2}枚です。`,
+    `姉はあげた分だけ多く持っていたはずなので、最後の枚数に${move}を足します。`
+  ];
+  const solution = `合計は変わらないので ${after}×2＝${after * 2}枚。<br>姉は${move}枚あげて${after}枚になったので、はじめは ${after}+${move}＝<b>${aStart}</b>（枚）`;
+  return { title: 'やりとり算（和に注目）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k2_yari_sa: やりとり算（差に注目）
+function gen_k2_yari_sa(rng) {
+  // はじめの比 a:b、一定額移動後の比 c:d から、差(移動しても変わらない)に注目
+  // 簡単化：はじめの差が判明していて、比だけ変わるケース
+  const diff = randInt(rng, 10, 30) * 6; // 割り切りやすい数
+  const beforeRatio = [3, 1]; // 兄:弟 = 3:1 のように差が2にあたる
+  const afterRatio = [2, 1]; // やりとり後は 2:1（差は1にあたる）
+  // 差(diff)は変わらない。before: 差はbeforeRatio差の何にあたるか
+  const beforeUnit = diff / (beforeRatio[0] - beforeRatio[1]);
+  const afterUnit = diff / (afterRatio[0] - afterRatio[1]);
+  if (!Number.isInteger(beforeUnit) || !Number.isInteger(afterUnit)) return gen_k2_yari_sa(rng);
+  const aStart = beforeUnit * beforeRatio[0];
+  const bStart = beforeUnit * beforeRatio[1];
+  const aEnd = afterUnit * afterRatio[0];
+  const move = aStart - aEnd; // 兄が弟にあげた枚数（負なら逆）
+  const sig = `k2_ys_${diff}_${beforeUnit}_${afterUnit}`;
+  const stem = `兄と弟の持っているお金の比は${beforeRatio[0]}:${beforeRatio[1]}でしたが、兄が弟にいくらかあげたところ、比は${afterRatio[0]}:${afterRatio[1]}になりました。2人の金額の差は${diff}円のまま変わりません。兄がはじめに持っていた金額を求めなさい。`;
+  const fields = [{ id: 'a1', label: '兄のはじめの金額', type: 'int', check: (v) => intEq(v, aStart) }];
+  const hints = [
+    '2人の間でお金をやりとりしても、2人の金額の「差」は変わりません。',
+    `はじめの比${beforeRatio[0]}:${beforeRatio[1]}では、差は(${beforeRatio[0]}−${beforeRatio[1]})＝${beforeRatio[0] - beforeRatio[1]}にあたります。`,
+    `差${diff}円がその${beforeRatio[0] - beforeRatio[1]}にあたるので、比の1にあたる金額を求めてから兄の金額を計算します。`
+  ];
+  const solution = `差は変わらず${diff}円。はじめの比${beforeRatio[0]}:${beforeRatio[1]}では差が${beforeRatio[0] - beforeRatio[1]}にあたるので、<br>比の1＝${diff}÷${beforeRatio[0] - beforeRatio[1]}＝${beforeUnit}円<br>兄のはじめ＝${beforeUnit}×${beforeRatio[0]}＝<b>${aStart}</b>（円）`;
+  return { title: 'やりとり算（差に注目）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 第3回 円と正多角形
+// ============================================================
+
+function svgCircleAngle(centerDeg, baseDeg) {
+  return `<svg viewBox="0 0 200 140" width="200" height="140">
+    <circle cx="70" cy="90" r="50" fill="none" stroke="#888" stroke-width="2"/>
+    <line x1="70" y1="90" x2="20" y2="60" stroke="#333" stroke-width="2"/>
+    <line x1="70" y1="90" x2="120" y2="60" stroke="#333" stroke-width="2"/>
+    <path d="M 70 90 L 20 60 L 120 60 Z" fill="none" stroke="#e67" stroke-width="2"/>
+    <text x="60" y="75" font-size="14">${centerDeg}°</text>
+  </svg>`;
+}
+
+// k3_circle: 円の性質（大小2円の半径・直径）
+function gen_k3_circle(rng) {
+  const rBig = randInt(rng, 8, 20);
+  const rSmall = randInt(rng, 3, rBig - 2);
+  const distCenters = rBig - rSmall; // 内接（小円が大円の内側に接する）
+  const sig = `k3_c_${rBig}_${rSmall}`;
+  const stem = `半径${rBig}cmの大きい円の内側に、半径${rSmall}cmの小さい円が、内側で1点で接するように入っています。2つの円の中心の間の距離を求めなさい。`;
+  const fields = [{ id: 'a1', label: '中心間の距離(cm)', type: 'int', check: (v) => intEq(v, distCenters) }];
+  const hints = [
+    '内側で接する2つの円は、大きい円の半径から小さい円の半径を引くと中心間の距離になります。',
+    `大きい円の半径 ${rBig}cm から、小さい円の半径 ${rSmall}cm を引きます。`,
+    `${rBig} − ${rSmall} を計算します。`
+  ];
+  const solution = `内接する2円の中心間の距離＝大きい半径−小さい半径<br>${rBig} − ${rSmall} = <b>${distCenters}</b>（cm）`;
+  return { title: '円の性質', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k3_angle: 円と角（半径が等しい二等辺三角形を利用）
+function gen_k3_angle(rng) {
+  const centerDeg = randInt(rng, 20, 140);
+  const baseDeg = (180 - centerDeg) / 2;
+  if (!Number.isInteger(baseDeg)) return gen_k3_angle(rng);
+  const sig = `k3_a_${centerDeg}`;
+  const stem = `円の中心Oと円周上の2点A, Bを結んでできた三角形OABはOA=OBの二等辺三角形です。角AOB（中心角）が${centerDeg}°のとき、角OAB（底角）の大きさを求めなさい。`;
+  const fields = [{ id: 'a1', label: '角OABの大きさ(°)', type: 'int', check: (v) => intEq(v, baseDeg) }];
+  const hints = [
+    '円の半径はどこも同じ長さなので、OA＝OBの二等辺三角形になります。',
+    '二等辺三角形の底角は等しいので、2つの底角の大きさは同じです。',
+    `三角形の内角の和は180°なので、(180−${centerDeg})を2でわります。`
+  ];
+  const solution = `OA＝OB（半径）なので二等辺三角形。<br>底角の和＝180−${centerDeg}＝${180 - centerDeg}<br>底角はそれぞれ ${180 - centerDeg}÷2＝<b>${baseDeg}</b>（°）`;
+  return { title: '円と角', stem, fields, svg: svgCircleAngle(centerDeg, baseDeg), hints, solution, sig };
+}
+
+// k3_poly_angle: 正多角形の中心角・底角・頂角
+function gen_k3_poly_angle(rng) {
+  const nSides = choice(rng, [5, 6, 8, 9, 10, 12]);
+  const centerDeg = 360 / nSides;
+  const baseDeg = (180 - centerDeg) / 2;
+  const askCenter = rng() < 0.34, askBase = !askCenter && rng() < 0.5;
+  let answer, label, question;
+  if (askCenter) { answer = centerDeg; label = '中心角(°)'; question = '中心角'; }
+  else if (askBase) { answer = baseDeg; label = '底角(°)'; question = '（二等辺三角形に分けたときの）底角'; }
+  else { answer = centerDeg; label = '中心角(°)'; question = '中心角'; }
+  if (!Number.isInteger(answer)) return gen_k3_poly_angle(rng);
+  const sig = `k3_pa_${nSides}_${askCenter}_${askBase}`;
+  const stem = `正${nSides}角形の頂点をすべて中心Oと結び、正${nSides}角形をOを頂点とする${nSides}個の合同な二等辺三角形に分けました。${question}の大きさを求めなさい。`;
+  const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = [
+    '正多角形の中心角は、360°を辺の数（頂点の数）で等分したものです。',
+    `360 ÷ ${nSides} を計算すると中心角が求まります。`,
+    '底角を聞かれた場合は、三角形の内角の和180°から中心角を引き、2でわります。'
+  ];
+  const solution = `中心角＝360÷${nSides}＝${centerDeg}°<br>` + (askBase ? `底角＝(180−${centerDeg})÷2＝<b>${baseDeg}</b>（°）` : `答えは <b>${centerDeg}</b>（°）`);
+  return { title: '正多角形の中心角・底角', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k3_symmetry: 正多角形の対称の軸の本数
+function gen_k3_symmetry(rng) {
+  const nSides = choice(rng, [5, 6, 7, 8, 9, 10, 12]);
+  const sig = `k3_sym_${nSides}`;
+  const stem = `正${nSides}角形には、対称の軸が何本ありますか。`;
+  const fields = [{ id: 'a1', label: '対称の軸の本数', type: 'int', check: (v) => intEq(v, nSides) }];
+  const hints = [
+    '正多角形の対称の軸の本数は、辺の数（頂点の数）と同じです。',
+    `正${nSides}角形なら対称の軸も${nSides}本になります。`,
+    '頂点と対辺（または対頂点）の中点を通る直線が軸になります。'
+  ];
+  const solution = `正${nSides}角形の対称の軸の本数は、辺の数と同じ <b>${nSides}</b>（本）`;
+  return { title: '正多角形の対称性', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 第4回 立方体と直方体の体積
+// ============================================================
+
+function svgBox(l, w, h) {
+  return `<svg viewBox="0 0 220 160" width="220" height="160">
+    <g stroke="#333" stroke-width="2" fill="none">
+      <polygon points="40,120 140,120 170,90 70,90" fill="#eef"/>
+      <polygon points="40,120 40,50 70,20 70,90" fill="#ddf"/>
+      <polygon points="40,50 140,50 170,20 70,20" fill="#ccf"/>
+      <line x1="140" y1="120" x2="140" y2="50"/>
+      <line x1="170" y1="90" x2="170" y2="20"/>
+    </g>
+    <text x="90" y="140" font-size="13">たて${l}</text>
+    <text x="175" y="60" font-size="13">高さ${h}</text>
+    <text x="10" y="90" font-size="13">横${w}</text>
+  </svg>`;
+}
+
+// k4_volume: 体積の基本
+function gen_k4_volume(rng) {
+  const l = randInt(rng, 3, 15), w = randInt(rng, 3, 15), h = randInt(rng, 3, 15);
+  const vol = l * w * h;
+  const sig = `k4_v_${l}_${w}_${h}`;
+  const stem = `たて${l}cm、横${w}cm、高さ${h}cmの直方体の体積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '体積(cm³)', type: 'int', check: (v) => intEq(v, vol) }];
+  const hints = ['直方体の体積は「たて×横×高さ」で求めます。', `${l}×${w}×${h} を計算します。`, '計算の順序はどこからでもよいので、計算しやすい順に掛けましょう。'];
+  const solution = `体積＝たて×横×高さ＝${l}×${w}×${h}＝<b>${vol}</b>（cm³）`;
+  return { title: '直方体の体積', stem, fields, svg: svgBox(l, w, h), hints, solution, sig };
+}
+
+// k4_surface: 表面積の基本
+function gen_k4_surface(rng) {
+  const l = randInt(rng, 3, 12), w = randInt(rng, 3, 12), h = randInt(rng, 3, 12);
+  const surf = 2 * (l * w + w * h + h * l);
+  const sig = `k4_s_${l}_${w}_${h}`;
+  const stem = `たて${l}cm、横${w}cm、高さ${h}cmの直方体の表面積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '表面積(cm²)', type: 'int', check: (v) => intEq(v, surf) }];
+  const hints = ['表面積は、向かい合う3組の面の面積をすべて足します。', `(たて×横 ＋ 横×高さ ＋ 高さ×たて) を計算します。`, 'その合計を2倍します（同じ面が2つずつあるため）。'];
+  const solution = `(${l}×${w} + ${w}×${h} + ${h}×${l}) × 2 = (${l * w}+${w * h}+${h * l})×2 = <b>${surf}</b>（cm²）`;
+  return { title: '直方体の表面積', stem, fields, svg: svgBox(l, w, h), hints, solution, sig };
+}
+
+// k4_kurinuki: くりぬき複合立体
+function gen_k4_kurinuki(rng) {
+  const L = randInt(rng, 6, 12), W = randInt(rng, 6, 12), H = randInt(rng, 6, 12);
+  const s = randInt(rng, 2, Math.min(L, W, H) - 1);
+  const volOuter = L * W * H;
+  const volInner = s * s * s;
+  const vol = volOuter - volInner;
+  const sig = `k4_k_${L}_${W}_${H}_${s}`;
+  const stem = `たて${L}cm、横${W}cm、高さ${H}cmの直方体から、1辺${s}cmの立方体を1個くりぬきました。残った立体の体積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '体積(cm³)', type: 'int', check: (v) => intEq(v, vol) }];
+  const hints = ['「もとの直方体の体積」から「くりぬいた立方体の体積」を引きます。', `もとの体積＝${L}×${W}×${H}、くりぬく体積＝${s}×${s}×${s}`, 'この2つの差が答えです。'];
+  const solution = `もとの体積＝${L}×${W}×${H}＝${volOuter}<br>くりぬいた体積＝${s}×${s}×${s}＝${volInner}<br>${volOuter} − ${volInner} = <b>${vol}</b>（cm³）`;
+  return { title: 'くりぬき複合立体の体積', stem, fields, svg: '', hints, solution, sig };
+}
+
+// k4_bunkatsu: 高さの同じ2直方体に分けて□を求める
+function gen_k4_bunkatsu(rng) {
+  // 高さH共通、横幅が w1,w2、たてL共通。全体体積から w2 (未知の横幅)を逆算
+  const L = randInt(rng, 4, 10), H = randInt(rng, 4, 10);
+  const w1 = randInt(rng, 3, 10);
+  const w2 = randInt(rng, 3, 10);
+  const totalVol = L * H * (w1 + w2);
+  const sig = `k4_b_${L}_${H}_${w1}_${w2}`;
+  const stem = `たて${L}cm、高さ${H}cmで統一されたL字型の立体があり、これは横${w1}cmの直方体と横□cmの直方体の2つに分けられます。全体の体積が${totalVol}cm³のとき、□にあてはまる数を求めなさい。`;
+  const fields = [{ id: 'a1', label: '□(cm)', type: 'int', check: (v) => intEq(v, w2) }];
+  const hints = ['高さが同じ2つの直方体に分けて考えます。', `全体の体積は ${L}×${H}×(${w1}+□) と表せます。`, `${totalVol} ÷ (${L}×${H}) から (${w1}+□) を求め、□を逆算します。`];
+  const solution = `全体＝${L}×${H}×(${w1}+□)＝${totalVol}<br>(${w1}+□)＝${totalVol}÷${L * H}＝${w1 + w2}<br>□＝${w1 + w2}−${w1}＝<b>${w2}</b>（cm）`;
+  return { title: '高さが同じ2直方体に分ける問題', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 生成器レジストリ
+// ============================================================
+// ============================================================
+// 第1回 基本問題・練習問題
+// ============================================================
+
+// b1_1: 単位あたり量の文章題（分速的な「1日あたり」計算＋逆算）
+function gen_b1_1(rng) {
+  const days = randInt(rng, 3, 9);
+  const perDay = randInt(rng, 120, 480);
+  const total = days * perDay;
+  const askTotal = rng() < 0.5;
+  const sig = `b1_1_${days}_${perDay}_${askTotal}`;
+  let stem, answer, label;
+  if (askTotal) {
+    stem = `1日${perDay}円ずつお小遣いをためると、${days}日間でいくらになりますか。`;
+    answer = total; label = '合計金額(円)';
+  } else {
+    stem = `1日${perDay}円ずつお小遣いをためて、${days}日間で${total}円になりました。式が正しいか、1日あたりの金額を求め直しなさい。`;
+    answer = perDay; label = '1日あたり(円)';
+  }
+  const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['「1日あたり×日数＝合計」の関係を使います。', `${perDay}×${days} または ${total}÷${days} を計算します。`, '単位（円・日）に注目して式を立てましょう。'];
+  const solution = askTotal
+    ? `${perDay} × ${days} = <b>${total}</b>（円）`
+    : `${total} ÷ ${days} = <b>${perDay}</b>（円）`;
+  return { title: '基本問題1：単位あたり量', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b1_2: 分数・小数混合計算（第1回基本2問目の代表パターン）
+function gen_b1_2(rng) {
+  // (整数 op 分数) op 小数 のような3項計算、加減のみでシンプルに
+  const a = randInt(rng, 1, 8);
+  const [bn, bd] = [randInt(rng, 1, 5), choice(rng, [3, 6, 9])];
+  const cDec = randInt(rng, 1, 9);
+  const signs = choice(rng, [['+', '-'], ['-', '+'], ['+', '+']]);
+  const L = lcm(1, lcm(bd, 10));
+  let total = a * L;
+  total += signs[0] === '+' ? bn * (L / bd) : -bn * (L / bd);
+  total += signs[1] === '+' ? cDec * (L / 10) : -cDec * (L / 10);
+  let [num, den] = reduceFrac(total, L);
+  const sig = `b1_2_${a}_${bn}_${bd}_${cDec}_${signs.join('')}`;
+  const stem = `次の計算をしなさい。<br><b>${a} ${signs[0]} ${bn}/${bd} ${signs[1]} 0.${cDec}</b>`;
+  const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, num, den) }];
+  const hints = ['小数を分数に直して、分母をそろえます。', `0.${cDec} = ${cDec}/10 として通分します。`, '通分してから分子だけ計算し、最後に約分します。'];
+  const solution = `0.${cDec} = ${cDec}/10。通分して計算すると<br>答えは <b>${fracStr(num, den)}</b>`;
+  return { title: '基本問題2：分数・小数混合計算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b1_3: 計算の順序を間違えた逆算問題
+function gen_b1_3(rng) {
+  // 「ある数」に○をかけてから△をひくべきところを、逆に△をひいてから○をかけて答えが違った、というタイプ
+  const mul = randInt(rng, 2, 6);
+  const sub = randInt(rng, 3, 20);
+  const wrongAns = randInt(rng, 10, 40); // 間違えて計算した答え（(x-sub)*mul）
+  // wrongAns = (x - sub) * mul  →  x = wrongAns/mul + sub
+  if (wrongAns % mul !== 0) return gen_b1_3(rng);
+  const x = wrongAns / mul + sub;
+  const correctAns = x * mul - sub;
+  const sig = `b1_3_${mul}_${sub}_${wrongAns}`;
+  const stem = `ある数から${sub}をひいてから${mul}をかけるところを、まちがえて先に${mul}をかけてから${sub}をひいてしまい、答えが${wrongAns}になりました。正しく計算した答えを求めなさい。`;
+  const fields = [{ id: 'a1', label: '正しい答え', type: 'int', check: (v) => intEq(v, correctAns) }];
+  const hints = ['まず「ある数」が何かを、まちがえた式から逆算しましょう。', `まちがえた式は (ある数×${mul}) − ${sub} = ${wrongAns} です。`, 'ある数が分かったら、正しい順番（−${sub}してから×${mul}）で計算し直します。'];
+  const solution = `まちがえた式：ある数×${mul}−${sub}＝${wrongAns}<br>ある数×${mul}＝${wrongAns + sub}<br>ある数＝${(wrongAns + sub) / mul}<br>正しい式：ある数−${sub}を先にして×${mul}<br>(${(wrongAns + sub) / mul}−${sub})×${mul}＝<b>${correctAns}</b>`;
+  return { title: '基本問題3：計算順序の逆算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b1_4: 単位あたり量の文章題（はり金の重さ）
+function gen_b1_4(rng) {
+  const lenA = randInt(rng, 2, 10);
+  const weightPerM = choice(rng, [15, 20, 25, 30, 35, 40]); // g/m
+  const totalWeight = lenA * weightPerM;
+  const askLen = rng() < 0.5;
+  const lenB = randInt(rng, 3, 15);
+  const weightB = lenB * weightPerM;
+  const sig = `b1_4_${lenA}_${weightPerM}_${lenB}_${askLen}`;
+  let stem, answer, label;
+  if (askLen) {
+    stem = `${lenA}mのはり金の重さは${totalWeight}gです。同じ種類のはり金${weightB}gの長さは何mですか。`;
+    answer = weightB / weightPerM; label = '長さ(m)';
+  } else {
+    stem = `${lenA}mのはり金の重さは${totalWeight}gです。同じ種類のはり金${lenB}mの重さは何gですか。`;
+    answer = weightB; label = '重さ(g)';
+  }
+  const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['まず1mあたりの重さ（単位量）を求めます。', `${totalWeight}÷${lenA}＝1mあたりの重さ`, '単位量に、聞かれている長さ・重さをかけたりわったりします。'];
+  const solution = askLen
+    ? `1mあたり ${totalWeight}÷${lenA}＝${weightPerM}g<br>${weightB}÷${weightPerM}＝<b>${weightB / weightPerM}</b>（m）`
+    : `1mあたり ${totalWeight}÷${lenA}＝${weightPerM}g<br>${weightPerM}×${lenB}＝<b>${weightB}</b>（g）`;
+  return { title: '基本問題4：単位あたり量（はり金）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p1_1: 面積の等しい2つの直角三角形から辺の長さを求める（分数）
+function gen_p1_1(rng) {
+  // 三角形1: 底辺b1・高さh1、三角形2: 底辺b2・高さ□。面積が等しい
+  const b1 = randInt(rng, 4, 12);
+  const h1 = randInt(rng, 4, 12);
+  const b2 = randInt(rng, 3, 10);
+  const area2Times = b1 * h1; // 2倍面積
+  if (area2Times % b2 !== 0) return gen_p1_1(rng);
+  const hAns = area2Times / b2;
+  let [an, ad] = reduceFrac(hAns, 1);
+  const sig = `p1_1_${b1}_${h1}_${b2}`;
+  const stem = `底辺${b1}cm、高さ${h1}cmの直角三角形と、底辺${b2}cmの直角三角形の面積が等しいとき、後者の高さを求めなさい。`;
+  const fields = [{ id: 'a1', label: '高さ', type: 'frac', check: (v) => fracEq(v, an, ad) }];
+  const hints = ['三角形の面積＝底辺×高さ÷2 です。', `面積が等しいので、底辺×高さの値も等しくなります（÷2が共通なので）。`, `${b1}×${h1}＝${b2}×高さ として高さを求めます。`];
+  const solution = `${b1}×${h1}＝${area2Times}＝${b2}×高さ<br>高さ＝${area2Times}÷${b2}＝<b>${fracStr(an, ad)}</b>（cm）`;
+  return { title: '練習問題1：等積の直角三角形', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p1_2: 単位あたり量の文章題×2（密度風）
+function gen_p1_2(rng) {
+  const vol = randInt(rng, 3, 12);
+  const densityX10 = randInt(rng, 8, 30); // g/cm3 を10倍したもの(小数対応)
+  const mass = vol * densityX10 / 10;
+  const askDensity = rng() < 0.5;
+  const sig = `p1_2_${vol}_${densityX10}_${askDensity}`;
+  let stem, answer, label;
+  if (askDensity) {
+    stem = `体積${vol}cm³で重さ${mass}gの金属があります。この金属1cm³あたりの重さ（密度）を求めなさい。`;
+    answer = densityX10 / 10; label = '密度(g/cm³)';
+    const fields = [{ id: 'a1', label, type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
+    const hints = ['密度＝重さ÷体積 で求めます。', `${mass}÷${vol} を計算します。`, '答えは小数で表しましょう。'];
+    const solution = `${mass} ÷ ${vol} = <b>${answer}</b>（g/cm³）`;
+    return { title: '練習問題2：単位あたり量（密度）', stem, fields, svg: '', hints, solution, sig };
+  } else {
+    const vol2 = randInt(rng, 3, 12);
+    const mass2 = vol2 * densityX10 / 10;
+    stem = `体積${vol}cm³で重さ${mass}gの金属と同じ種類の金属で、体積${vol2}cm³のものの重さを求めなさい。`;
+    answer = mass2; label = '重さ(g)';
+    const fields = [{ id: 'a1', label, type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
+    const hints = ['まず1cm³あたりの重さ（密度）を求めます。', `${mass}÷${vol}＝密度`, '密度に新しい体積をかけます。'];
+    const solution = `密度＝${mass}÷${vol}＝${densityX10 / 10}g/cm³<br>${densityX10 / 10}×${vol2}＝<b>${mass2}</b>（g）`;
+    return { title: '練習問題2：単位あたり量（密度）', stem, fields, svg: '', hints, solution, sig };
+  }
+}
+
+// p1_3: 分母Dの分数を99個並べた数列→整数になる個数・既約分数の個数（数論系）
+function gen_p1_3(rng) {
+  const D = 6;
+  const N99 = 99;
+  const intCount = Math.floor(N99 / D);
+  let coprimeCount = 0;
+  for (let k = 1; k <= N99; k++) { if (gcd(k, D) === 1) coprimeCount++; }
+  const askInt = rng() < 0.5;
+  const sig = `p1_3_${askInt}`;
+  const stem = `1/${D}, 2/${D}, 3/${D}, …, 99/${D} という${N99}個の分数のうち、${askInt ? '整数になるもの' : '（それ以上約分できない）既約分数になるもの'}は何個ありますか。`;
+  const answer = askInt ? intCount : coprimeCount;
+  const fields = [{ id: 'a1', label: '個数', type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = [
+    askInt ? `分子が${D}の倍数のとき、分数は整数になります。` : `分子と${D}が最大公約数1（互いに素）のとき、既約分数になります。`,
+    askInt ? `99までに${D}の倍数がいくつあるか数えます。` : `${D}＝2×3なので、2の倍数でも3の倍数でもない数を数えます。`,
+    askInt ? `99 ÷ ${D} の商（整数部分）を求めます。` : '2の倍数の個数＋3の倍数の個数−6の倍数の個数を全体から引く、という考え方もできます。'
+  ];
+  const solution = askInt
+    ? `99÷${D}＝${Math.floor(N99 / D)}あまり${N99 % D}より、${D}の倍数は<b>${intCount}</b>個`
+    : `1〜99のうち${D}＝2×3と互いに素な数を数えると<b>${coprimeCount}</b>個`;
+  return { title: '練習問題3：分数の数列と数論', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p1_4: カード4枚で分数の式を作り最大・最小を求める（発展的な組合せ問題）
+function gen_p1_4(rng) {
+  const cards = [2, 4, 5, 8];
+  // □/□ × □/□ の形で作れる分数の最大値・最小値を求める（4枚を2組に分けてかけ算）
+  function allPairings(arr) {
+    // 4枚を(分子1,分母1,分子2,分母2)に並べる全順列から、value = (a/b)*(c/d) を計算
+    const perms = [];
+    function permute(a, rest) {
+      if (rest.length === 0) { perms.push(a); return; }
+      for (let i = 0; i < rest.length; i++) {
+        permute(a.concat(rest[i]), rest.slice(0, i).concat(rest.slice(i + 1)));
+      }
+    }
+    permute([], arr);
+    return perms;
+  }
+  const perms = allPairings(cards);
+  let maxV = -Infinity, minV = Infinity;
+  perms.forEach(([a, b, c, d]) => {
+    const v = (a / b) * (c / d);
+    if (v > maxV) maxV = v;
+    if (v < minV) minV = v;
+  });
+  const askMax = rng() < 0.5;
+  const answer = askMax ? maxV : minV;
+  const sig = `p1_4_${askMax}`;
+  const stem = `4枚のカード ${cards.join(', ')} を1回ずつ使って □/□ × □/□ の式を作るとき、積が${askMax ? '最大' : '最小'}になるときの値を求めなさい。`;
+  const fields = [{ id: 'a1', label: '積', type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
+  const hints = [
+    '積を大きくするには、分子に大きい数、分母に小さい数を置きます。積を小さくするには逆にします。',
+    askMax ? '分子候補の大きい2数と、分母候補の小さい2数の組み合わせを考えます。' : '分子候補の小さい2数と、分母候補の大きい2数の組み合わせを考えます。',
+    'すべての組み合わせを比べて確かめましょう。'
+  ];
+  const solution = `すべての組み合わせを比べると、${askMax ? '最大' : '最小'}の積は <b>${Math.round(answer * 1000) / 1000}</b>`;
+  return { title: '練習問題4：カードで作る分数の式', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p1_5: 例題5の応用（2つの分数×整数A・分数Bで両方整数になる最小のA,B）
+function gen_p1_5(rng) {
+  const bases = [[2, 3], [3, 4], [2, 5], [3, 5], [4, 5], [2, 7]];
+  const [p, q] = choice(rng, bases);
+  const b = p * randInt(rng, 2, 4);
+  const a = q * randInt(rng, 2, 4);
+  let [an, ad] = reduceFrac(a, b);
+  // 整数Aをかけて整数にする最小のA＝ad（分母を消す最小の整数）
+  const ansA = ad;
+  const sig = `p1_5_${an}_${ad}`;
+  const stem = `${fracStr(an, ad)} にできるだけ小さい整数をかけて、積を整数にします。かける整数を求めなさい。`;
+  const fields = [{ id: 'a1', label: 'かける整数', type: 'int', check: (v) => intEq(v, ansA) }];
+  const hints = ['分数×整数を整数にするには、分母を消せる数をかけます。', `分母${ad}を消すには、分母と同じ${ad}をかけるのが最小です。`, `${fracStr(an, ad)}×${ad} を計算して確かめましょう。`];
+  const solution = `${fracStr(an, ad)} × ${ansA} = ${an * ansA}/${ad} = ${(an * ansA) / ad}（整数）<br>これより小さい整数ではわり切れないので、答えは <b>${ansA}</b>`;
+  return { title: '練習問題5：分数×整数を整数にする', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 第2回 基本問題・練習問題
+// ============================================================
+
+// b2_1: 差と倍数関係の分配算
+function gen_b2_1(rng) {
+  const ratio = randInt(rng, 2, 5);
+  const diff = randInt(rng, 3, 20);
+  const small = diff / (ratio - 1);
+  if (!Number.isInteger(small) || small <= 0) return gen_b2_1(rng);
+  const big = small * ratio;
+  const sig = `b2_1_${ratio}_${diff}`;
+  const stem = `姉は妹より${diff}個多くビー玉を持っていて、姉の個数は妹の個数の${ratio}倍です。妹の個数を求めなさい。`;
+  const fields = [{ id: 'a1', label: '妹の個数', type: 'int', check: (v) => intEq(v, small) }];
+  const hints = ['差に注目する分配算です。', `差${diff}個は、妹を1とすると(${ratio}−1)にあたります。`, `${diff} ÷ ${ratio - 1} を計算します。`];
+  const solution = `差${diff}個は(${ratio}−1)＝${ratio - 1}にあたるので、<br>${diff} ÷ ${ratio - 1} = <b>${small}</b>（個）`;
+  return { title: '基本問題1：差と倍数の分配算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b2_2: 代金の分配（2倍+一定額）
+function gen_b2_2(rng) {
+  const ratio = 2;
+  const extra = randInt(rng, 50, 300);
+  const small = randInt(rng, 100, 500);
+  const big = small * ratio + extra;
+  const sum = small + big;
+  const sig = `b2_2_${extra}_${small}`;
+  const stem = `兄と弟のお金は合わせて${sum}円です。兄の金額は弟の金額の${ratio}倍より${extra}円多いです。弟の金額を求めなさい。`;
+  const fields = [{ id: 'a1', label: '弟の金額(円)', type: 'int', check: (v) => intEq(v, small) }];
+  const hints = ['はんぱ（多い分）を先に引いてから考えます。', `合計から${extra}円を引くと、弟の(${ratio}+1)倍になります。`, `(${sum}−${extra})÷${ratio + 1} を計算します。`];
+  const solution = `(${sum}−${extra})÷${ratio + 1}＝<b>${small}</b>（円）`;
+  return { title: '基本問題2：代金の分配算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b2_3: やりとり算＋分配算の複合
+function gen_b2_3(rng) {
+  // A,Bが最初にx,y個持ち、AがBにm個あげたら等しくなった
+  const after = randInt(rng, 10, 30);
+  const move = randInt(rng, 2, 10);
+  const aStart = after + move;
+  const bStart = after - move;
+  const total = aStart + bStart;
+  const sig = `b2_3_${after}_${move}`;
+  const stem = `AさんはBさんよりイチゴを多く持っていましたが、Aさんが Bさんに${move}個わたしたところ、2人とも${after}個ずつになりました。合計の個数を求めなさい。`;
+  const fields = [{ id: 'a1', label: '合計(個)', type: 'int', check: (v) => intEq(v, total) }];
+  const hints = ['やりとりしても合計は変わりません。', `最後は2人とも${after}個なので、合計は${after}×2です。`, '式を確認しましょう。'];
+  const solution = `合計＝${after}×2＝<b>${total}</b>（個）`;
+  return { title: '基本問題3：やりとり算と分配算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b2_4: 三角形の角の分配算
+function gen_b2_4(rng) {
+  // 三角形の内角: 180度、A:B:C の倍関係
+  const r1 = randInt(rng, 2, 4); // A = r1*B
+  const r2 = randInt(rng, 2, 3); // B = r2*C
+  // C + C*r2 + C*r2*r1 = 180
+  const cVal = 180 / (1 + r2 + r2 * r1);
+  if (!Number.isInteger(cVal) || cVal <= 0) return gen_b2_4(rng);
+  const bVal = cVal * r2;
+  const aVal = bVal * r1;
+  const sig = `b2_4_${r1}_${r2}`;
+  const stem = `三角形の3つの内角A, B, Cについて、AはBの${r1}倍、BはCの${r2}倍です。Cの大きさを求めなさい。`;
+  const fields = [{ id: 'a1', label: 'Cの大きさ(°)', type: 'int', check: (v) => intEq(v, cVal) }];
+  const hints = ['三角形の内角の和は180°です。', 'Cを1として、B・Aを何倍かで表します。', `合計は Cの(${1 + r2 + r2 * r1})倍になります。`];
+  const solution = `Cを1とすると B＝${r2}、A＝${r1 * r2}<br>180÷(1+${r2}+${r1 * r2})＝<b>${cVal}</b>（°）`;
+  return { title: '基本問題4：三角形の角の分配算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p2_1: カードのやりとり算（最後の枚数から逆算）
+function gen_p2_1(rng) {
+  const ratio = randInt(rng, 2, 4);
+  const move = randInt(rng, 2, 12);
+  const bAfter = randInt(rng, 5, 20);
+  const aAfter = bAfter * ratio;
+  const aStart = aAfter + move;
+  const bStart = bAfter - move;
+  if (bStart <= 0) return gen_p2_1(rng);
+  const sig = `p2_1_${ratio}_${move}_${bAfter}`;
+  const stem = `姉が妹に${move}枚カードをあげたところ、姉の枚数は妹の枚数の${ratio}倍になり、妹は${bAfter}枚になりました。姉のはじめの枚数を求めなさい。`;
+  const fields = [{ id: 'a1', label: '姉のはじめ(枚)', type: 'int', check: (v) => intEq(v, aStart) }];
+  const hints = ['まず、やりとり後の姉の枚数を求めます。', `妹${bAfter}枚の${ratio}倍が、やりとり後の姉の枚数です。`, 'そこに、あげた枚数を足すとはじめの枚数になります。'];
+  const solution = `やりとり後の姉＝${bAfter}×${ratio}＝${aAfter}枚<br>はじめの姉＝${aAfter}+${move}＝<b>${aStart}</b>（枚）`;
+  return { title: '練習問題1：カードのやりとり算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p2_2: 年齢のやりとり算（数年前の年齢差の分配算）
+function gen_p2_2(rng) {
+  const yearsAgo = randInt(rng, 2, 6);
+  const ratio = randInt(rng, 2, 4);
+  const childAgeNow = randInt(rng, 8, 15);
+  const childAgeThen = childAgeNow - yearsAgo;
+  const parentAgeThen = childAgeThen * ratio;
+  const parentAgeNow = parentAgeThen + yearsAgo;
+  const sig = `p2_2_${yearsAgo}_${ratio}_${childAgeNow}`;
+  const stem = `今、子どもは${childAgeNow}才です。${yearsAgo}年前、親の年齢は子どもの年齢の${ratio}倍でした。親の今の年齢を求めなさい。`;
+  const fields = [{ id: 'a1', label: '親の今の年齢(才)', type: 'int', check: (v) => intEq(v, parentAgeNow) }];
+  const hints = [`${yearsAgo}年前の子どもの年齢をまず求めます。`, `${yearsAgo}年前の子ども＝${childAgeNow}−${yearsAgo}＝${childAgeThen}才`, `そのときの親の年齢は子どもの${ratio}倍。そこに${yearsAgo}年を足して今の年齢にします。`];
+  const solution = `${yearsAgo}年前の子ども＝${childAgeThen}才<br>${yearsAgo}年前の親＝${childAgeThen}×${ratio}＝${parentAgeThen}才<br>今の親＝${parentAgeThen}+${yearsAgo}＝<b>${parentAgeNow}</b>（才）`;
+  return { title: '練習問題2：年齢のやりとり算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p2_3: 容器の重さ（同じ重さの空容器＋液体、分配算＋単位換算）
+function gen_p2_3(rng) {
+  const containerWeight = randInt(rng, 50, 200); // g、空容器の重さ(同じ)
+  const liquidA = randInt(rng, 200, 600); // 容器Aの液体の重さ
+  const liquidB = randInt(rng, 200, 600); // 容器Bの液体の重さ
+  const totalA = containerWeight + liquidA;
+  const totalB = containerWeight + liquidB;
+  const sig = `p2_3_${containerWeight}_${liquidA}_${liquidB}`;
+  const stem = `同じ重さの空の容器が2つあります。容器Aに液体を入れると全体の重さは${totalA}g、容器Bに別の量の液体を入れると全体の重さは${totalB}gになりました。容器Aの液体の重さが${liquidA}gとわかっているとき、空の容器1つの重さを求めなさい。`;
+  const fields = [{ id: 'a1', label: '空の容器の重さ(g)', type: 'int', check: (v) => intEq(v, containerWeight) }];
+  const hints = ['容器（入れ物）の重さと、中身の重さを分けて考えます。', `容器Aの全体の重さ${totalA}gから、液体の重さ${liquidA}gを引きます。`, '「全体の重さ−中身の重さ＝容器の重さ」の関係を使います。'];
+  const solution = `容器の重さ＝${totalA}−${liquidA}＝<b>${containerWeight}</b>（g）`;
+  return { title: '練習問題3：容器の重さ', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p2_4: 硬貨の枚数の複合分配算（5円・10円・50円の3量、多段階）
+function gen_p2_4(rng) {
+  // 50円硬貨の枚数をxとすると、10円硬貨は2x枚、5円硬貨は10円硬貨より3枚多い(2x+3)枚
+  const x = randInt(rng, 3, 10); // 50円の枚数
+  const coin10 = x * 2;
+  const coin5 = coin10 + 3;
+  const totalCoins = x + coin10 + coin5;
+  const totalYen = x * 50 + coin10 * 10 + coin5 * 5;
+  const askCoins = rng() < 0.5;
+  const sig = `p2_4_${x}_${askCoins}`;
+  let stem, answer, label;
+  if (askCoins) {
+    stem = `50円硬貨が${x}枚あり、10円硬貨はその2倍、5円硬貨は10円硬貨より3枚多くあります。硬貨の合計枚数を求めなさい。`;
+    answer = totalCoins; label = '合計枚数(枚)';
+  } else {
+    stem = `50円硬貨が${x}枚あり、10円硬貨はその2倍、5円硬貨は10円硬貨より3枚多くあります。硬貨の合計金額を求めなさい。`;
+    answer = totalYen; label = '合計金額(円)';
+  }
+  const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['まず10円硬貨・5円硬貨の枚数をそれぞれ求めます。', `10円硬貨＝${x}×2＝${coin10}枚、5円硬貨＝${coin10}+3＝${coin5}枚`, askCoins ? '3種類の枚数を合計します。' : '各硬貨の枚数×金額を合計します。'];
+  const solution = askCoins
+    ? `10円＝${coin10}枚、5円＝${coin5}枚<br>${x}+${coin10}+${coin5}＝<b>${totalCoins}</b>（枚）`
+    : `50円×${x}＝${x * 50}円、10円×${coin10}＝${coin10 * 10}円、5円×${coin5}＝${coin5 * 5}円<br>合計＝<b>${totalYen}</b>（円）`;
+  return { title: '練習問題4：硬貨の枚数の複合分配算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p2_5: 3人のお金のやりとり＋分配算の複合（映画代の精算）
+function gen_p2_5(rng) {
+  // 3人が同額出し合って合計costを払う。1人分を求める
+  const perPerson = randInt(rng, 300, 1500);
+  const numPeople = 3;
+  const cost = perPerson * numPeople;
+  const sig = `p2_5_${perPerson}`;
+  const stem = `3人で映画に行き、代金${cost}円を同じ金額ずつ出し合って払いました。1人分の金額を求めなさい。`;
+  const fields = [{ id: 'a1', label: '1人分(円)', type: 'int', check: (v) => intEq(v, perPerson) }];
+  const hints = ['同じ金額ずつ出すので、合計を人数でわります。', `${cost}÷${numPeople} を計算します。`, '答えの単位に注意しましょう。'];
+  const solution = `${cost} ÷ ${numPeople} = <b>${perPerson}</b>（円）`;
+  return { title: '練習問題5：3人の精算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 第3回 基本問題・練習問題
+// ============================================================
+
+// b3_1: 円と角の複合（中心角・底角の相互）
+function gen_b3_1(rng) {
+  const baseDeg = randInt(rng, 10, 80);
+  const centerDeg = 180 - baseDeg * 2;
+  if (centerDeg <= 0) return gen_b3_1(rng);
+  const askCenter = rng() < 0.5;
+  const sig = `b3_1_${baseDeg}_${askCenter}`;
+  let stem, answer, label;
+  if (askCenter) {
+    stem = `半径の等しい2本の半径OA, OBでできた二等辺三角形OABの底角が${baseDeg}°のとき、中心角（角AOB）を求めなさい。`;
+    answer = centerDeg; label = '中心角(°)';
+  } else {
+    stem = `半径の等しい2本の半径OA, OBでできた二等辺三角形OABの中心角（角AOB）が${centerDeg}°のとき、底角を求めなさい。`;
+    answer = baseDeg; label = '底角(°)';
+  }
+  const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['半径は等しいので二等辺三角形になります。', '三角形の内角の和は180°です。', askCenter ? `180−${baseDeg}×2 を計算します。` : `(180−${centerDeg})÷2 を計算します。`];
+  const solution = askCenter
+    ? `180 − ${baseDeg}×2 = <b>${centerDeg}</b>（°）`
+    : `(180 − ${centerDeg}) ÷ 2 = <b>${baseDeg}</b>（°）`;
+  return { title: '基本問題1：円と角', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b3_2: 2つの円の中心間距離の複合
+function gen_b3_2(rng) {
+  const r1 = randInt(rng, 5, 15);
+  const r2 = randInt(rng, 3, r1 - 1);
+  const internal = rng() < 0.5;
+  const dist = internal ? r1 - r2 : r1 + r2;
+  const sig = `b3_2_${r1}_${r2}_${internal}`;
+  const stem = internal
+    ? `半径${r1}cmの円の内側に半径${r2}cmの円が内接しているとき、中心間の距離を求めなさい。`
+    : `半径${r1}cmの円と半径${r2}cmの円が外側で接しているとき、中心間の距離を求めなさい。`;
+  const fields = [{ id: 'a1', label: '中心間の距離(cm)', type: 'int', check: (v) => intEq(v, dist) }];
+  const hints = ['内接なら大きい半径から小さい半径を引きます。外接なら2つの半径を足します。', internal ? `${r1}−${r2} を計算します。` : `${r1}+${r2} を計算します。`, '図をイメージして確認しましょう。'];
+  const solution = internal
+    ? `${r1} − ${r2} = <b>${dist}</b>（cm）`
+    : `${r1} + ${r2} = <b>${dist}</b>（cm）`;
+  return { title: '基本問題2：2円の中心間距離', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b3_3: 円と角の複合（中心角と底角から2つの角を求める）
+function gen_b3_3(rng) {
+  const centerDeg = randInt(rng, 20, 120);
+  const baseDeg = (180 - centerDeg) / 2;
+  if (!Number.isInteger(baseDeg)) return gen_b3_3(rng);
+  const sig = `b3_3_${centerDeg}`;
+  const stem = `二等辺三角形OABで、中心角（角AOB）が${centerDeg}°のとき、2つの底角の和を求めなさい。`;
+  const answer = baseDeg * 2;
+  const fields = [{ id: 'a1', label: '底角の和(°)', type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['三角形の内角の和は180°です。', `180−${centerDeg} を計算すると、底角の和が求まります。`, '底角は左右で等しいことも確認しましょう。'];
+  const solution = `底角の和＝180−${centerDeg}＝<b>${answer}</b>（°）`;
+  return { title: '基本問題3：円と角の複合', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b3_4: 正五角形の対角線がつくる角
+function gen_b3_4(rng) {
+  // 正五角形の1つの内角は108°。対角線で作る角(頂角36°の二等辺三角形が現れる)
+  const interiorAngle = 108;
+  const diagonalAngle = (180 - interiorAngle) / 2; // 隣接2辺と対角線でできる二等辺三角形の底角
+  const sig = `b3_4_fixed`;
+  const stem = `正五角形の1つの頂点から、隣り合わない2つの頂点にそれぞれ対角線を引きました。頂点にできる3つの角のうち、対角線と辺にはさまれた角（両端）の大きさを求めなさい。`;
+  const fields = [{ id: 'a1', label: '角の大きさ(°)', type: 'int', check: (v) => intEq(v, diagonalAngle) }];
+  const hints = ['正五角形の1つの内角は108°です。', '対角線によってできる三角形は二等辺三角形になります。', `(180−108)÷2 を計算します。`];
+  const solution = `正五角形の内角＝108°<br>対角線でできる二等辺三角形の底角＝(180−108)÷2＝<b>${diagonalAngle}</b>（°）`;
+  return { title: '基本問題4：正五角形の対角線の角', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p3_1: 2円の位置関係と半径の逆算
+function gen_p3_1(rng) {
+  const r2 = randInt(rng, 4, 12);
+  const AE = randInt(rng, 20, 45);
+  // AE = r1(直径) + r2(直径)の一部を想定した簡易パターン：AE = 2*r1 + 2*r2 - overlap的な単純化
+  // シンプルに：AE = 直径1 + 直径2 (外接する2円が一直線上にある場合の端から端まで)
+  const d2 = r2 * 2;
+  let d1 = AE - d2;
+  if (d1 <= 0 || d1 % 2 !== 0) return gen_p3_1(rng);
+  const r1 = d1 / 2;
+  const sig = `p3_1_${r1}_${r2}_${AE}`;
+  const stem = `半径${r1}cmの円と半径${r2}cmの円が外側で接して一直線上に並んでいます。2つの円の直径の両端（外側の端から端まで）の長さが${AE}cmのとき、半径${r1}cmの円の半径を求め直しなさい（検算問題）。`;
+  const fields = [{ id: 'a1', label: '半径(cm)', type: 'int', check: (v) => intEq(v, r1) }];
+  const hints = ['両端の長さは、2つの円の直径の和になります。', `${AE} − (${r2}×2) で一方の直径が求まります。`, '直径÷2で半径になります。'];
+  const solution = `${AE} − ${d2} = ${d1}（もう一方の直径）<br>${d1} ÷ 2 = <b>${r1}</b>（cm）`;
+  return { title: '練習問題1：2円の位置関係', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p3_2: 円と角の複合（頂角・底角から2段階）
+function gen_p3_2(rng) {
+  const baseDeg = randInt(rng, 15, 45);
+  const apexDeg = 180 - baseDeg * 2;
+  const outerAngle = 180 - apexDeg; // 外角
+  const sig = `p3_2_${baseDeg}`;
+  const stem = `二等辺三角形の底角が${baseDeg}°のとき、頂角の外角（頂角ととなり合う角）を求めなさい。`;
+  const fields = [{ id: 'a1', label: '外角(°)', type: 'int', check: (v) => intEq(v, outerAngle) }];
+  const hints = ['まず頂角を求めます。', `頂角＝180−${baseDeg}×2`, '外角は頂角と合わせて180°になります。'];
+  const solution = `頂角＝180−${baseDeg}×2＝${apexDeg}°<br>外角＝180−${apexDeg}＝<b>${outerAngle}</b>（°）`;
+  return { title: '練習問題2：円と角の複合', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p3_3: 円周10等分点を使った角度問題（円周角的な考え方の先取り）
+function gen_p3_3(rng) {
+  // 円周をN等分し、中心角(360/N)×kこ分の弧に対する頂角(中心角)から底角を求める
+  const nDiv = 10;
+  const centerUnit = 360 / nDiv; // 36°
+  const k = randInt(rng, 1, 4); // 何こ分の弧か
+  const centerDeg = centerUnit * k;
+  const baseDeg = (180 - centerDeg) / 2;
+  if (!Number.isInteger(baseDeg)) return gen_p3_3(rng);
+  const sig = `p3_3_${k}`;
+  const stem = `円周を10等分した点のうち、中心Oからみて${k}こ分はなれた2つの点A, Bを結んで、二等辺三角形OABを作りました。底角の大きさを求めなさい。`;
+  const fields = [{ id: 'a1', label: '底角(°)', type: 'int', check: (v) => intEq(v, baseDeg) }];
+  const hints = ['円周を10等分すると、1つ分の中心角は360÷10＝36°です。', `${k}こ分はなれているので、中心角は36×${k}＝${centerDeg}°です。`, '三角形の内角の和180°から中心角を引き、2でわります。'];
+  const solution = `中心角＝36×${k}＝${centerDeg}°<br>底角＝(180−${centerDeg})÷2＝<b>${baseDeg}</b>（°）`;
+  return { title: '練習問題3：円周10等分点の角度', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p3_4: 2つの合同な円が中心を通る位置関係＋角度
+function gen_p3_4(rng) {
+  // 2つの合同な円が、互いの中心を通るように重なっている（半径r）。中心角に関する角度問題
+  const r = randInt(rng, 4, 12);
+  const centerDeg = randInt(rng, 40, 100);
+  const baseDeg = (180 - centerDeg) / 2;
+  if (!Number.isInteger(baseDeg)) return gen_p3_4(rng);
+  const sig = `p3_4_${r}_${centerDeg}`;
+  const stem = `半径${r}cmの合同な2つの円が、互いの中心を通るように重なっています。2つの中心と、円の交点の1つを結んでできる二等辺三角形の頂角（中心での角）が${centerDeg}°のとき、底角を求めなさい。`;
+  const fields = [{ id: 'a1', label: '底角(°)', type: 'int', check: (v) => intEq(v, baseDeg) }];
+  const hints = ['中心から交点までの距離は、どちらも半径になるので二等辺三角形です。', '三角形の内角の和は180°です。', `(180−${centerDeg})÷2 を計算します。`];
+  const solution = `2つの円の半径が等しいので、中心と交点を結ぶ三角形は二等辺三角形。<br>底角＝(180−${centerDeg})÷2＝<b>${baseDeg}</b>（°）`;
+  return { title: '練習問題4：合同な2円の位置関係', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p3_5: 正九角形の対角線がつくる角
+function gen_p3_5(rng) {
+  const nSides = 9;
+  const interiorAngle = 180 * (nSides - 2) / nSides; // 140°
+  const diagonalBase = (180 - interiorAngle) / 2;
+  const sig = `p3_5_fixed`;
+  const stem = `正九角形の1つの頂点から、隣り合わない2つの頂点にそれぞれ対角線を引いてできる二等辺三角形の底角を求めなさい。`;
+  const fields = [{ id: 'a1', label: '底角(°)', type: 'dec', check: (v) => decEq(v, diagonalBase, 1e-6) }];
+  const hints = [`正九角形の1つの内角＝180×(9−2)÷9 で求めます。`, '対角線でできる三角形は二等辺三角形です。', `(180−内角)÷2 を計算します。`];
+  const solution = `正九角形の内角＝180×7÷9＝${interiorAngle}°<br>底角＝(180−${interiorAngle})÷2＝<b>${diagonalBase}</b>（°）`;
+  return { title: '練習問題5：正九角形の対角線', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 第4回 基本問題・練習問題
+// ============================================================
+
+// b4_1: 単位換算㎥⇔㎤の複合
+function gen_b4_1(rng) {
+  const m3 = (randInt(rng, 1, 50) / 100); // 0.01〜0.50 ㎥
+  const cm3FromM3 = Math.round(m3 * 1000000);
+  const askM3toCm3 = rng() < 0.5;
+  const cm3Val = randInt(rng, 1, 20) * 100000; // 100000の倍数で㎥に直しやすく
+  const m3FromCm3 = cm3Val / 1000000;
+  const sig = `b4_1_${m3}_${cm3Val}_${askM3toCm3}`;
+  let stem, answer, label, tol;
+  if (askM3toCm3) {
+    stem = `${m3}㎥は何㎤ですか。`;
+    answer = cm3FromM3; label = '体積(cm³)';
+    const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
+    const hints = ['1㎥＝1,000,000㎤ です。', `${m3}×1000000 を計算します。`, '0の数に気をつけましょう。'];
+    const solution = `${m3} × 1,000,000 = <b>${cm3FromM3}</b>（cm³）`;
+    return { title: '基本問題1：単位換算', stem, fields, svg: '', hints, solution, sig };
+  } else {
+    stem = `${cm3Val}㎤は何㎥ですか。`;
+    answer = m3FromCm3; label = '体積(m³)';
+    const fields = [{ id: 'a1', label, type: 'dec', check: (v) => decEq(v, answer, 1e-9) }];
+    const hints = ['1㎥＝1,000,000㎤ です。', `${cm3Val}÷1000000 を計算します。`, '小数点の位置に気をつけましょう。'];
+    const solution = `${cm3Val} ÷ 1,000,000 = <b>${m3FromCm3}</b>（m³）`;
+    return { title: '基本問題1：単位換算', stem, fields, svg: '', hints, solution, sig };
+  }
+}
+
+// b4_2: 展開図の穴埋め＋体積・表面積
+function gen_b4_2(rng) {
+  const l = randInt(rng, 4, 10), w = randInt(rng, 4, 10), h = randInt(rng, 4, 10);
+  const vol = l * w * h;
+  const surf = 2 * (l * w + w * h + h * l);
+  const askVol = rng() < 0.5;
+  const sig = `b4_2_${l}_${w}_${h}_${askVol}`;
+  const stem = `展開図から組み立てた直方体は、たて${l}cm、横${w}cm、高さ${h}cmです。この直方体の${askVol ? '体積' : '表面積'}を求めなさい。`;
+  const answer = askVol ? vol : surf;
+  const fields = [{ id: 'a1', label: askVol ? '体積(cm³)' : '表面積(cm²)', type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['展開図の辺の長さから、たて・横・高さを読み取ります。', askVol ? '体積＝たて×横×高さ' : '表面積＝(たて×横+横×高さ+高さ×たて)×2', '計算を丁寧に行いましょう。'];
+  const solution = askVol
+    ? `${l}×${w}×${h}＝<b>${vol}</b>（cm³）`
+    : `(${l}×${w}+${w}×${h}+${h}×${l})×2＝<b>${surf}</b>（cm²）`;
+  return { title: '基本問題2：展開図と体積・表面積', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b4_3: くりぬき複合立体（表面積も）
+function gen_b4_3(rng) {
+  const L = randInt(rng, 6, 12), W = randInt(rng, 6, 12), H = randInt(rng, 6, 12);
+  const s = randInt(rng, 2, Math.min(L, W, H) - 1);
+  const volOuter = L * W * H, volInner = s * s * s;
+  const vol = volOuter - volInner;
+  // 貫通させない場合、表面積は「外側の表面積＋くりぬいた穴の側面積(4面)」（底面はそのまま、上面に穴があくケース）
+  const outerSurf = 2 * (L * W + W * H + H * L);
+  const surf = outerSurf - s * s + s * s * 4; // 上面の一部がへこみ、側面4面が増える
+  const askVol = rng() < 0.5;
+  const sig = `b4_3_${L}_${W}_${H}_${s}_${askVol}`;
+  const stem = `たて${L}cm、横${W}cm、高さ${H}cmの直方体の上面から、1辺${s}cmの立方体の形にくぼみをくりぬきました（底までは貫通していません）。残った立体の${askVol ? '体積' : '表面積'}を求めなさい。`;
+  const answer = askVol ? vol : surf;
+  const fields = [{ id: 'a1', label: askVol ? '体積(cm³)' : '表面積(cm²)', type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['体積は「もとの体積−くりぬいた体積」です。', '表面積は、へこんだ分の面積の出入りに注意します。', askVol ? `${L}×${W}×${H} − ${s}×${s}×${s} を計算します。` : 'もとの表面積から上面のくぼみ分(1面)を引き、くぼみの内側の側面4面と底面1面を足します。'];
+  const solution = askVol
+    ? `${volOuter} − ${volInner} = <b>${vol}</b>（cm³）`
+    : `もとの表面積＝${outerSurf}<br>くぼみの上面ぶんを引き、内側の側面4面＋底面1面を足すと<br>答えは <b>${surf}</b>（cm²）`;
+  return { title: '基本問題3：くりぬき立体', stem, fields, svg: '', hints, solution, sig };
+}
+
+// b4_4: L字型複合立体の体積・表面積
+function gen_b4_4(rng) {
+  // 2直方体の組み合わせ(L字)：共通高さH、直方体1(L×W1)、直方体2(L×W2)を横に並べる単純L字
+  const L = randInt(rng, 4, 8), H = randInt(rng, 3, 8);
+  const w1 = randInt(rng, 3, 8), w2 = randInt(rng, 3, 8);
+  const h2 = randInt(rng, 2, H - 1); // 2つ目のブロックは低い（L字の張り出し部分）
+  const vol = L * H * w1 + L * h2 * w2;
+  const sig = `b4_4_${L}_${H}_${w1}_${w2}_${h2}`;
+  const stem = `たて${L}cmで、高さ${H}cm・横${w1}cmの直方体と、高さ${h2}cm・横${w2}cmの直方体をつなげたL字型の立体があります。この立体全体の体積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '体積(cm³)', type: 'int', check: (v) => intEq(v, vol) }];
+  const hints = ['2つの直方体に分けて、それぞれの体積を求めます。', `1つ目：${L}×${H}×${w1}、2つ目：${L}×${h2}×${w2}`, '2つを足し合わせます。'];
+  const solution = `${L}×${H}×${w1}＝${L * H * w1}<br>${L}×${h2}×${w2}＝${L * h2 * w2}<br>合計＝<b>${vol}</b>（cm³）`;
+  return { title: '基本問題4：L字型複合立体', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p4_1: 3直方体の階段状複合立体
+function gen_p4_1(rng) {
+  const L = randInt(rng, 3, 6);
+  const h1 = randInt(rng, 2, 4), h2 = randInt(rng, 2, 4), h3 = randInt(rng, 2, 4);
+  const w = randInt(rng, 2, 4);
+  // 階段状：3つの直方体（同じ奥行L、幅w、高さがそれぞれ累積）を積んだ体積の合計＝直方体を3段の階段状に切ったもの
+  const vol = L * w * (h1 + h2 + h3);
+  const sig = `p4_1_${L}_${w}_${h1}_${h2}_${h3}`;
+  const stem = `奥行き${L}cm、幅${w}cmで、高さが${h1}cm・${h2}cm・${h3}cmの3段になっている階段状の直方体の体積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '体積(cm³)', type: 'int', check: (v) => intEq(v, vol) }];
+  const hints = ['3つの直方体に分けて考えます。', `それぞれの体積は 奥行×幅×高さ です。`, '3つの体積を合計します。'];
+  const solution = `${L}×${w}×(${h1}+${h2}+${h3}) = ${L}×${w}×${h1 + h2 + h3} = <b>${vol}</b>（cm³）`;
+  return { title: '練習問題1：階段状複合立体', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p4_2: 積み木（1辺acmの立方体を壁沿いに積む）の体積・表面積
+function gen_p4_2(rng) {
+  // 1辺aの立方体をnx×ny個、壁に沿って平らに並べた直方体とみなす簡易モデル
+  const a = choice(rng, [2, 3]);
+  const nx = randInt(rng, 2, 5), ny = randInt(rng, 2, 5);
+  const L = a * nx, W = a * ny, H = a;
+  const vol = L * W * H;
+  const surf = 2 * (L * W + W * H + H * L); // 単純に直方体として（壁に接する面は考えない簡易版）
+  const askVol = rng() < 0.5;
+  const sig = `p4_2_${a}_${nx}_${ny}_${askVol}`;
+  const stem = `1辺${a}cmの立方体を、たてに${nx}個、横に${ny}個、すきまなく1だんに並べました。できた直方体の${askVol ? '体積' : '表面積'}を求めなさい。`;
+  const answer = askVol ? vol : surf;
+  const fields = [{ id: 'a1', label: askVol ? '体積(cm³)' : '表面積(cm²)', type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['まず、できる直方体のたて・横・高さを求めます。', `たて＝${a}×${nx}、横＝${a}×${ny}、高さ＝${a}`, askVol ? 'たて×横×高さ を計算します。' : '(たて×横+横×高さ+高さ×たて)×2 を計算します。'];
+  const solution = `たて＝${L}cm、横＝${W}cm、高さ＝${H}cm<br>` + (askVol ? `${L}×${W}×${H}＝<b>${vol}</b>（cm³）` : `(${L}×${W}+${W}×${H}+${H}×${L})×2＝<b>${surf}</b>（cm²）`);
+  return { title: '練習問題2：積み木の体積・表面積', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p4_3: 厚さ1cmの板でできた容器に使われている板の体積（外形−内形）
+function gen_p4_3(rng) {
+  const outerL = randInt(rng, 8, 16), outerW = randInt(rng, 8, 16), outerH = randInt(rng, 6, 12);
+  const thickness = 1;
+  // ふたなしの容器：底面と側面のみ厚さthickness、内側は(outerL-2t, outerW-2t, outerH-t)
+  const innerL = outerL - 2 * thickness, innerW = outerW - 2 * thickness, innerH = outerH - thickness;
+  const outerVol = outerL * outerW * outerH;
+  const innerVol = innerL * innerW * innerH;
+  const boardVol = outerVol - innerVol;
+  const sig = `p4_3_${outerL}_${outerW}_${outerH}`;
+  const stem = `外のりが、たて${outerL}cm、横${outerW}cm、高さ${outerH}cmの、厚さ${thickness}cmの板でできたふたのない容器があります。この容器に使われている板の体積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '板の体積(cm³)', type: 'int', check: (v) => intEq(v, boardVol) }];
+  const hints = ['「外側の体積」から「内側（中身が入る部分）の体積」を引きます。', `内側は、たて・横がそれぞれ${thickness}cm×2ぶん、高さは底の厚さ${thickness}cm分だけ小さくなります。`, `外側の体積＝${outerL}×${outerW}×${outerH}、内側の体積＝${innerL}×${innerW}×${innerH}`];
+  const solution = `外側の体積＝${outerL}×${outerW}×${outerH}＝${outerVol}<br>内側の体積＝${innerL}×${innerW}×${innerH}＝${innerVol}<br>板の体積＝${outerVol}−${innerVol}＝<b>${boardVol}</b>（cm³）`;
+  return { title: '練習問題3：容器に使われている板の体積', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p4_4: 3直方体複合立体で体積から□を逆算
+function gen_p4_4(rng) {
+  const L = randInt(rng, 4, 8), H = randInt(rng, 4, 8);
+  const w1 = randInt(rng, 3, 8);
+  const wUnknown = randInt(rng, 3, 8);
+  const totalVol = L * H * (w1 + wUnknown);
+  const sig = `p4_4_${L}_${H}_${w1}_${wUnknown}`;
+  const stem = `たて${L}cm、高さ${H}cmで統一された複合立体は、横${w1}cmの直方体と横□cmの直方体を組み合わせたものです。全体の体積が${totalVol}cm³のとき、□を求めなさい。`;
+  const fields = [{ id: 'a1', label: '□(cm)', type: 'int', check: (v) => intEq(v, wUnknown) }];
+  const hints = ['高さが同じ2つの直方体に分けて考えます。', `全体は ${L}×${H}×(${w1}+□) と表せます。`, `${totalVol}÷(${L}×${H}) から (${w1}+□) を求め、□を逆算します。`];
+  const solution = `(${w1}+□)＝${totalVol}÷${L * H}＝${w1 + wUnknown}<br>□＝${w1 + wUnknown}−${w1}＝<b>${wUnknown}</b>（cm）`;
+  return { title: '練習問題4：体積からの逆算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ============================================================
+// 第5回 総合 — 練習問題（融合・発展、第1〜4回の範囲を横断）
+// ============================================================
+
+// t5_1: 分母Dの分数を99個並べた数列から、整数になる個数・既約分数の個数（数論）
+function gen_t5_1(rng) {
+  const D = choice(rng, [6, 8, 9, 12]);
+  const N99 = 99;
+  // 1/D, 2/D, ..., 99/D のうち、整数になる個数＝Dの倍数の個数、既約分数の個数＝Dと互いに素な個数
+  const intCount = Math.floor(N99 / D);
+  let coprimeCount = 0;
+  for (let k = 1; k <= N99; k++) { if (gcd(k, D) === 1) coprimeCount++; }
+  const askInt = rng() < 0.5;
+  const sig = `t5_1_${D}_${askInt}`;
+  const stem = `1/${D}, 2/${D}, 3/${D}, …, 99/${D} という${N99}個の分数のうち、${askInt ? '整数になるもの' : '（それ以上約分できない）既約分数になるもの'}は何個ありますか。`;
+  const answer = askInt ? intCount : coprimeCount;
+  const fields = [{ id: 'a1', label: '個数', type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = [
+    askInt ? `分子が分母${D}の倍数のとき、分数は整数になります。` : `分子と分母${D}が最大公約数1（互いに素）のとき、既約分数になります。`,
+    askInt ? `99までに${D}の倍数がいくつあるか数えます。` : `99までの数のうち、${D}と共通の約数を持たない数を数えます。`,
+    askInt ? `99 ÷ ${D} の商（整数部分）を求めます。` : `${D}の素因数で割り切れる数を除いて数えます。`
+  ];
+  const solution = askInt
+    ? `分子が${D}の倍数のとき整数になる。99÷${D}=${(N99 / D).toFixed(2)}…より、${D}の倍数は<b>${intCount}</b>個`
+    : `分子が${D}と互いに素なとき既約分数になる。1〜99の中で数えると<b>${coprimeCount}</b>個`;
+  return { title: '練習問題1：分数の数列と数論', stem, fields, svg: '', hints, solution, sig };
+}
+
+// t5_2: 円と角の複合（第3回範囲の融合、二等辺三角形2個の複合）
+function gen_t5_2(rng) {
+  const angle1 = randInt(rng, 20, 70);
+  const angle2 = randInt(rng, 20, 70);
+  // 2つの二等辺三角形の頂角がangle1, angle2、底角の和から答えを求める融合パターン
+  const base1 = (180 - angle1) / 2;
+  const base2 = (180 - angle2) / 2;
+  if (!Number.isInteger(base1) || !Number.isInteger(base2)) return gen_t5_2(rng);
+  const answer = base1 + base2;
+  const sig = `t5_2_${angle1}_${angle2}`;
+  const stem = `円の中心Oからできる2つの二等辺三角形があり、それぞれの中心角（頂角）が${angle1}°、${angle2}°です。2つの三角形の底角をそれぞれ1つずつ合計した大きさを求めなさい。`;
+  const fields = [{ id: 'a1', label: '合計(°)', type: 'int', check: (v) => intEq(v, answer) }];
+  const hints = ['それぞれの三角形で、底角＝(180−中心角)÷2 を計算します。', `1つ目：(180−${angle1})÷2、2つ目：(180−${angle2})÷2`, '2つの底角を足します。'];
+  const solution = `底角1＝(180−${angle1})÷2＝${base1}<br>底角2＝(180−${angle2})÷2＝${base2}<br>合計＝${base1}+${base2}＝<b>${answer}</b>（°）`;
+  return { title: '練習問題2：円と角の複合（融合）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// t5_3: 2つの分数から整数条件を満たす最小分数（第1回範囲の応用、例題5と同系統だが2分数同時）
+function gen_t5_3(rng) {
+  // 2つの分数 a/b, c/d の両方に同じ分数 x/y をかけると両方とも整数になる、最小のx/y
+  const bases = [[2, 3], [3, 4], [2, 5]];
+  const [p1, q1] = choice(rng, bases);
+  const b1 = p1 * randInt(rng, 2, 3);
+  const a1 = q1 * randInt(rng, 2, 3);
+  let [an1, ad1] = reduceFrac(a1, b1);
+  const [p2, q2] = choice(rng, bases);
+  const b2 = p2 * randInt(rng, 2, 3);
+  const a2 = q2 * randInt(rng, 2, 3);
+  let [an2, ad2] = reduceFrac(a2, b2);
+  // x/y が両方を整数にする最小分数: y = gcd(an1, an2), x = lcm(ad1, ad2)
+  const y = gcd(an1, an2);
+  const x = lcm(ad1, ad2);
+  const sig = `t5_3_${an1}_${ad1}_${an2}_${ad2}`;
+  const stem = `${fracStr(an1, ad1)} と ${fracStr(an2, ad2)} のどちらにかけても積が整数になる、できるだけ小さい分数を求めなさい。`;
+  const fields = [{ id: 'a1', label: 'かける分数', type: 'frac', check: (v) => fracEq(v, x, y) }];
+  const hints = ['それぞれの分数を整数にする分数を考え、両方に共通するものを探します。', '分母は2数の分子の最大公約数、分子は2数の分母の最小公倍数にします。', `分子＝${ad1}と${ad2}の最小公倍数、分母＝${an1}と${an2}の最大公約数`];
+  const solution = `かける分数の分子＝${ad1}と${ad2}のLCM＝${x}<br>かける分数の分母＝${an1}と${an2}のGCD＝${y}<br>答えは <b>${fracStr(x, y)}</b>`;
+  return { title: '練習問題3：2分数を整数にする最小分数', stem, fields, svg: '', hints, solution, sig };
+}
+
+// t5_4: 年齢の分配算・代金の逆算分配算・3人の精算（第2回範囲の応用、3問セットの1問目：年齢）
+function gen_t5_4(rng) {
+  const ratio = randInt(rng, 2, 4);
+  const diff = randInt(rng, 4, 20);
+  const small = diff / (ratio - 1);
+  if (!Number.isInteger(small) || small <= 0) return gen_t5_4(rng);
+  const big = small * ratio;
+  const sig = `t5_4_${ratio}_${diff}`;
+  const stem = `父の年齢は子どもの年齢の${ratio}倍で、父は子どもより${diff}才年上です。子どもの年齢を求めなさい。`;
+  const fields = [{ id: 'a1', label: '子どもの年齢(才)', type: 'int', check: (v) => intEq(v, small) }];
+  const hints = ['差に注目する分配算です。', `差${diff}才は子どもを1とすると(${ratio}−1)にあたります。`, `${diff} ÷ ${ratio - 1} を計算します。`];
+  const solution = `${diff} ÷ ${ratio - 1} = <b>${small}</b>（才）`;
+  return { title: '練習問題4：年齢の分配算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// t5_5: 2直方体が一部重なる複合立体の体積（第4回範囲の応用）
+function gen_t5_5(rng) {
+  // 直方体A(L,W,H1)と直方体B(L,W,H2)が高さ方向に重なる部分(overlap)を持つ、合体後の体積
+  const L = randInt(rng, 4, 8), W = randInt(rng, 4, 8);
+  const H1 = randInt(rng, 6, 12), H2 = randInt(rng, 6, 12);
+  const overlap = randInt(rng, 2, Math.min(H1, H2) - 1);
+  // 合体立体の体積 = A + B - 重複部分（重複部分もL×W×overlapの直方体）
+  const vol = L * W * H1 + L * W * H2 - L * W * overlap;
+  const sig = `t5_5_${L}_${W}_${H1}_${H2}_${overlap}`;
+  const stem = `たて${L}cm、横${W}cmで共通の断面を持つ2つの直方体（高さ${H1}cmと高さ${H2}cm）が、高さ${overlap}cm分だけ重なるように組み合わされています。合体した立体全体の体積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '体積(cm³)', type: 'int', check: (v) => intEq(v, vol) }];
+  const hints = ['2つの直方体の体積を足してから、重複部分を1回分だけ引きます。', `直方体1＝${L}×${W}×${H1}、直方体2＝${L}×${W}×${H2}、重複＝${L}×${W}×${overlap}`, '「A＋B−重複」の考え方を使います（集合の考え方と同じです）。'];
+  const solution = `直方体1＝${L * W * H1}、直方体2＝${L * W * H2}、重複＝${L * W * overlap}<br>${L * W * H1}+${L * W * H2}−${L * W * overlap}＝<b>${vol}</b>（cm³）`;
+  return { title: '練習問題5：2直方体の重なり複合立体', stem, fields, svg: '', hints, solution, sig };
+}
+
+// p4_5: 2直方体複合立体で表面積から体積を逆算（発展）
+function gen_p4_5(rng) {
+  // 高さ共通Hの2直方体（幅w1既知、幅w2は未知）を横に並べたL字型。表面積から幅w2を逆算し、体積を求める
+  const L = randInt(rng, 4, 8), H = randInt(rng, 4, 8);
+  const w1 = randInt(rng, 3, 8), w2 = randInt(rng, 3, 8);
+  // 2直方体を横につなげた直方体（くぼみなし単純直方体とみなす）の表面積
+  const totalW = w1 + w2;
+  const surf = 2 * (L * totalW + totalW * H + H * L);
+  const vol = L * totalW * H;
+  const sig = `p4_5_${L}_${H}_${w1}_${w2}`;
+  const stem = `たて${L}cm、高さ${H}cmで統一された直方体は、横${w1}cmの部分と横□cmの部分をつなげたもので、全体の表面積は${surf}cm²です。この直方体全体の体積を求めなさい。`;
+  const fields = [{ id: 'a1', label: '体積(cm³)', type: 'int', check: (v) => intEq(v, vol) }];
+  const hints = ['まず全体の横の長さを、表面積の式から逆算します。', `表面積＝(たて×横+横×高さ+高さ×たて)×2 の式に、たて${L}・高さ${H}をあてはめて横を求めます。`, '横の長さが分かったら、たて×横×高さで体積を求めます。'];
+  const solution = `表面積の式から、全体の横＝${totalW}cmと分かる。<br>体積＝${L}×${totalW}×${H}＝<b>${vol}</b>（cm³）`;
+  return { title: '練習問題5：表面積から体積を逆算', stem, fields, svg: '', hints, solution, sig };
+}
+
+const GEN = {
+  k1_conv: gen_k1_conv,
+  k1_mul: gen_k1_mul,
+  k1_mix: gen_k1_mix,
+  k1_int: gen_k1_int,
+  k2_wake_nohanpa: gen_k2_wake_nohanpa,
+  k2_wake_hanpa: gen_k2_wake_hanpa,
+  k2_wake_fuhen: gen_k2_wake_fuhen,
+  k2_wake3: gen_k2_wake3,
+  k2_yari_wa: gen_k2_yari_wa,
+  k2_yari_sa: gen_k2_yari_sa,
+  k3_circle: gen_k3_circle,
+  k3_angle: gen_k3_angle,
+  k3_poly_angle: gen_k3_poly_angle,
+  k3_symmetry: gen_k3_symmetry,
+  k4_volume: gen_k4_volume,
+  k4_surface: gen_k4_surface,
+  k4_kurinuki: gen_k4_kurinuki,
+  k4_bunkatsu: gen_k4_bunkatsu,
+  // 第1回 基本・練習
+  b1_1: gen_b1_1, b1_2: gen_b1_2, b1_3: gen_b1_3, b1_4: gen_b1_4,
+  p1_1: gen_p1_1, p1_2: gen_p1_2, p1_3: gen_p1_3, p1_4: gen_p1_4, p1_5: gen_p1_5,
+  // 第2回 基本・練習
+  b2_1: gen_b2_1, b2_2: gen_b2_2, b2_3: gen_b2_3, b2_4: gen_b2_4,
+  p2_1: gen_p2_1, p2_2: gen_p2_2, p2_3: gen_p2_3, p2_4: gen_p2_4, p2_5: gen_p2_5,
+  // 第3回 基本・練習
+  b3_1: gen_b3_1, b3_2: gen_b3_2, b3_3: gen_b3_3, b3_4: gen_b3_4,
+  p3_1: gen_p3_1, p3_2: gen_p3_2, p3_3: gen_p3_3, p3_4: gen_p3_4, p3_5: gen_p3_5,
+  // 第4回 基本・練習
+  b4_1: gen_b4_1, b4_2: gen_b4_2, b4_3: gen_b4_3, b4_4: gen_b4_4,
+  p4_1: gen_p4_1, p4_2: gen_p4_2, p4_3: gen_p4_3, p4_4: gen_p4_4, p4_5: gen_p4_5,
+  // 第5回 総合 練習問題
+  t5_1: gen_t5_1, t5_2: gen_t5_2, t5_3: gen_t5_3, t5_4: gen_t5_4, t5_5: gen_t5_5,
+};
+
+const PROBLEMS = [
+  { key: 'k1_conv', round: 1, cat: 'example', no: 1 }, { key: 'k1_mul', round: 1, cat: 'example', no: 2 },
+  { key: 'k1_mix', round: 1, cat: 'example', no: 3 }, { key: 'k1_int', round: 1, cat: 'example', no: 4 },
+  { key: 'k2_wake_nohanpa', round: 2, cat: 'example', no: 1 }, { key: 'k2_wake_hanpa', round: 2, cat: 'example', no: 2 },
+  { key: 'k2_wake_fuhen', round: 2, cat: 'example', no: 3 }, { key: 'k2_wake3', round: 2, cat: 'example', no: 4 },
+  { key: 'k2_yari_wa', round: 2, cat: 'example', no: 5 }, { key: 'k2_yari_sa', round: 2, cat: 'example', no: 6 },
+  { key: 'k3_circle', round: 3, cat: 'example', no: 1 }, { key: 'k3_angle', round: 3, cat: 'example', no: 2 },
+  { key: 'k3_poly_angle', round: 3, cat: 'example', no: 3 }, { key: 'k3_symmetry', round: 3, cat: 'example', no: 4 },
+  { key: 'k4_volume', round: 4, cat: 'example', no: 1 }, { key: 'k4_surface', round: 4, cat: 'example', no: 2 },
+  { key: 'k4_kurinuki', round: 4, cat: 'example', no: 3 }, { key: 'k4_bunkatsu', round: 4, cat: 'example', no: 4 },
+  // 第1回 基本・練習
+  { key: 'b1_1', round: 1, cat: 'basic', no: 1 }, { key: 'b1_2', round: 1, cat: 'basic', no: 2 },
+  { key: 'b1_3', round: 1, cat: 'basic', no: 3 }, { key: 'b1_4', round: 1, cat: 'basic', no: 4 },
+  { key: 'p1_1', round: 1, cat: 'practice', no: 1 }, { key: 'p1_2', round: 1, cat: 'practice', no: 2 },
+  { key: 'p1_3', round: 1, cat: 'practice', no: 3 }, { key: 'p1_4', round: 1, cat: 'practice', no: 4 },
+  { key: 'p1_5', round: 1, cat: 'practice', no: 5 },
+  // 第2回 基本・練習
+  { key: 'b2_1', round: 2, cat: 'basic', no: 1 }, { key: 'b2_2', round: 2, cat: 'basic', no: 2 },
+  { key: 'b2_3', round: 2, cat: 'basic', no: 3 }, { key: 'b2_4', round: 2, cat: 'basic', no: 4 },
+  { key: 'p2_1', round: 2, cat: 'practice', no: 1 }, { key: 'p2_2', round: 2, cat: 'practice', no: 2 },
+  { key: 'p2_3', round: 2, cat: 'practice', no: 3 }, { key: 'p2_4', round: 2, cat: 'practice', no: 4 },
+  { key: 'p2_5', round: 2, cat: 'practice', no: 5 },
+  // 第3回 基本・練習
+  { key: 'b3_1', round: 3, cat: 'basic', no: 1 }, { key: 'b3_2', round: 3, cat: 'basic', no: 2 },
+  { key: 'b3_3', round: 3, cat: 'basic', no: 3 }, { key: 'b3_4', round: 3, cat: 'basic', no: 4 },
+  { key: 'p3_1', round: 3, cat: 'practice', no: 1 }, { key: 'p3_2', round: 3, cat: 'practice', no: 2 },
+  { key: 'p3_3', round: 3, cat: 'practice', no: 3 }, { key: 'p3_4', round: 3, cat: 'practice', no: 4 },
+  { key: 'p3_5', round: 3, cat: 'practice', no: 5 },
+  // 第4回 基本・練習
+  { key: 'b4_1', round: 4, cat: 'basic', no: 1 }, { key: 'b4_2', round: 4, cat: 'basic', no: 2 },
+  { key: 'b4_3', round: 4, cat: 'basic', no: 3 }, { key: 'b4_4', round: 4, cat: 'basic', no: 4 },
+  { key: 'p4_1', round: 4, cat: 'practice', no: 1 }, { key: 'p4_2', round: 4, cat: 'practice', no: 2 },
+  { key: 'p4_3', round: 4, cat: 'practice', no: 3 }, { key: 'p4_4', round: 4, cat: 'practice', no: 4 },
+  { key: 'p4_5', round: 4, cat: 'practice', no: 5 },
+  // 第5回 総合：練習問題（新規）。基本問題は第1〜4回の基本問題をそのまま再掲利用する
+  { key: 't5_1', round: 5, cat: 'practice', no: 1 }, { key: 't5_2', round: 5, cat: 'practice', no: 2 },
+  { key: 't5_3', round: 5, cat: 'practice', no: 3 }, { key: 't5_4', round: 5, cat: 'practice', no: 4 },
+  { key: 't5_5', round: 5, cat: 'practice', no: 5 },
+];
+
+
+/* ====================== アプリ部 ====================== */
+const KEY='sk_ch4ge_v1';
+const N=PROBLEMS.length;
+const SRS=[1,3,7,14];
+const DAILY_SEC=2*60*60;
+const Q_LIMIT=300;
+const MAX_CHECK=2;
+const SLOW_SEC=60;
+const DRILL_DAYS=3;
+const DRILL_STREAK=3;
+const CH_LIMIT_MS=2*60*60*1000;
+const CHARS=[
+  {name:'まべる',says:['すごい！','やったね！','天才！']},
+  {name:'じょーじ',says:['できた！','ナイス！','その調子！']},
+  {name:'るーふ',says:['正解！','冴えてる！','完璧！']},
+];
+
+function today(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;}
+function todayObj(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function daysBetween(a,b){return Math.round((b-a)/86400000);}
+
+function loadData(){
+  let raw=null;
+  try{raw=localStorage.getItem(KEY);}catch(e){}
+  let d=raw?JSON.parse(raw):null;
+  if(!d)d={};
+  d.srs=d.srs||{};
+  d.stats=d.stats||{};
+  d.mDaily=d.mDaily||{};
+  d.challenge=d.challenge||{best:null,history:[]};
+  d.flags=d.flags||{};
+  d.flagLog=d.flagLog||[];
+  d.wcHistory=d.wcHistory||[];
+  d.seeds=d.seeds||{};
+  return d;
+}
+let DATA=loadData();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DATA));}catch(e){}}
+
+function getStat(key){DATA.stats[key]=DATA.stats[key]||{a:0,c:0,t:0};return DATA.stats[key];}
+function recordAttempt(key,correct,sec){
+  const st=getStat(key);
+  st.a++; if(correct)st.c++; st.t+=sec;
+  const dkey=today();
+  DATA.mDaily[dkey]=DATA.mDaily[dkey]||{learned:0,reviews:0,correct:0,attempts:0,timeSec:0};
+  const md=DATA.mDaily[dkey];
+  md.attempts++; if(correct)md.correct++; md.timeSec+=sec;
+  save();
+}
+function setFlag(key,reason){
+  const f=DATA.flags[key]||{on:false,reason:'',since:today(),recent:[],days:[],lastDoneDay:null,clearedAt:null};
+  f.on=true; f.reason=reason; if(!f.since)f.since=today();
+  DATA.flags[key]=f;
+  DATA.flagLog.push({k:key,ts:Date.now(),type:'flag'});
+  save();
+}
+function clearFlag(key){
+  if(DATA.flags[key]){DATA.flags[key].on=false;DATA.flags[key].clearedAt=today();}
+  DATA.flagLog.push({k:key,ts:Date.now(),type:'clear'});
+  save();
+}
+
+// SRS: 習得スケジュール
+function getSrs(key){
+  DATA.srs[key]=DATA.srs[key]||{status:'new',low:0,high:0,stage:0,due:null};
+  return DATA.srs[key];
+}
+function srsAdvanceCorrect(key){
+  const s=getSrs(key);
+  if(s.status!=='mastered'){
+    // 低→高→習得の2段階、各3連続正解
+    if(s.stage===0){s.low++; if(s.low>=DRILL_STREAK){s.stage=1;s.low=0;}}
+    else {s.high++; if(s.high>=DRILL_STREAK){s.status='mastered';s.stage=2;s.due=addDays(today(),SRS[0]);}}
+  } else {
+    // 復習: 正解で次の間隔へ
+    const idx=(s._srsIdx==null?0:s._srsIdx);
+    const nextIdx=Math.min(idx+1,SRS.length-1);
+    s._srsIdx=nextIdx;
+    s.due=addDays(today(),SRS[nextIdx]);
+  }
+  save();
+}
+function srsAdvanceWrong(key){
+  const s=getSrs(key);
+  if(s.status!=='mastered'){ s.low=0; s.high=0; s.stage=0; }
+  else { s._srsIdx=0; s.due=addDays(today(),1); }
+  save();
+}
+function addDays(dstr,n){
+  const [y,m,d]=dstr.split('-').map(Number);
+  const dt=new Date(y,m-1,d); dt.setDate(dt.getDate()+n);
+  return `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
+}
+function isDueToday(key){
+  const s=getSrs(key);
+  if(s.status!=='mastered')return false;
+  if(!s.due)return true;
+  return s.due<=today();
+}
+
+// ---------- ルーター ----------
+const MODES=[
+  {id:'home',label:'ホーム'},
+  {id:'list',label:'問題一覧'},
+  {id:'mastery',label:'習得モード'},
+  {id:'weakcheck',label:'苦手チェック'},
+  {id:'weakdrill',label:'にがて復習'},
+  {id:'challenge',label:'チャレンジ'},
+  {id:'records',label:'きろく'},
+];
+const CAT_LABEL={example:'例題',basic:'基本問題',practice:'練習問題'};
+let CURRENT='home';
+let RUNTIME={}; // 一時状態（進行中の問題など）
+
+function renderNav(){
+  const nav=document.getElementById('navbar');
+  nav.innerHTML='';
+  MODES.forEach(m=>{
+    const b=document.createElement('button');
+    b.textContent=m.label;
+    if(m.id===CURRENT)b.classList.add('active');
+    b.onclick=()=>{go(m.id);};
+    nav.appendChild(b);
+  });
+}
+function go(mode){
+  CURRENT=mode; RUNTIME={};
+  renderNav();
+  renderHeaderStatus();
+  const main=document.getElementById('main');
+  main.innerHTML='';
+  if(mode==='home')renderHome(main);
+  else if(mode==='list')renderList(main);
+  else if(mode==='mastery')renderMastery(main);
+  else if(mode==='weakcheck')renderWeakCheck(main);
+  else if(mode==='weakdrill')renderWeakDrill(main);
+  else if(mode==='challenge')renderChallenge(main);
+  else if(mode==='records')renderRecords(main);
+  window.scrollTo(0,0);
+}
+
+function renderHeaderStatus(){
+  const masteredCount=PROBLEMS.filter(p=>getSrs(p.key).status==='mastered').length;
+  const weakCount=Object.values(DATA.flags).filter(f=>f.on).length;
+  document.getElementById('headerStatus').textContent=`習得 ${masteredCount}/${N}　苦手 ${weakCount}`;
+}
+
+// ---------- ホーム ----------
+function renderHome(main){
+  const masteredCount=PROBLEMS.filter(p=>getSrs(p.key).status==='mastered').length;
+  const weakCount=Object.values(DATA.flags).filter(f=>f.on).length;
+  const dueCount=PROBLEMS.filter(p=>isDueToday(p.key)).length;
+  main.innerHTML=`
+    <div class="card"><b>いまの状況</b>
+      <div class="stat-row"><span>習得ずみ</span><span>${masteredCount} / ${N}</span></div>
+      <div class="progressbar"><div style="width:${(masteredCount/N*100).toFixed(0)}%"></div></div>
+      <div class="stat-row"><span>苦手フラグ🚩</span><span>${weakCount}</span></div>
+      <div class="stat-row"><span>今日の復習</span><span>${dueCount}問</span></div>
+    </div>
+    <div class="grid">
+      <div class="card mode-card" data-m="list"><h3>📋 問題一覧</h3><div class="small-note">回・例題／基本問題／練習問題からえらんで解く</div></div>
+      <div class="card mode-card" data-m="mastery"><h3>📘 習得モード</h3><div class="small-note">全${N}解法を順に習得＋SRS復習</div></div>
+      <div class="card mode-card" data-m="weakcheck"><h3>🔍 苦手チェック</h3><div class="small-note">全${N}解法を1問ずつ1回勝負でテスト</div></div>
+      <div class="card mode-card" data-m="weakdrill"><h3>🎯 にがて復習</h3><div class="small-note">🚩のついた解法を3日連続クリアで解消</div></div>
+      <div class="card mode-card" data-m="challenge"><h3>⏱ チャレンジ</h3><div class="small-note">全解法シャッフル・タイムアタック</div></div>
+      <div class="card mode-card" data-m="records"><h3>📊 きろく</h3><div class="small-note">学習記録・苦手一覧・履歴</div></div>
+    </div>
+  `;
+  main.querySelectorAll('.mode-card').forEach(el=>{
+    el.onclick=()=>go(el.dataset.m);
+  });
+}
+
+// ---------- 問題一覧 ----------
+function renderList(main){
+  if(!RUNTIME.listView)RUNTIME.listView='browse';
+  if(RUNTIME.listView==='browse'){
+    const rounds=[1,2,3,4,5];
+    let html='<div class="card"><h3>問題一覧</h3><p class="small-note">回・カテゴリをえらぶと、その中の問題一覧が出ます。</p></div>';
+    html+='<div class="grid">';
+    rounds.forEach(r=>{
+      const label = r===5 ? '第5回（総合）' : `第${r}回`;
+      html+=`<div class="card mode-card" data-r="${r}"><h3>${label}</h3></div>`;
+    });
+    html+='</div>';
+    main.innerHTML=html;
+    main.querySelectorAll('.mode-card').forEach(el=>{
+      el.onclick=()=>{RUNTIME.listView='round';RUNTIME.listRound=parseInt(el.dataset.r,10);go('list');};
+    });
+    return;
+  }
+  if(RUNTIME.listView==='round'){
+    const r=RUNTIME.listRound;
+    let items;
+    if(r===5){
+      // 総合回：基本問題は第1〜4回のbasicをまとめて再掲、練習問題はround5のpractice
+      const basicAll=PROBLEMS.filter(p=>p.cat==='basic').sort((a,b)=>a.round-b.round||a.no-b.no);
+      const practice5=PROBLEMS.filter(p=>p.round===5&&p.cat==='practice').sort((a,b)=>a.no-b.no);
+      items={example:[],basic:basicAll,practice:practice5};
+    } else {
+      items={
+        example:PROBLEMS.filter(p=>p.round===r&&p.cat==='example').sort((a,b)=>a.no-b.no),
+        basic:PROBLEMS.filter(p=>p.round===r&&p.cat==='basic').sort((a,b)=>a.no-b.no),
+        practice:PROBLEMS.filter(p=>p.round===r&&p.cat==='practice').sort((a,b)=>a.no-b.no),
+      };
+    }
+    const label = r===5 ? '第5回（総合）' : `第${r}回`;
+    let html=`<div class="card"><h3>${label} ／ 問題一覧</h3><button class="ghost small" id="btnBackRounds">← 回をえらび直す</button></div>`;
+    ['example','basic','practice'].forEach(cat=>{
+      if(!items[cat].length)return;
+      html+=`<div class="card"><h4>${CAT_LABEL[cat]}</h4><div class="grid">`;
+      items[cat].forEach(p=>{
+        const mastered=getSrs(p.key).status==='mastered';
+        const flagged=DATA.flags[p.key]&&DATA.flags[p.key].on;
+        const roundTag = r===5 && cat==='basic' ? `第${p.round}回・` : '';
+        html+=`<div class="card mode-card" data-k="${p.key}" style="padding:10px;">
+          <div>${roundTag}${CAT_LABEL[p.cat]} ${p.no}${mastered?' <span class="pill mastered">習得ずみ</span>':''}${flagged?' <span class="pill on">🚩</span>':''}</div>
+        </div>`;
+      });
+      html+='</div></div>';
+    });
+    main.innerHTML=html;
+    document.getElementById('btnBackRounds').onclick=()=>{RUNTIME.listView='browse';go('list');};
+    main.querySelectorAll('.mode-card[data-k]').forEach(el=>{
+      el.onclick=()=>{RUNTIME.listView='solve';RUNTIME.listKey=el.dataset.k;go('list');};
+    });
+    return;
+  }
+  if(RUNTIME.listView==='solve'){
+    const key=RUNTIME.listKey;
+    const p=PROBLEMS.find(x=>x.key===key);
+    const rng=makeRng(Date.now()^Math.floor(Math.random()*1e9));
+    const q=GEN[key](rng);
+    const roundLabel = p.round===5?'第5回（総合）':`第${p.round}回`;
+    renderQuestionCard(main,q,{
+      badge:`問題一覧：${roundLabel} ／ ${CAT_LABEL[p.cat]} ${p.no}`,
+      showHint:true,
+      extraButtons:'<button class="ghost small" id="btnListBack">一覧にもどる</button> <button class="ghost small" id="btnListNext">べつの数字でもう一度</button>',
+      onResult:(correct,sec)=>{
+        recordAttempt(key,correct,sec);
+      }
+    });
+    document.getElementById('btnListBack').onclick=()=>{RUNTIME.listView='round';go('list');};
+    document.getElementById('btnListNext').onclick=()=>{go('list');};
+    return;
+  }
+}
+
+// ---------- 問題表示の共通処理 ----------
+function renderQuestionCard(main,q,opts){
+  opts=opts||{};
+  const showHint=!!opts.showHint;
+  const startTime=Date.now();
+  let checkCount=0;
+  let solved=false;
+
+  const wrap=document.createElement('div');
+  wrap.className='card';
+  wrap.innerHTML=`
+    <div class="small-note">${opts.badge||''}</div>
+    <h3>${q.title}</h3>
+    <div class="stem">${q.stem}</div>
+    ${q.svg?`<div class="svgwrap">${q.svg}</div>`:''}
+    <div id="fields"></div>
+    <div id="judge"></div>
+    <div class="btnrow">
+      <button class="primary" id="btnCheck">こたえあわせ</button>
+      ${showHint?'<button class="ghost small" id="btnHint">🔑 ヒント</button>':''}
+      <button class="ghost small" id="btnSol">解法を見る</button>
+      ${opts.extraButtons||''}
+    </div>
+    <div id="hintArea"></div>
+    <div id="solArea"></div>
+  `;
+  main.appendChild(wrap);
+
+  const fieldsDiv=wrap.querySelector('#fields');
+  q.fields.forEach(f=>{
+    const row=document.createElement('div');
+    row.className='field-row';
+    row.innerHTML=`<label>${f.label}</label><input type="text" data-id="${f.id}" autocomplete="off">`;
+    fieldsDiv.appendChild(row);
+  });
+
+  let hintStep=0;
+  if(showHint){
+    wrap.querySelector('#btnHint').onclick=()=>{
+      const area=wrap.querySelector('#hintArea');
+      if(hintStep<q.hints.length){
+        const box=document.createElement('div');
+        box.className='hint-box';
+        box.textContent=`ヒント${hintStep+1}: ${q.hints[hintStep]}`;
+        area.appendChild(box);
+        hintStep++;
+      }
+    };
+  }
+  wrap.querySelector('#btnSol').onclick=()=>{
+    showSolution();
+  };
+  function showSolution(){
+    const area=wrap.querySelector('#solArea');
+    area.innerHTML=`<div class="solution-box"><b>【解法】</b><br>${q.solution}</div>`;
+  }
+
+  function checkAnswer(){
+    checkCount++;
+    const allOk=q.fields.every(f=>{
+      const inp=wrap.querySelector(`input[data-id="${f.id}"]`);
+      return f.check(inp.value);
+    });
+    const judge=wrap.querySelector('#judge');
+    const elapsed=Math.round((Date.now()-startTime)/1000);
+    if(allOk){
+      judge.innerHTML=`<div class="judge-ok">⭕ せいかい！（${elapsed}秒）</div>`;
+      solved=true;
+      showSolution();
+      showCutin();
+      if(opts.onResult)opts.onResult(true,elapsed);
+    } else {
+      if(checkCount>=MAX_CHECK||opts.singleCheck){
+        judge.innerHTML=`<div class="judge-ng">✕ ざんねん…（${elapsed}秒）</div>`;
+        showSolution();
+        if(opts.onResult)opts.onResult(false,elapsed);
+      } else {
+        judge.innerHTML=`<div class="judge-ng">✕ ちがうよ。検算した？もう一度たしかめてみよう。</div>`;
+      }
+    }
+    if(opts.afterCheck)opts.afterCheck(allOk,solved,checkCount);
+  }
+  wrap.querySelector('#btnCheck').onclick=checkAnswer;
+  return wrap;
+}
+function showCutin(){
+  const c=choice(Math.random,CHARS)||CHARS[0];
+  const say=c.says[Math.floor(Math.random()*c.says.length)];
+  const el=document.getElementById('cutin');
+  document.getElementById('cutinMsg').textContent=say;
+  el.style.display='flex';
+  setTimeout(()=>{el.style.display='none';},900);
+}
+
+// ---------- 習得モード ----------
+function renderMastery(main){
+  // 復習が期限のものを優先、次に未習得の先頭
+  const dueList=PROBLEMS.filter(p=>isDueToday(p.key));
+  let target=null, isReview=false;
+  if(dueList.length){ target=dueList[0]; isReview=true; }
+  else {
+    target=PROBLEMS.find(p=>getSrs(p.key).status!=='mastered');
+  }
+  if(!target){
+    main.innerHTML=`<div class="card"><h3>🎉 全${N}解法、習得完了！</h3><p>すごい！復習が出てきたらまたここに表示されます。</p></div>`;
+    return;
+  }
+  const s=getSrs(target.key);
+  const stageLabel=isReview?'復習（支援なし）':(s.stage===0?'低（支援あり）':'高（支援なし）');
+  const rng=makeRng(Date.now()^Math.floor(Math.random()*1e9));
+  const q=GEN[target.key](rng);
+  const showHint=isReview?false:(s.stage===0);
+  renderQuestionCard(main,q,{
+    badge:`第${target.round}回 ／ ${stageLabel} ／ 進捗 ${isReview?'復習1問':(s.stage===0? s.low+'/'+DRILL_STREAK : s.high+'/'+DRILL_STREAK)}`,
+    showHint,
+    extraButtons:'<button class="ghost small" id="btnNext">つぎの問題</button>',
+    onResult:(correct,sec)=>{
+      recordAttempt(target.key,correct,sec);
+      if(correct){
+        if(isReview){
+          DATA.mDaily[today()].reviews++; save();
+        } else {
+          DATA.mDaily[today()].learned++; save();
+        }
+        srsAdvanceCorrect(target.key);
+      } else {
+        srsAdvanceWrong(target.key);
+        setFlag(target.key,'wrong');
+      }
+    }
+  });
+  const btnNext=document.getElementById('btnNext');
+  if(btnNext)btnNext.onclick=()=>go('mastery');
+}
+
+// ---------- 苦手チェック ----------
+function renderWeakCheck(main){
+  if(!RUNTIME.wcQueue){
+    RUNTIME.wcQueue=PROBLEMS.map(p=>p.key);
+    RUNTIME.wcIdx=0;
+    RUNTIME.wcResult={answered:0,correct:0,newFlag:0};
+  }
+  if(RUNTIME.wcIdx>=RUNTIME.wcQueue.length){
+    const r=RUNTIME.wcResult;
+    const flaggedNow=Object.values(DATA.flags).filter(f=>f.on).length;
+    DATA.wcHistory.push({date:today(),ts:Date.now(),answered:r.answered,correct:r.correct,newFlag:r.newFlag,flaggedNow});
+    save();
+    main.innerHTML=`<div class="card"><h3>苦手チェック 終了</h3>
+      <div class="stat-row"><span>といた数</span><span>${r.answered}</span></div>
+      <div class="stat-row"><span>正解数</span><span>${r.correct}</span></div>
+      <div class="stat-row"><span>新しく🚩ついた数</span><span>${r.newFlag}</span></div>
+      <div class="stat-row"><span>いまの苦手数</span><span>${flaggedNow}</span></div>
+      <div class="btnrow"><button class="primary" onclick="go('home')">ホームへ</button></div>
+    </div>`;
+    return;
+  }
+  const key=RUNTIME.wcQueue[RUNTIME.wcIdx];
+  const p=PROBLEMS.find(x=>x.key===key);
+  const rng=makeRng(Date.now()^Math.floor(Math.random()*1e9));
+  const q=GEN[key](rng);
+  renderQuestionCard(main,q,{
+    badge:`苦手チェック ${RUNTIME.wcIdx+1}/${N}（第${p.round}回）`,
+    showHint:false,
+    singleCheck:true,
+    extraButtons:'<button class="ghost small" id="btnNext">つぎへ</button>',
+    onResult:(correct,sec)=>{
+      recordAttempt(key,correct,sec);
+      RUNTIME.wcResult.answered++;
+      if(correct)RUNTIME.wcResult.correct++;
+      const wasFlagged=DATA.flags[key]&&DATA.flags[key].on;
+      if(!correct||sec>=SLOW_SEC){
+        const reason=(!correct&&sec>=SLOW_SEC)?'wrong+slow':(!correct?'wrong':'slow');
+        setFlag(key,reason);
+        if(!wasFlagged)RUNTIME.wcResult.newFlag++;
+      }
+    }
+  });
+  const btnNext=document.getElementById('btnNext');
+  if(btnNext)btnNext.onclick=()=>{RUNTIME.wcIdx++;go('weakcheck');RUNTIME.wcQueue=RUNTIME.wcQueue;};
+}
+// wcQueueの保持のため、go()内でRUNTIMEをリセットしない特別扱いが必要
+const _origGo=go;
+go=function(mode){
+  if(mode==='weakcheck'&&CURRENT==='weakcheck'){
+    // 継続（リセットしない）
+    CURRENT=mode; renderNav(); renderHeaderStatus();
+    const main=document.getElementById('main'); main.innerHTML='';
+    renderWeakCheck(main);
+    window.scrollTo(0,0);
+    return;
+  }
+  if(mode==='list'&&CURRENT==='list'){
+    // 問題一覧内の画面遷移（browse→round→solve）はRUNTIMEを保持する
+    CURRENT=mode; renderNav(); renderHeaderStatus();
+    const main=document.getElementById('main'); main.innerHTML='';
+    renderList(main);
+    window.scrollTo(0,0);
+    return;
+  }
+  _origGo(mode);
+};
+
+// ---------- にがて復習 ----------
+function renderWeakDrill(main){
+  const weakList=PROBLEMS.filter(p=>DATA.flags[p.key]&&DATA.flags[p.key].on);
+  if(!weakList.length){
+    main.innerHTML=`<div class="card"><h3>いま苦手はありません🎉</h3><p>苦手チェックをして、にがてを見つけよう。</p></div>`;
+    return;
+  }
+  if(!RUNTIME.drillKey){
+    const main2=main;
+    const listHtml=weakList.map(p=>{
+      const f=DATA.flags[p.key];
+      const doneToday=f.lastDoneDay===today();
+      return `<div class="card mode-card" data-k="${p.key}" style="display:flex;justify-content:space-between;align-items:center;">
+        <div><b>第${p.round}回</b> ${p.key} <span class="small-note">(${(f.days||[]).length}/${DRILL_DAYS}日クリア)</span></div>
+        <div>${doneToday?'<span class="pill mastered">✅今日ずみ</span>':'<span class="pill on">未</span>'}</div>
+      </div>`;
+    }).join('');
+    main2.innerHTML=`<div class="card"><h3>にがて復習：単元をえらぶ</h3><p class="small-note">選んだ単元を3問連続正解でその日クリア。別々の3日クリアで🚩解消。</p></div>${listHtml}
+      <div class="card"><button class="primary" id="btnOmakase">今日やる分をまとめて（おまかせ）</button></div>`;
+    main2.querySelectorAll('.mode-card').forEach(el=>{
+      el.onclick=()=>{RUNTIME.drillKey=el.dataset.k;RUNTIME.drillStreak=0;go('weakdrill');};
+    });
+    main2.querySelector('#btnOmakase').onclick=()=>{
+      const notDone=weakList.filter(p=>!(DATA.flags[p.key].lastDoneDay===today()));
+      if(notDone.length){RUNTIME.drillKey=notDone[0].key;RUNTIME.drillStreak=0;go('weakdrill');}
+    };
+    return;
+  }
+  const key=RUNTIME.drillKey;
+  const p=PROBLEMS.find(x=>x.key===key);
+  RUNTIME.drillStreak=RUNTIME.drillStreak||0;
+  const rng=makeRng(Date.now()^Math.floor(Math.random()*1e9));
+  const q=GEN[key](rng);
+  renderQuestionCard(main,q,{
+    badge:`にがて復習：第${p.round}回 ／ 連続正解 ${RUNTIME.drillStreak}/${DRILL_STREAK}`,
+    showHint:true,
+    extraButtons:'<button class="ghost small" id="btnBack">単元をえらび直す</button> <button class="ghost small" id="btnSkip">単元スキップ</button>',
+    onResult:(correct,sec)=>{
+      recordAttempt(key,correct,sec);
+      if(correct){
+        RUNTIME.drillStreak++;
+        if(RUNTIME.drillStreak>=DRILL_STREAK){
+          const f=DATA.flags[key];
+          if(f.lastDoneDay!==today()){
+            f.days=f.days||[];
+            f.days.push(today());
+            f.lastDoneDay=today();
+            if(f.days.length>=DRILL_DAYS){
+              clearFlag(key);
+            }
+            save();
+          }
+          setTimeout(()=>{RUNTIME.drillKey=null;go('weakdrill');},600);
+        }
+      } else {
+        RUNTIME.drillStreak=0;
+      }
+    }
+  });
+  const btnBack=document.getElementById('btnBack');
+  if(btnBack)btnBack.onclick=()=>{RUNTIME.drillKey=null;go('weakdrill');};
+  const btnSkip=document.getElementById('btnSkip');
+  if(btnSkip)btnSkip.onclick=()=>{RUNTIME.drillKey=null;RUNTIME.drillStreak=0;go('weakdrill');};
+}
+
+// ---------- チャレンジモード ----------
+function renderChallenge(main){
+  if(!RUNTIME.chQueue){
+    RUNTIME.chQueue=PROBLEMS.map(p=>p.key).sort(()=>Math.random()-0.5);
+    RUNTIME.chIdx=0; RUNTIME.chSkips=[]; RUNTIME.chStart=Date.now(); RUNTIME.chSolved=0;
+  }
+  const elapsedMs=Date.now()-RUNTIME.chStart;
+  if(elapsedMs>=CH_LIMIT_MS||(RUNTIME.chIdx>=RUNTIME.chQueue.length&&!RUNTIME.chSkips.length)){
+    const ms=elapsedMs;
+    const best=DATA.challenge.best;
+    const isNewBest=(best==null||ms<best)&&RUNTIME.chSolved>=N;
+    if(isNewBest)DATA.challenge.best=ms;
+    DATA.challenge.history.push({date:today(),ms,solved:RUNTIME.chSolved,total:N,skips:RUNTIME.chSkips.length,status:RUNTIME.chSolved>=N?'clear':'timeup'});
+    save();
+    main.innerHTML=`<div class="card"><h3>チャレンジ 終了</h3>
+      <div class="stat-row"><span>結果</span><span>${RUNTIME.chSolved}/${N} 問正解</span></div>
+      <div class="stat-row"><span>タイム</span><span>${(ms/1000).toFixed(1)}秒</span></div>
+      ${isNewBest?'<div class="judge-ok">🏆 自己ベスト更新！</div>':''}
+      <div class="btnrow"><button class="primary" onclick="go('home')">ホームへ</button></div>
+    </div>`;
+    RUNTIME={};
+    return;
+  }
+  let key;
+  if(RUNTIME.chIdx<RUNTIME.chQueue.length){key=RUNTIME.chQueue[RUNTIME.chIdx];}
+  else {key=RUNTIME.chSkips.shift();}
+  const p=PROBLEMS.find(x=>x.key===key);
+  const remain=Math.max(0,CH_LIMIT_MS-elapsedMs);
+  const rng=makeRng(Date.now()^Math.floor(Math.random()*1e9));
+  const q=GEN[key](rng);
+  renderQuestionCard(main,q,{
+    badge:`チャレンジ ／ のこり時間 ${Math.floor(remain/60000)}分${Math.floor(remain/1000)%60}秒 ／ ベスト ${DATA.challenge.best?(DATA.challenge.best/1000).toFixed(1)+'秒':'なし'}`,
+    showHint:false,
+    singleCheck:true,
+    extraButtons:'<button class="ghost small" id="btnSkip">スキップ</button>',
+    onResult:(correct,sec)=>{
+      recordAttempt(key,correct,sec);
+      if(correct)RUNTIME.chSolved++;
+      else RUNTIME.chSkips.push(key);
+      if(RUNTIME.chIdx<RUNTIME.chQueue.length)RUNTIME.chIdx++;
+      setTimeout(()=>go('challenge'),800);
+    }
+  });
+  const btnSkip=document.getElementById('btnSkip');
+  if(btnSkip)btnSkip.onclick=()=>{
+    RUNTIME.chSkips.push(key);
+    if(RUNTIME.chIdx<RUNTIME.chQueue.length)RUNTIME.chIdx++;
+    go('challenge');
+  };
+}
+
+// ---------- きろく ----------
+function renderRecords(main){
+  const dailyRows=Object.entries(DATA.mDaily).sort((a,b)=>b[0]<a[0]?-1:1).slice(0,14).map(([d,v])=>
+    `<tr><td>${d}</td><td>${v.learned}</td><td>${v.reviews}</td><td>${v.correct}/${v.attempts}</td><td>${Math.round(v.timeSec/60)}分</td></tr>`
+  ).join('');
+  const weakRows=PROBLEMS.filter(p=>DATA.flags[p.key]&&DATA.flags[p.key].on).map(p=>{
+    const f=DATA.flags[p.key];
+    return `<tr><td>第${p.round}回</td><td>${p.key}</td><td>${f.reason}</td><td>${(f.days||[]).length}/${DRILL_DAYS}</td></tr>`;
+  }).join('')||'<tr><td colspan="4">なし</td></tr>';
+  const wcRows=DATA.wcHistory.slice(-10).reverse().map(h=>
+    `<tr><td>${h.date}</td><td>${h.correct}/${h.answered}</td><td>+${h.newFlag}</td><td>${h.flaggedNow}</td></tr>`
+  ).join('')||'<tr><td colspan="4">なし</td></tr>';
+
+  main.innerHTML=`
+    <div class="card"><h3>日々の学習</h3>
+      <table class="rec"><tr><th>日付</th><th>習得</th><th>復習</th><th>正解/挑戦</th><th>時間</th></tr>${dailyRows||'<tr><td colspan="5">まだ記録なし</td></tr>'}</table>
+    </div>
+    <div class="card"><h3>苦手一覧🚩</h3>
+      <table class="rec"><tr><th>回</th><th>解法</th><th>理由</th><th>進捗</th></tr>${weakRows}</table>
+    </div>
+    <div class="card"><h3>苦手チェック履歴</h3>
+      <table class="rec"><tr><th>日付</th><th>正解</th><th>新規🚩</th><th>現在の苦手数</th></tr>${wcRows}</table>
+    </div>
+    <div class="card"><h3>チャレンジ記録</h3>
+      <div class="stat-row"><span>自己ベスト</span><span>${DATA.challenge.best?(DATA.challenge.best/1000).toFixed(1)+'秒':'まだ挑戦なし'}</span></div>
+    </div>
+    <div class="card">
+      <button class="ghost" id="btnResetFlags">🚩 苦手フラグをリセット</button>
+      <button class="ghost" id="btnClearAll" style="color:#c0392b;">🧹 キャッシュ・記録をぜんぶクリア</button>
+    </div>
+  `;
+  main.querySelector('#btnResetFlags').onclick=()=>{
+    if(confirm('苦手フラグと履歴だけを消します。よろしいですか？')){
+      DATA.flags={}; DATA.flagLog=[]; DATA.wcHistory=[]; save(); go('records');
+    }
+  };
+  main.querySelector('#btnClearAll').onclick=()=>{
+    if(confirm('すべてのデータを消してリロードします。よろしいですか？')){
+      try{localStorage.removeItem(KEY);}catch(e){}
+      location.reload();
+    }
+  };
+}
+
+// ---------- 初期化 ----------
+renderNav();
+go('home');
+</script>
+</body>
+</html>
