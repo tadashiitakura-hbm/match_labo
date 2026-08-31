@@ -48,7 +48,7 @@ table.rec{width:100%;border-collapse:collapse;font-size:.88em;}
 table.rec th,table.rec td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;}
 .pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.78em;background:#eee;}
 .pill.on{background:#ffe0d0;color:var(--warn);}
-.pill.mastered{background:#dff5e6;color:var(--ok);}
+.pill.mastered{background:#ffd9e6;color:#c2185b;}
 #cutin{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:50;}
 #cutin .msg{background:#fff;padding:26px 40px;border-radius:20px;font-size:1.6em;font-family:'Hachi Maru Pop',cursive;color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.2);}
 footer{text-align:center;padding:20px;color:#9a8a7a;font-size:.8em;}
@@ -1536,6 +1536,13 @@ function isDueToday(key){
   if(!s.due)return true;
   return s.due<=today();
 }
+// 習得までの残り問題数（低段階の残り＋高段階3問／高段階の残り）。習得済みはnull。
+function remainingToMaster(key){
+  const s=getSrs(key);
+  if(s.status==='mastered')return null;
+  if(s.stage===0)return (DRILL_STREAK-s.low)+DRILL_STREAK;
+  return DRILL_STREAK-s.high;
+}
 
 // ---------- ルーター ----------
 const MODES=[
@@ -1562,8 +1569,8 @@ function renderNav(){
     nav.appendChild(b);
   });
 }
-function go(mode){
-  CURRENT=mode; RUNTIME={};
+function go(mode,keepRuntime){
+  CURRENT=mode; if(!keepRuntime)RUNTIME={};
   renderNav();
   renderHeaderStatus();
   const main=document.getElementById('main');
@@ -1650,10 +1657,12 @@ function renderList(main){
       html+=`<div class="card"><h4>${CAT_LABEL[cat]}</h4><div class="grid">`;
       items[cat].forEach(p=>{
         const mastered=getSrs(p.key).status==='mastered';
+        const remain=remainingToMaster(p.key);
         const flagged=DATA.flags[p.key]&&DATA.flags[p.key].on;
         const roundTag = r===5 && cat==='basic' ? `第${p.round}回・` : '';
-        html+=`<div class="card mode-card" data-k="${p.key}" style="padding:10px;">
-          <div>${roundTag}${CAT_LABEL[p.cat]} ${p.no}${mastered?' <span class="pill mastered">習得ずみ</span>':''}${flagged?' <span class="pill on">🚩</span>':''}</div>
+        html+=`<div class="card" style="padding:10px;">
+          <div class="mode-card" data-k="${p.key}" style="cursor:pointer;">${roundTag}${CAT_LABEL[p.cat]} ${p.no}${mastered?' <span class="pill mastered">習得ずみ</span>':` <span class="pill">あと${remain}問</span>`}${flagged?' <span class="pill on">🚩</span>':''}</div>
+          <div style="margin-top:6px;"><button class="ghost small" data-mk="${p.key}">📘 習得モードで解く</button></div>
         </div>`;
       });
       html+='</div></div>';
@@ -1662,6 +1671,13 @@ function renderList(main){
     document.getElementById('btnBackRounds').onclick=()=>{RUNTIME.listView='browse';go('list');};
     main.querySelectorAll('.mode-card[data-k]').forEach(el=>{
       el.onclick=()=>{RUNTIME.listView='solve';RUNTIME.listKey=el.dataset.k;go('list');};
+    });
+    main.querySelectorAll('button[data-mk]').forEach(el=>{
+      el.onclick=(e)=>{
+        e.stopPropagation();
+        RUNTIME={masteryFocusKey:el.dataset.mk};
+        go('mastery',true);
+      };
     });
     return;
   }
@@ -1781,12 +1797,22 @@ function showCutin(){
 
 // ---------- 習得モード ----------
 function renderMastery(main){
-  // 復習が期限のものを優先、次に未習得の先頭
-  const dueList=PROBLEMS.filter(p=>isDueToday(p.key));
-  let target=null, isReview=false;
-  if(dueList.length){ target=dueList[0]; isReview=true; }
-  else {
-    target=PROBLEMS.find(p=>getSrs(p.key).status!=='mastered');
+  // 問題一覧から指定された解法があれば最優先。なければ復習が期限のものを優先、次に未習得の先頭
+  const focusKey=RUNTIME.masteryFocusKey;
+  let target=null, isReview=false, isFocus=false;
+  if(focusKey){
+    target=PROBLEMS.find(p=>p.key===focusKey);
+    if(target){
+      isFocus=true;
+      isReview=getSrs(focusKey).status==='mastered';
+    }
+  }
+  if(!target){
+    const dueList=PROBLEMS.filter(p=>isDueToday(p.key));
+    if(dueList.length){ target=dueList[0]; isReview=true; }
+    else {
+      target=PROBLEMS.find(p=>getSrs(p.key).status!=='mastered');
+    }
   }
   if(!target){
     main.innerHTML=`<div class="card"><h3>🎉 全${N}解法、習得完了！</h3><p>すごい！復習が出てきたらまたここに表示されます。</p></div>`;
@@ -1798,7 +1824,7 @@ function renderMastery(main){
   const q=GEN[target.key](rng);
   const showHint=isReview?false:(s.stage===0);
   renderQuestionCard(main,q,{
-    badge:`第${target.round}回 ／ ${stageLabel} ／ 進捗 ${isReview?'復習1問':(s.stage===0? s.low+'/'+DRILL_STREAK : s.high+'/'+DRILL_STREAK)}`,
+    badge:`${isFocus?'（問題一覧から）':''}第${target.round}回 ／ ${stageLabel} ／ 進捗 ${isReview?'復習1問':(s.stage===0? s.low+'/'+DRILL_STREAK : s.high+'/'+DRILL_STREAK)}`,
     showHint,
     extraButtons:'<button class="ghost small" id="btnNext">つぎの問題</button>',
     onResult:(correct,sec)=>{
@@ -1817,7 +1843,16 @@ function renderMastery(main){
     }
   });
   const btnNext=document.getElementById('btnNext');
-  if(btnNext)btnNext.onclick=()=>go('mastery');
+  if(btnNext)btnNext.onclick=()=>{
+    RUNTIME={};
+    if(isFocus && getSrs(target.key).status!=='mastered'){
+      // まだ習得しきっていなければ同じ問題を継続
+      RUNTIME.masteryFocusKey=target.key;
+      go('mastery',true);
+    } else {
+      go('mastery');
+    }
+  };
 }
 
 // ---------- 苦手チェック ----------
@@ -1867,7 +1902,7 @@ function renderWeakCheck(main){
 }
 // wcQueueの保持のため、go()内でRUNTIMEをリセットしない特別扱いが必要
 const _origGo=go;
-go=function(mode){
+go=function(mode,keepRuntime){
   if(mode==='weakcheck'&&CURRENT==='weakcheck'){
     // 継続（リセットしない）
     CURRENT=mode; renderNav(); renderHeaderStatus();
@@ -1884,7 +1919,7 @@ go=function(mode){
     window.scrollTo(0,0);
     return;
   }
-  _origGo(mode);
+  _origGo(mode,keepRuntime);
 };
 
 // ---------- にがて復習 ----------
