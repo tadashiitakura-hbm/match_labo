@@ -31,10 +31,11 @@ body{
   min-height:100vh;
   padding-bottom:40px;
 }
-.wrap{max-width:640px;margin:0 auto;padding:16px;}
+.wrap{max-width:680px;margin:0 auto;padding:16px;}
 header{
   text-align:center;
   padding:18px 12px 10px;
+  position:relative;
 }
 header h1{
   font-size:1.3rem;
@@ -43,6 +44,7 @@ header h1{
   font-family:'Hachi Maru Pop',cursive;
 }
 header p{margin:0;color:var(--ink-soft);font-size:.8rem;}
+.headerStatus{font-size:.68rem;color:var(--ink-soft);margin-top:4px;}
 
 nav.tabs{
   display:flex;
@@ -55,9 +57,9 @@ nav.tabs button{
   border:1px solid var(--border);
   background:var(--card);
   color:var(--ink-soft);
-  padding:8px 14px;
+  padding:8px 12px;
   border-radius:999px;
-  font-size:.82rem;
+  font-size:.78rem;
   font-family:inherit;
   cursor:pointer;
   transition:.15s;
@@ -116,6 +118,7 @@ nav.tabs button.active{
 .bigbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-dark);}
 .bigbtn.secondary{background:#8A8F99;box-shadow:0 4px 0 #666a72;}
 .bigbtn.secondary:active{box-shadow:0 1px 0 #666a72;}
+.bigbtn:disabled{background:#CBC7B8;box-shadow:0 4px 0 #A8A492;cursor:default;}
 .bigbtn .sub{display:block;font-size:.72rem;font-weight:normal;opacity:.9;margin-top:2px;}
 
 .section-title{
@@ -233,46 +236,24 @@ nav.tabs button.active{
 .feedback.ng{background:var(--warn-soft);color:var(--warn);}
 .feedback .fb-title{font-weight:bold;margin-bottom:4px;font-size:.95rem;}
 
-.hint-box{
-  background:var(--gold-soft);
-  border-radius:12px;
-  padding:10px 14px;
-  font-size:.82rem;
-  color:#7a5c14;
-  margin-bottom:12px;
-  display:none;
-}
-.hint-box.show{display:block;}
-.hint-toggle{
-  font-size:.78rem;
-  color:var(--ink-soft);
-  background:none;
-  border:none;
-  text-decoration:underline;
-  cursor:pointer;
-  padding:0;
-  margin-bottom:10px;
-  font-family:inherit;
-}
-
 /* review list / done screen */
 .review-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 4px;
+  padding:12px 4px;
   border-bottom:1px solid var(--border);
   font-size:.85rem;
 }
 .review-item:last-child{border-bottom:none;}
+.review-item .ri-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;}
 .review-item .tag{
   background:var(--warn-soft);
   color:var(--warn);
   font-size:.68rem;
   padding:2px 8px;
   border-radius:999px;
-  margin-left:6px;
+  white-space:nowrap;
 }
+.review-item .ri-stem{color:var(--ink);font-size:.85rem;line-height:1.5;white-space:pre-wrap;margin-bottom:4px;}
+.review-item .ri-due{font-size:.68rem;color:var(--ink-soft);}
 .empty-msg{color:var(--ink-soft);font-size:.85rem;text-align:center;padding:20px 0;}
 
 .done-emoji{font-size:2.6rem;text-align:center;margin-bottom:6px;}
@@ -281,25 +262,71 @@ nav.tabs button.active{
 footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4px;}
 
 .hidden{display:none !important;}
+
+/* list view */
+.unit-head{font-size:.9rem;font-weight:bold;color:var(--accent-dark);margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent-soft);}
+.unit-head:first-child{margin-top:0;}
+.list-item{border-bottom:1px solid var(--border);padding:10px 2px;}
+.list-item:last-child{border-bottom:none;}
+.list-item .li-no{font-size:.68rem;color:var(--ink-soft);}
+.list-item .li-stem{font-size:.86rem;line-height:1.6;white-space:pre-wrap;margin:2px 0 6px;}
+.list-item .li-ans{font-size:.82rem;color:var(--accent-dark);font-weight:bold;background:var(--accent-soft);border-radius:8px;padding:6px 10px;display:inline-block;}
+.list-item details{margin-top:4px;}
+.list-item summary{font-size:.72rem;color:var(--ink-soft);cursor:pointer;}
+.list-item .li-explain{font-size:.78rem;color:var(--ink-soft);line-height:1.5;margin-top:4px;}
+
+/* history table */
+table.rec{width:100%;border-collapse:collapse;font-size:.8rem;}
+table.rec th,table.rec td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);}
+table.rec th{color:var(--ink-soft);font-weight:bold;font-size:.72rem;}
+.rec-wrap{overflow-x:auto;}
+
+/* login gate */
+#loginGate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+#loginGate .box{background:var(--card);border-radius:20px;padding:32px 28px;box-shadow:var(--shadow);max-width:340px;width:100%;text-align:center;}
+#loginGate h2{font-family:'Hachi Maru Pop',cursive;color:var(--accent-dark);margin:0 0 6px;font-size:1.25rem;}
+#loginGate p{color:var(--ink-soft);font-size:.85rem;margin:0 0 16px;}
+#loginGate input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:1.05rem;font-family:inherit;text-align:center;letter-spacing:.08em;}
+#loginGate button{width:100%;margin-top:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:1rem;cursor:pointer;font-family:inherit;font-weight:bold;box-shadow:0 3px 0 var(--accent-dark);}
+#loginGate .err{color:var(--warn);font-size:.8rem;margin-top:10px;min-height:1.2em;}
+#loginGate .loading{color:var(--ink-soft);font-size:.8rem;margin-top:10px;min-height:1.2em;}
+body.gate-open #appRoot{display:none;}
+.small-link{background:none;border:none;color:var(--ink-soft);font-size:.72rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:0;}
 </style>
 </head>
-<body>
+<body class="gate-open">
+
+<div id="loginGate">
+  <div class="box">
+    <h2>理科チャレンジ 4年下</h2>
+    <p>いつもの あいことば を にゅうりょくしてね<br>（算数アプリと同じでOK）</p>
+    <input type="password" id="gatePass" placeholder="あいことば" autocomplete="off">
+    <button id="gateBtn">はじめる</button>
+    <div class="err" id="gateErr"></div>
+    <div class="loading" id="gateLoading"></div>
+  </div>
+</div>
+
+<div id="appRoot">
 <div class="wrap">
   <header>
     <h1>理科チャレンジ 4年下</h1>
     <p>予習シリーズ準拠 ／ 第1回「ヒトのからだ」</p>
+    <div class="headerStatus" id="headerStatus"></div>
   </header>
 
   <nav class="tabs">
     <button data-view="home" class="active">ホーム</button>
     <button data-view="quiz">練習する</button>
     <button data-view="review">復習リスト</button>
+    <button data-view="list">問題一覧</button>
+    <button data-view="history">学習記録</button>
   </nav>
 
   <!-- HOME -->
   <div id="view-home">
     <div class="card">
-      <div class="section-title">今日のすすみぐあい</div>
+      <div class="section-title">ぜんたいのすすみぐあい</div>
       <div class="progress-outer"><div class="progress-inner" id="homeProgressBar" style="width:0%"></div></div>
       <div style="text-align:center;font-size:.8rem;color:var(--ink-soft);margin-top:4px;" id="homeProgressLabel">0 / 0 問クリア</div>
 
@@ -311,8 +338,8 @@ footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4
     </div>
 
     <div class="card">
-      <button class="bigbtn" id="btnStart">つづきから練習する<span class="sub">全問をテンポよく順番に反復</span></button>
-      <button class="bigbtn secondary" id="btnRestart">はじめから練習する<span class="sub">記録をリセットせず最初の問題から</span></button>
+      <button class="bigbtn" id="btnStart">今日のぶんを練習する<span class="sub" id="btnStartSub">忘却曲線に沿って出題／ランダムなし</span></button>
+      <button class="bigbtn secondary" id="btnRestart">全問をもう一度練習する<span class="sub">記録は消さずに、今日ぶんとして全問を出題</span></button>
     </div>
   </div>
 
@@ -326,9 +353,6 @@ footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4
       <div class="progress-outer"><div class="progress-inner" id="quizProgressBar" style="width:0%"></div></div>
       <div class="q-meta" id="qMeta"></div>
       <div class="q-stem" id="qStem"></div>
-
-      <button class="hint-toggle hidden" id="hintToggle">💡 ヒントを見る</button>
-      <div class="hint-box" id="hintBox"></div>
 
       <div id="answerArea"></div>
 
@@ -352,6 +376,25 @@ footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4
     </div>
   </div>
 
+  <!-- PROBLEM LIST -->
+  <div id="view-list" class="hidden">
+    <div class="card">
+      <div class="section-title">問題一覧（全問の問題と正解）</div>
+      <div id="probList"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="view-history" class="hidden">
+    <div class="card">
+      <div class="section-title">学習記録（日ごと）</div>
+      <div class="rec-wrap"><table class="rec" id="historyTable"></table></div>
+    </div>
+    <div class="card">
+      <button class="small-link" id="btnLogout">🔑 あいことばを変える</button>
+    </div>
+  </div>
+
   <!-- DONE -->
   <div id="view-done" class="hidden">
     <div class="card">
@@ -362,27 +405,115 @@ footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4
     </div>
   </div>
 
-  <footer>予習シリーズ理科4年下 第1回「ヒトのからだ」準拠　家庭学習用</footer>
+  <footer>予習シリーズ理科4年下 第1回「ヒトのからだ」準拠　家庭学習用（データはこの端末とサーバーに保存されます）</footer>
+</div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-firestore-compat.min.js"></script>
 <script>
+'use strict';
+const firebaseConfig={
+  apiKey:"AIzaSyD307IornF-BGD55DSlNL9UBA3P6avqI6s",
+  authDomain:"hbmsansu.firebaseapp.com",
+  projectId:"hbmsansu",
+  storageBucket:"hbmsansu.firebasestorage.app",
+  messagingSenderId:"360846130418",
+  appId:"1:360846130418:web:3b54bb3239158cc675e46b"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth=firebase.auth();
+const fbDb=firebase.firestore();
+
+// パスフレーズ→決定論的メールアドレス変換（算数アプリと同じロジックなので、同じあいことばでログインできる）
+function passphraseToEmail(pass){
+  const norm=pass.trim();
+  let hash=0;
+  for(let i=0;i<norm.length;i++){
+    hash=((hash<<5)-hash+norm.charCodeAt(i))|0;
+  }
+  const h=(hash>>>0).toString(36);
+  return `u${h}_${norm.length}@ch4ge.local`;
+}
+
+function gateSetErr(msg){document.getElementById('gateErr').textContent=msg||'';}
+function gateSetLoading(msg){document.getElementById('gateLoading').textContent=msg||'';}
+
+async function doLogin(){
+  const pass=document.getElementById('gatePass').value;
+  if(!pass||pass.trim().length<4){
+    gateSetErr('あいことばは4文字いじょうにしてね');
+    return;
+  }
+  gateSetErr('');
+  gateSetLoading('つないでいます…');
+  document.getElementById('gateBtn').disabled=true;
+  const email=passphraseToEmail(pass);
+  try{
+    try{
+      await fbAuth.signInWithEmailAndPassword(email,pass);
+    }catch(err){
+      if(err.code==='auth/user-not-found' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
+        await fbAuth.createUserWithEmailAndPassword(email,pass);
+      }else{
+        throw err;
+      }
+    }
+    gateSetLoading('');
+    document.body.classList.remove('gate-open');
+    document.getElementById('loginGate').style.display='none';
+    onAuthReady();
+  }catch(err){
+    gateSetLoading('');
+    document.getElementById('gateBtn').disabled=false;
+    if(err.code==='auth/wrong-password' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
+      gateSetErr('あいことばが ちがうみたい。もういちど にゅうりょくしてね');
+    }else{
+      gateSetErr('つながりませんでした（'+(err.code||err.message)+'）');
+    }
+  }
+}
+document.getElementById('gateBtn').addEventListener('click',doLogin);
+document.getElementById('gatePass').addEventListener('keydown',(e)=>{if(e.key==='Enter')doLogin();});
+
+let onAuthReady=function(){};
+let _autoLoginChecked=false;
+fbAuth.onAuthStateChanged(function(user){
+  if(!_autoLoginChecked){
+    _autoLoginChecked=true;
+    if(user){
+      document.body.classList.remove('gate-open');
+      document.getElementById('loginGate').style.display='none';
+      onAuthReady();
+    }
+  }
+});
+function gateLogout(){
+  fbAuth.signOut().then(()=>{ location.reload(); });
+}
+</script>
+
+<script>
+'use strict';
 /* =========================================================
    問題データ（予習シリーズ演習問題集 理科4年下 第1回 ヒトのからだ）
    まとめてみよう / 練習問題 / 発展問題　すべて収録
+   別冊「解答と解説」と全問照合済み（2026年再チェック）
    ========================================================= */
 const PROBLEMS = [
-/* ---------- まとめてみよう！ 全10問 ---------- */
+/* ---------- まとめてみよう！ 全20問 ---------- */
 {
   id:'m1', unit:'まとめてみよう', src:'骨と筋肉',
   stem:'ヒトは①（　　）をもつ動物（セキツイ動物）で、内側にある骨と筋肉を使ってからだを動かす。',
   type:'choice',
-  choices:['骨格','筋肉','関節','消化管'],
-  answer:'骨格',
-  explain:'ヒトは体の中に骨格をもつセキツイ動物です。頭骨は脳を、ろっ骨は肺や心臓を守り、骨ばんは内臓を支えています。'
+  choices:['背骨','骨格','筋肉','関節'],
+  answer:'背骨',
+  explain:'ヒトは背骨をもつセキツイ動物です。頭骨は脳を、ろっ骨は肺や心臓を守り、骨ばんは内臓を支えています。'
 },
 {
   id:'m2', unit:'まとめてみよう', src:'骨と筋肉',
-  stem:'ろっ骨は肺や心臓を②（　　）はたらきをしている。あてはまることばを選びなさい。',
+  stem:'頭骨は脳を、ろっ骨は肺や心臓を②（　　）、骨ばんは内臓を支えている。あてはまることばを選びなさい。',
   type:'choice',
   choices:['守る','動かす','つくる','消化する'],
   answer:'守る',
@@ -414,7 +545,7 @@ const PROBLEMS = [
 },
 {
   id:'m6', unit:'まとめてみよう', src:'骨と筋肉',
-  stem:'右図はうでを曲げたときのようすで、このとき縮んでいる筋肉はどちらですか。（Aの筋肉がふくらんで縮んでいます）',
+  stem:'右図はうでを曲げたときのようすで、このとき縮んでいる筋肉はどちらですか。（内側＝力こぶ側がA、外側がBです）',
   type:'choice',
   choices:['A','B'],
   answer:'A',
@@ -441,8 +572,8 @@ const PROBLEMS = [
   stem:'鼻や口から取り入れられた空気は、気管と気管支を通り肺に送られる。肺は左右に⑨（　　）つずつある。',
   type:'choice',
   choices:['1','2','3','4'],
-  answer:'2',
-  explain:'肺は左右に1つずつ、合計2つあります。'
+  answer:'1',
+  explain:'肺は左右に1つずつ（合計2つ）あります。「左右に1つずつ」という言い方に注意しましょう。'
 },
 {
   id:'m10', unit:'まとめてみよう', src:'呼吸',
@@ -550,11 +681,11 @@ const PROBLEMS = [
 },
 {
   id:'p1-3', unit:'練習問題1', src:'骨のはたらき',
-  stem:'図のA〜Cのうち、ろっ骨はどれですか。\n(ア) 頭骨　(イ) ろっ骨　(ウ) 骨ばん\nA:胸のあたりの骨　B:こしのあたりの骨　C:頭の骨　の位置で、ろっ骨にあたる記号を選びなさい。',
+  stem:'図1のA〜Cの骨のうち、Aの骨を何といいますか。下から選び、記号で答えなさい。\n（Aは胸のあたりにある骨です）\n(ア) 頭骨　(イ) ろっ骨　(ウ) 骨ばん',
   type:'choice',
-  choices:['A','B','C'],
-  answer:'A',
-  explain:'胸のあたりにあるAがろっ骨で、肺や心臓を守っています。Bの骨ばんは内臓を支え、Cの頭骨は脳を守っています。'
+  choices:['(ア) 頭骨','(イ) ろっ骨','(ウ) 骨ばん'],
+  answer:'(イ) ろっ骨',
+  explain:'胸のあたりにあるAの骨はろっ骨で、肺や心臓を守っています。Bの骨ばんは内臓を支え、Cの頭骨は脳を守っています。'
 },
 {
   id:'p1-4', unit:'練習問題1', src:'骨のはたらき',
@@ -566,7 +697,7 @@ const PROBLEMS = [
 },
 {
   id:'p1-5', unit:'練習問題1', src:'骨のつながり',
-  stem:'骨どうしをつないでいるつくりを何といいますか。ことばで答えなさい。',
+  stem:'図2の「あ」のように、からだを動かす骨どうしをつないでいるつくりを何といいますか。ことばで答えなさい。',
   type:'text', accept:['関節'],
   explain:'骨と骨をつなぐつくりを関節といいます。'
 },
@@ -582,11 +713,11 @@ const PROBLEMS = [
 /* ---------- 練習問題 大問2（目・耳） ---------- */
 {
   id:'p2-1', unit:'練習問題2', src:'目のつくり',
-  stem:'目のつくりのうち、レンズにあたるのはどれですか。\n①角まく　②ひとみ（こうさい）　③レンズ　④もうまく　の中から選びなさい。',
+  stem:'図1の①〜④は目のつくりを表しています。①はもうまく、②は角まく、③はこうさい、④はレンズです。\nこの中で、光を屈折させて像を結ばせる「レンズ」はどれですか。番号で答えなさい。',
   type:'choice',
   choices:['①','②','③','④'],
-  answer:'③',
-  explain:'外から入ってきた光は①角まく→②ひとみ→③レンズを通り、④もうまくに像をつくります。レンズは③です。'
+  answer:'④',
+  explain:'外から入ってきた光は、角まく（②）→こうさい（③、ひとみの大きさを変える）→レンズ（④）を通り、もうまく（①）に像をつくります。'
 },
 {
   id:'p2-2', unit:'練習問題2', src:'目のつくり',
@@ -602,7 +733,7 @@ const PROBLEMS = [
 },
 {
   id:'p2-4', unit:'練習問題2', src:'耳のつくり',
-  stem:'からだの回転を感じ、バランスを保つはたらきをするつくりの説明として、最もあてはまるのはどれですか。\n(ア) 空気をしん動させる。　(イ) 伝えられたしん動を直接脳に伝える。　(ウ) からだの回転を感じ、バランスを保つ。　(エ) こまくの角度を調節する。',
+  stem:'耳の奥にある「三半規管」のはたらきの説明として、最もあてはまるのはどれですか。\n(ア) 空気をしん動させる。　(イ) 伝えられたしん動を直接脳に伝える。　(ウ) からだの回転を感じ、バランスを保つ。　(エ) こまくの角度を調節する。',
   type:'choice',
   choices:['(ア) 空気をしん動させる。','(イ) 伝えられたしん動を直接脳に伝える。','(ウ) からだの回転を感じ、バランスを保つ。','(エ) こまくの角度を調節する。'],
   answer:'(ウ) からだの回転を感じ、バランスを保つ。',
@@ -620,17 +751,27 @@ const PROBLEMS = [
 },
 {
   id:'p3-2', unit:'練習問題3', src:'消化管の道すじ',
-  stem:'口から入った食物が通り、からだの外に出されるまでの道すじとして正しいものはどれですか。\n(ア) 口→食道→胃→小腸　(イ) 口→食道→胃→小腸→大腸　(ウ) 口→食道→胃→大腸→小腸　(エ) 口→食道→胃→小腸→大腸→肛門から出る',
+  stem:'口から入った食物が通り、からだの外に出されるまでの道すじとして正しいものはどれですか。\n(ア) 口→食道→胃→大腸\n(イ) 口→食道→胃→大腸→小腸\n(ウ) 口→食道→胃→小腸→大腸\n(エ) 口→食道→胃→すい臓→小腸→大腸',
   type:'choice',
-  choices:['(ア) 口→食道→胃→小腸','(イ) 口→食道→胃→小腸→大腸','(ウ) 口→食道→胃→大腸→小腸','(エ) 口→食道→胃→小腸→大腸→こう門'],
-  answer:'(エ) 口→食道→胃→小腸→大腸→こう門',
-  explain:'食物は口→食道→胃→小腸→大腸を通り、残りかすはこう門からからだの外に出されます。'
+  choices:['(ア) 口→食道→胃→大腸','(イ) 口→食道→胃→大腸→小腸','(ウ) 口→食道→胃→小腸→大腸','(エ) 口→食道→胃→すい臓→小腸→大腸'],
+  answer:'(ウ) 口→食道→胃→小腸→大腸',
+  explain:'食物は口→食道→胃→小腸→大腸の順に通り、消化・吸収されたあと、残りかすはこう門からからだの外に出されます。すい臓は消化液を出す臓器ですが、食物そのものが通る道（消化管）にはふくまれません。'
 },
 {
   id:'p3-3', unit:'練習問題3', src:'消化器官の名前',
-  stem:'胃と同じ消化管の一部で、胃の次にある消化器官（小腸の前）は何ですか。ことばで答えなさい。',
-  type:'text', accept:['小腸'],
-  explain:'胃の次は小腸です。小腸で養分が吸収されます。'
+  stem:'次の説明にあてはまる消化器官はどれですか。下から選び、記号で答えなさい。\n「口から入った食物は、食道を通ったあと、この器官に運ばれて消化される。ここでは強い消化液が出される。」\n(ア) たんのう　(イ) 胃　(ウ) すい臓　(エ) 肝臓　(オ) 大腸',
+  type:'choice',
+  choices:['(ア) たんのう','(イ) 胃','(ウ) すい臓','(エ) 肝臓','(オ) 大腸'],
+  answer:'(イ) 胃',
+  explain:'食道を通った食物は胃に運ばれ、消化されます。たんのう・すい臓・肝臓は食物の通り道ではありませんが、消化に関係する消化器官です。'
+},
+{
+  id:'p3-3b', unit:'練習問題3', src:'消化器官の名前',
+  stem:'次の説明にあてはまる消化器官はどれですか。下から選び、記号で答えなさい。\n「小腸を通ったあとの食物（の残りかす）が運ばれる、消化管の最後の部分。ここを通ったあと、こう門からからだの外に出される。」\n(ア) たんのう　(イ) 胃　(ウ) すい臓　(エ) 肝臓　(オ) 大腸',
+  type:'choice',
+  choices:['(ア) たんのう','(イ) 胃','(ウ) すい臓','(エ) 肝臓','(オ) 大腸'],
+  answer:'(オ) 大腸',
+  explain:'小腸を通ったあと、残りかすは大腸を通り、こう門からからだの外に出されます。'
 },
 {
   id:'p3-4', unit:'練習問題3', src:'養分を吸収する器官',
@@ -753,74 +894,180 @@ const PROBLEMS = [
 ];
 
 /* =========================================================
-   忘却曲線・反復学習エンジン
+   忘却曲線・反復学習エンジン（日付ベース）
+   - まちがえた問題は正解するまで「今日」の中で何度も出題される
+   - 一度正解すると、その日はもう出題されない
+   - 翌日以降、忘却曲線の間隔（1→2→4→7→14→30日）で再出題される
+   - 全問がこの同じしくみで回るので、正解し続けている問題もいずれ再登場する
    ========================================================= */
-const STORAGE_KEY = 'rika_ch1_v1';
+const STORAGE_KEY = 'rika_ch1_v2';
 const N = PROBLEMS.length;
 const BY_ID = {};
 PROBLEMS.forEach((p,i)=>{ p.__index=i; BY_ID[p.id]=p; });
+const ORDER = PROBLEMS.map(p=>p.id); // 教科書の掲載順（まとめてみよう→練習問題→発展問題）。ランダム要素なし。
 
-// SRSの復習間隔（枚数=出題ステップ差。忘却曲線を考慮し短→長）
-const REVIEW_GAPS = [2, 4, 8, 16, 30];   // 通常の全問再表示は自動で回る。誤答した問題はこの間隔で優先的に再出題
-const WEAK_GAPS    = [1, 3, 6, 12];      // 復習リスト入り問題の優先再出題間隔（短め＝頻度を上げる）
+const GAPS = [1, 2, 4, 7, 14, 30]; // 忘却曲線に沿った復習間隔（日）
 
-function loadState(){
+function pad2(n){ return String(n).padStart(2,'0'); }
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+}
+function addDays(dateStr, n){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate()+n);
+  return `${dt.getFullYear()}-${pad2(dt.getMonth()+1)}-${pad2(dt.getDate())}`;
+}
+function fmtDateShort(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return `${m}/${d}`;
+}
+
+function defaultStat(){
+  return {seen:0, correct:0, wrong:0, weak:false, dueDate:null, gapIdx:-1, lastResult:null};
+}
+function normalizeState(s){
+  if(!s || typeof s!=='object') s={};
+  s.stats = s.stats || {};
+  PROBLEMS.forEach(p=>{
+    s.stats[p.id] = Object.assign(defaultStat(), s.stats[p.id]||{});
+  });
+  s.mDaily = s.mDaily || {};
+  s.updatedAt = s.updatedAt || 0;
+  return s;
+}
+function loadLocalState(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) return JSON.parse(raw);
+    if(raw) return normalizeState(JSON.parse(raw));
   }catch(e){}
+  return normalizeState({});
+}
+
+let state = loadLocalState();
+let queue = [];       // 今日出題する残りの問題id（クラウド同期はしないその場限りの作業列）
+let queueDate = null;
+let cloudSyncReady = false;
+let cloudSaveTimer = null;
+
+function saveLocal(){
+  state.updatedAt = Date.now();
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  scheduleCloudSave();
+}
+function scheduleCloudSave(){
+  if(!cloudSyncReady) return;
+  if(cloudSaveTimer) clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(cloudSaveNow, 800);
+}
+function cloudPayload(){
+  return { stats: state.stats, mDaily: state.mDaily, updatedAt: state.updatedAt };
+}
+function cloudSaveNow(){
+  cloudSaveTimer = null;
+  const user = fbAuth.currentUser;
+  if(!user) return;
+  fbDb.collection('rika_users').doc(user.uid).set(cloudPayload()).catch(e=>{
+    console.warn('cloud save failed', e);
+  });
+}
+
+/* ---------- ローカルとクラウドのマージ（進んでいる方を残す） ---------- */
+function statScore(s){
+  if(!s) return -1;
+  return (s.gapIdx||-1)*1000 + (s.correct||0) - (s.wrong||0);
+}
+function mergeStat(a,b){
+  if(!a) return b; if(!b) return a;
+  const winner = statScore(a) >= statScore(b) ? a : b;
+  let dueDate = null;
+  if(a.dueDate && b.dueDate) dueDate = (a.dueDate > b.dueDate) ? a.dueDate : b.dueDate;
+  else dueDate = a.dueDate || b.dueDate || null;
   return {
-    step: 0,                 // 全体の出題ステップカウンタ
-    order: null,             // 出題順（固定シーケンス。ランダムなし）
-    cursor: 0,                // orderの何番目まで済んだか
-    stats: {},                // id -> {seen, correct, wrong, dueStep, weak, lastResult}
-    doneOnce: false
+    seen: Math.max(a.seen||0, b.seen||0),
+    correct: Math.max(a.correct||0, b.correct||0),
+    wrong: Math.max(a.wrong||0, b.wrong||0),
+    weak: winner.weak,
+    dueDate: dueDate,
+    gapIdx: Math.max(a.gapIdx==null?-1:a.gapIdx, b.gapIdx==null?-1:b.gapIdx),
+    lastResult: winner.lastResult
   };
 }
-function saveState(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+function mergeDailyEntry(a,b){
+  if(!a) return b; if(!b) return a;
+  return {
+    learned: Math.max(a.learned||0, b.learned||0),
+    reviews: Math.max(a.reviews||0, b.reviews||0),
+    correct: Math.max(a.correct||0, b.correct||0),
+    attempts: Math.max(a.attempts||0, b.attempts||0),
+    timeSec: Math.max(a.timeSec||0, b.timeSec||0)
+  };
+}
+function mergeState(local, remote){
+  const out = normalizeState({});
+  const keys = new Set([...Object.keys(local.stats||{}), ...Object.keys(remote.stats||{})]);
+  keys.forEach(k=>{ out.stats[k] = mergeStat(local.stats[k], remote.stats[k]); });
+  const dkeys = new Set([...Object.keys(local.mDaily||{}), ...Object.keys(remote.mDaily||{})]);
+  dkeys.forEach(k=>{ out.mDaily[k] = mergeDailyEntry(local.mDaily[k], remote.mDaily[k]); });
+  out.updatedAt = Date.now();
+  return out;
+}
+async function initCloudSync(){
+  const user = fbAuth.currentUser;
+  if(!user) return;
+  try{
+    const snap = await fbDb.collection('rika_users').doc(user.uid).get();
+    if(snap.exists){
+      const remote = normalizeState(snap.data());
+      state = mergeState(state, remote);
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+    }
+  }catch(e){
+    console.warn('cloud load failed', e);
+  }
+  cloudSyncReady = true;
+  scheduleCloudSave();
+  renderHome();
+  go('home');
 }
 
-let state = loadState();
-if(!state.order){
-  // 教科書の掲載順（まとめてみよう→練習問題→発展問題）を基本の反復順とする。ランダム要素なし。
-  state.order = PROBLEMS.map(p=>p.id);
-  state.cursor = 0;
-}
-PROBLEMS.forEach(p=>{
-  if(!state.stats[p.id]){
-    state.stats[p.id] = {seen:0, correct:0, wrong:0, dueStep:0, weak:false, lastResult:null, gapIdx:0};
-  }
-});
-saveState();
+function getStat(id){ return state.stats[id]; }
 
-/* 次に出題する問題を決めるロジック
-   - 優先度1: 復習リスト(weak)入りで、dueStep <= 現在stepの問題（頻度が高い）
-   - 優先度2: 通常シーケンス(order)の次の未消化分
-   - 全問は循環して繰り返し出題され続ける（忘却曲線に沿って全問再表示） */
-function pickNextId(){
-  const s = state;
-  // 復習優先: dueになっている弱点問題のうち、最も長く待たされているもの
-  let weakCandidates = PROBLEMS
-    .filter(p=>s.stats[p.id].weak && s.stats[p.id].dueStep<=s.step)
-    .sort((a,b)=> s.stats[a.id].dueStep - s.stats[b.id].dueStep);
-  if(weakCandidates.length>0){
-    return weakCandidates[0].id;
+/* ---------- 今日の出題キューを組み立てる ---------- */
+function buildQueueForToday(force){
+  const t = todayStr();
+  if(!force && queueDate===t && Array.isArray(queue)) return;
+  let ids;
+  if(force){
+    ids = ORDER.slice(); // 全問を今日ぶんとして出題（記録はリセットしない）
+  }else{
+    ids = ORDER.filter(id=>{
+      const st = getStat(id);
+      return !st.dueDate || st.dueDate <= t;
+    });
   }
-  // 通常シーケンスを進める。末尾まで行ったら最初に戻り、全問を繰り返し反復する（忘却曲線対応）
-  if(s.cursor >= s.order.length){
-    s.cursor = 0;
-  }
-  const id = s.order[s.cursor];
-  s.cursor++;
-  return id;
+  queue = ids;
+  queueDate = t;
 }
 
-function currentSessionTotalMastered(){
-  return PROBLEMS.filter(p=>state.stats[p.id].correct>0 && !state.stats[p.id].weak).length;
+function todaysMDaily(){
+  const t = todayStr();
+  state.mDaily[t] = state.mDaily[t] || {learned:0, reviews:0, correct:0, attempts:0, timeSec:0};
+  return state.mDaily[t];
+}
+
+function currentMasteredCount(){
+  return PROBLEMS.filter(p=>{
+    const st = getStat(p.id);
+    return st.correct>0 && !st.weak;
+  }).length;
 }
 function currentWeakCount(){
-  return PROBLEMS.filter(p=>state.stats[p.id].weak).length;
+  return PROBLEMS.filter(p=>getStat(p.id).weak).length;
+}
+function everAnsweredCount(){
+  return PROBLEMS.filter(p=>getStat(p.id).seen>0).length;
 }
 
 /* =========================================================
@@ -833,6 +1080,8 @@ const views = {
   home: $('#view-home'),
   quiz: $('#view-quiz'),
   review: $('#view-review'),
+  list: $('#view-list'),
+  history: $('#view-history'),
   done: $('#view-done')
 };
 function showView(name){
@@ -840,34 +1089,95 @@ function showView(name){
     views[k].classList.toggle('hidden', k!==name);
   });
   $$('nav.tabs button').forEach(b=>b.classList.remove('active'));
-  if(name==='home') $('[data-view="home"]').classList.add('active');
-  if(name==='quiz') $('[data-view="quiz"]').classList.add('active');
-  if(name==='review') $('[data-view="review"]').classList.add('active');
+  const btn = document.querySelector(`nav.tabs button[data-view="${name}"]`);
+  if(btn) btn.classList.add('active');
+}
+function go(name){
+  if(name==='home'){ showView('home'); renderHome(); }
+  else if(name==='review'){ showView('review'); renderReview(); }
+  else if(name==='list'){ showView('list'); renderList(); }
+  else if(name==='history'){ showView('history'); renderHistory(); }
+  else { showView(name); }
 }
 
 function renderHome(){
   const total = N;
-  const masteredOnce = PROBLEMS.filter(p=>state.stats[p.id].correct>0).length;
+  const masteredOnce = everAnsweredCount();
   const weak = currentWeakCount();
   $('#statTotal').textContent = total;
-  $('#statMastered').textContent = masteredOnce;
+  $('#statMastered').textContent = currentMasteredCount();
   $('#statWeak').textContent = weak;
   const pct = Math.round((masteredOnce/total)*100);
   $('#homeProgressBar').style.width = pct+'%';
-  $('#homeProgressLabel').textContent = masteredOnce+' / '+total+' 問クリア';
+  $('#homeProgressLabel').textContent = masteredOnce+' / '+total+' 問に挑戦ずみ';
+
+  buildQueueForToday(false);
+  const remain = queue.length;
+  const btnStart = $('#btnStart');
+  if(remain>0){
+    btnStart.disabled = false;
+    $('#btnStartSub').textContent = `今日はあと ${remain} 問／忘却曲線に沿って出題`;
+  }else{
+    btnStart.disabled = false;
+    $('#btnStartSub').textContent = '今日のぶんはおわりました。もう一度練習することもできます';
+  }
 }
 
 function renderReview(){
   const list = $('#reviewList');
-  const weakItems = PROBLEMS.filter(p=>state.stats[p.id].weak);
+  const t = todayStr();
+  const weakItems = PROBLEMS.filter(p=>getStat(p.id).weak);
   if(weakItems.length===0){
     list.innerHTML = '<div class="empty-msg">今は復習リストに問題がありません。すばらしい！<br>まちがえた問題があるとここに表示されます。</div>';
     return;
   }
   list.innerHTML = weakItems.map(p=>{
-    const st = state.stats[p.id];
-    return `<div class="review-item"><span>${p.unit}｜${p.src}</span><span class="tag">まちがえ ${st.wrong}回</span></div>`;
+    const st = getStat(p.id);
+    let dueLabel;
+    if(!st.dueDate || st.dueDate<=t) dueLabel = '今日また出題されます';
+    else dueLabel = `${fmtDateShort(st.dueDate)} ごろに再登場`;
+    return `<div class="review-item">
+      <div class="ri-top"><span>${p.unit}｜${p.src}</span><span class="tag">まちがえ ${st.wrong}回</span></div>
+      <div class="ri-stem">${escapeHtml(p.stem)}</div>
+      <div class="ri-due">正解：${escapeHtml(Array.isArray(p.answer)?p.answer.join('、'):p.answer)}　／　${dueLabel}</div>
+    </div>`;
   }).join('');
+}
+
+function renderList(){
+  const box = $('#probList');
+  let html = '';
+  let lastUnit = null;
+  PROBLEMS.forEach((p,i)=>{
+    if(p.unit!==lastUnit){
+      html += `<div class="unit-head">${escapeHtml(p.unit)}</div>`;
+      lastUnit = p.unit;
+    }
+    const ansText = Array.isArray(p.answer) ? p.answer.join('、') : (p.answer!=null ? p.answer : (p.accept?p.accept[0]:''));
+    html += `<div class="list-item">
+      <div class="li-no">${i+1}. ${escapeHtml(p.src)}</div>
+      <div class="li-stem">${escapeHtml(p.stem)}</div>
+      <div class="li-ans">正解：${escapeHtml(ansText)}</div>
+      <details><summary>解説を見る</summary><div class="li-explain">${escapeHtml(p.explain||'')}</div></details>
+    </div>`;
+  });
+  box.innerHTML = html;
+}
+
+function renderHistory(){
+  const rows = Object.entries(state.mDaily)
+    .sort((a,b)=> a[0]<b[0] ? 1 : -1)
+    .slice(0,30)
+    .map(([d,v])=>{
+      const rate = v.attempts>0 ? Math.round((v.correct/v.attempts)*100) : 0;
+      const min = Math.round((v.timeSec||0)/60);
+      return `<tr><td>${d}</td><td>${v.attempts||0}問</td><td>${rate}%</td><td>${min}分</td></tr>`;
+    }).join('');
+  $('#historyTable').innerHTML = `<tr><th>日付</th><th>解いた問題</th><th>正解率</th><th>時間</th></tr>${rows || '<tr><td colspan="4">まだ記録がありません</td></tr>'}`;
+}
+
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 /* --- クイズ進行 --- */
@@ -875,38 +1185,50 @@ let curId = null;
 let answered = false;
 let selectedChoice = null;
 let selectedMulti = new Set();
+let qStartTime = 0;
 
-function startQuiz(){
+function startQuiz(force){
+  buildQueueForToday(!!force);
   showView('quiz');
   nextQuestion();
 }
 
 function nextQuestion(){
+  if(queue.length===0){
+    finishSession();
+    return;
+  }
   answered = false;
   selectedChoice = null;
   selectedMulti = new Set();
-  curId = pickNextId();
-  saveState();
+  curId = queue.shift();
   renderQuestion();
+}
+
+function finishSession(){
+  const md = todaysMDaily();
+  const rate = md.attempts>0 ? Math.round((md.correct/md.attempts)*100) : 0;
+  const min = Math.round((md.timeSec||0)/60);
+  $('#doneSummary').innerHTML = `今日は ${md.attempts}問 解いて、正解率は ${rate}% でした。<br>学習時間：約${min}分`;
+  showView('done');
 }
 
 function renderQuestion(){
   const p = BY_ID[curId];
-  const st = state.stats[curId];
+  const st = getStat(curId);
 
   $('#quizBadge').textContent = st.weak ? '復習リスト' : p.unit;
   $('#quizBadge').className = 'badge' + (st.weak ? ' review' : '');
 
-  const masteredOnce = PROBLEMS.filter(x=>state.stats[x.id].correct>0).length;
-  $('#quizCounter').textContent = masteredOnce + ' / ' + N + ' 問クリア';
-  $('#quizProgressBar').style.width = Math.round((masteredOnce/N)*100)+'%';
+  const doneToday = ORDER.length - queue.length; // 今日すでに出題した数（このカードを含む）
+  const totalToday = doneToday + queue.length;
+  $('#quizCounter').textContent = doneToday + ' / ' + totalToday + '（今日）';
+  $('#quizProgressBar').style.width = totalToday>0 ? Math.round((doneToday/totalToday)*100)+'%' : '0%';
 
   $('#qMeta').textContent = p.src;
   $('#qStem').textContent = p.stem;
 
   $('#feedback').classList.remove('show','ok','ng');
-  $('#hintBox').classList.remove('show');
-  $('#hintToggle').classList.add('hidden');
 
   const area = $('#answerArea');
   area.innerHTML = '';
@@ -969,6 +1291,8 @@ function renderQuestion(){
   $('#btnCheck').classList.remove('hidden');
   $('#btnCheck').disabled = false;
   $('#btnNext').classList.add('hidden');
+
+  qStartTime = Date.now();
 }
 
 function normalizeText(s){
@@ -986,12 +1310,10 @@ function checkAnswer(){
   if(answered) return;
 
   let isCorrect = false;
-  let userAnswerDisplay = '';
 
   if(p.type==='choice'){
     if(!selectedChoice){ flashNeedSelect(); return; }
     isCorrect = selectedChoice === p.answer;
-    userAnswerDisplay = selectedChoice;
     $$('#answerArea .choice-btn').forEach(b=>{
       if(b.dataset.value === p.answer) b.classList.add('correct');
       else if(b.dataset.value === selectedChoice && !isCorrect) b.classList.add('wrong');
@@ -1001,7 +1323,6 @@ function checkAnswer(){
     if(selectedMulti.size===0){ flashNeedSelect(); return; }
     const ans = new Set(p.answer);
     isCorrect = ans.size===selectedMulti.size && [...ans].every(a=>selectedMulti.has(a));
-    userAnswerDisplay = [...selectedMulti].join('、');
     $$('#answerArea .choice-btn').forEach(b=>{
       const v = b.dataset.value;
       if(ans.has(v)) b.classList.add('correct');
@@ -1012,7 +1333,6 @@ function checkAnswer(){
     const input = $('#textAnswer');
     const val = input.value;
     if(!val || !val.trim()){ flashNeedSelect(); return; }
-    userAnswerDisplay = val;
     const norm = normalizeText(val);
     isCorrect = p.accept.some(a=>normalizeText(a)===norm);
     input.disabled = true;
@@ -1020,7 +1340,8 @@ function checkAnswer(){
   }
 
   answered = true;
-  updateStats(p.id, isCorrect);
+  const sec = Math.max(1, Math.round((Date.now()-qStartTime)/1000));
+  updateStats(p.id, isCorrect, sec);
 
   const fb = $('#feedback');
   fb.classList.add('show');
@@ -1029,7 +1350,7 @@ function checkAnswer(){
     $('#fbTitle').textContent = '⭕ せいかい！';
   }else{
     fb.classList.add('ng'); fb.classList.remove('ok');
-    const correctText = p.type==='multi' ? p.answer.join('、') : p.answer;
+    const correctText = Array.isArray(p.answer) ? p.answer.join('、') : p.answer;
     $('#fbTitle').textContent = '❌ おしい！ 正解は「'+correctText+'」';
   }
   $('#fbBody').textContent = p.explain;
@@ -1037,7 +1358,11 @@ function checkAnswer(){
   $('#btnCheck').classList.add('hidden');
   $('#btnNext').classList.remove('hidden');
 
-  saveState();
+  // まちがえた問題は、今日のうちにもう一度出題されるようキューへ再挿入する（頻度を上げる）
+  if(!isCorrect){
+    const insertAt = Math.min(3, queue.length);
+    queue.splice(insertAt, 0, p.id);
+  }
 }
 
 function flashNeedSelect(){
@@ -1046,30 +1371,36 @@ function flashNeedSelect(){
   setTimeout(()=>{ btn.textContent='こたえ合わせ'; }, 900);
 }
 
-function updateStats(id, isCorrect){
-  const st = state.stats[id];
+function updateStats(id, isCorrect, sec){
+  const st = getStat(id);
+  const wasNew = st.seen===0;
   st.seen++;
-  state.step++;
+
+  const t = todayStr();
+  const md = todaysMDaily();
+  md.attempts++;
+  md.timeSec += sec;
+  if(isCorrect) md.correct++;
+  if(wasNew && isCorrect) md.learned++;
+  else md.reviews++;
+
   if(isCorrect){
     st.correct++;
     st.lastResult = 'correct';
-    if(st.weak){
-      // 復習リストの問題に正解 → 間隔を伸ばしながら、閾値回数正解したら復習リストから卒業
-      st.gapIdx = Math.min(st.gapIdx+1, WEAK_GAPS.length-1);
-      if(st.correct - st.wrong >= 2){
-        st.weak = false;
-        st.gapIdx = 0;
-      } else {
-        st.dueStep = state.step + WEAK_GAPS[st.gapIdx];
-      }
+    st.gapIdx = Math.min((st.gapIdx==null?-1:st.gapIdx)+1, GAPS.length-1);
+    st.dueDate = addDays(t, GAPS[st.gapIdx]);
+    // まちがえた履歴があっても、忘却曲線の間隔を2回以上こなしたら復習リストを卒業する
+    if(st.weak && st.gapIdx>=2){
+      st.weak = false;
     }
   } else {
     st.wrong++;
     st.lastResult = 'wrong';
     st.weak = true;
-    st.gapIdx = 0;
-    st.dueStep = state.step + WEAK_GAPS[0]; // まちがえたら早めにもう一度出す（再表示の頻度を上げる）
+    st.gapIdx = -1;
+    st.dueDate = t; // 今日のうちに再度出題する
   }
+  saveLocal();
 }
 
 /* --- ボタン結線 --- */
@@ -1077,29 +1408,31 @@ $('#btnCheck').addEventListener('click', checkAnswer);
 $('#btnNext').addEventListener('click', ()=>{
   nextQuestion();
 });
-$('#btnStart').addEventListener('click', startQuiz);
-$('#btnRestart').addEventListener('click', ()=>{
-  state.cursor = 0;
-  saveState();
-  startQuiz();
-});
+$('#btnStart').addEventListener('click', ()=>startQuiz(false));
+$('#btnRestart').addEventListener('click', ()=>startQuiz(true));
 $('#btnDoneHome').addEventListener('click', ()=>{
-  showView('home');
-  renderHome();
+  go('home');
+});
+$('#btnLogout').addEventListener('click', ()=>{
+  if(confirm('いまの あいことば から ログアウトしますか？\n（つぎに べつの あいことば で ログインできます）')){
+    gateLogout();
+  }
 });
 
 $$('nav.tabs button').forEach(b=>{
   b.addEventListener('click', ()=>{
     const v = b.dataset.view;
-    if(v==='home'){ showView('home'); renderHome(); }
-    if(v==='quiz'){ startQuiz(); }
-    if(v==='review'){ showView('review'); renderReview(); }
+    if(v==='quiz'){ startQuiz(false); }
+    else { go(v); }
   });
 });
 
-/* 初期表示 */
+/* 初期表示（ログイン前でも下地は表示しておく） */
 renderHome();
-showView('home');
+go('home');
+onAuthReady = function(){
+  initCloudSync();
+};
 </script>
 </body>
 </html>
