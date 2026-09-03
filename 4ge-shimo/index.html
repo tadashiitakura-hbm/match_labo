@@ -35,7 +35,26 @@ main{max-width:820px;margin:0 auto;padding:16px;}
 button.primary{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:1em;cursor:pointer;font-family:inherit;}
 button.ghost{background:#fff;border:2px solid var(--line);border-radius:10px;padding:10px 16px;cursor:pointer;font-family:inherit;}
 button.small{padding:6px 12px;font-size:.85em;border-radius:8px;}
-.hint-box{background:#fff8ec;border:2px dashed #ffcf9e;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:.92em;}
+.hint-box{margin-top:10px;font-size:.92em;}
+.hint-step{border-radius:12px;padding:12px 14px;margin-top:10px;border:2px solid var(--line);}
+.hint-step.hs-why{background:#fff3d6;border-color:#ffd98a;}
+.hint-step.hs-do{background:#fff0e8;border-color:#ffc2a0;}
+.hint-step.hs-goal{background:#e9f8f1;border-color:#a8e0c4;}
+.hint-badge{display:inline-block;font-weight:700;font-size:.78em;background:rgba(255,255,255,.8);border:1.5px solid rgba(0,0,0,.08);border-radius:999px;padding:2px 10px 3px;margin-bottom:6px;}
+.hs-why .hint-badge{color:#8a6a10;}
+.hs-do .hint-badge{color:#b04a1e;}
+.hs-goal .hint-badge{color:#1f7a52;}
+.hint-label{font-weight:700;font-size:1.05em;line-height:1.5;margin-bottom:4px;}
+.hint-sub{font-size:.88em;color:#7a6a5a;line-height:1.6;margin-bottom:4px;}
+.hint-extra{font-size:.85em;color:#7a6a5a;line-height:1.7;background:rgba(255,255,255,.6);border-radius:8px;padding:8px 10px;margin-top:6px;}
+.hint-extra b{color:var(--ink);}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-weight:700;line-height:1.05;margin:0 3px;text-align:center;}
+.frac .fnum,.frac .fden{padding:0 3px;}
+.frac .fbar{width:100%;border-top:2px solid var(--ink);margin:1px 0;}
+.longdiv{display:inline-flex;align-items:flex-start;vertical-align:middle;margin:4px 6px;font-weight:700;}
+.longdiv .ld-divisor{padding-right:6px;align-self:center;}
+.longdiv .ld-inner{border-top:2.5px solid var(--ink);border-left:2.5px solid var(--ink);padding:2px 8px 0 8px;position:relative;}
+.longdiv .ld-quot{position:absolute;top:-1.5em;left:8px;color:#b04a1e;font-weight:700;white-space:nowrap;}
 .solution-box{background:#eefaf3;border:2px solid #bfe8d0;border-radius:10px;padding:12px 14px;margin-top:10px;line-height:1.7;}
 .judge-ok{color:var(--ok);font-weight:bold;}
 .judge-ng{color:var(--warn);font-weight:bold;}
@@ -299,6 +318,27 @@ function fracStr(n, d) {
   if (whole !== 0 && rem !== 0) return `${whole} ${Math.abs(rem)}/${d}`;
   return `${n}/${d}`;
 }
+// ---------- ヒント図解（分数・筆算のHTML表現） ----------
+// fracHtml: 分子/横棒/分母を縦積みで表示するインライン分数
+function fracHtml(n, d, color) {
+  const c = color || 'inherit';
+  return `<span class="frac" style="color:${c}"><span class="fnum">${n}</span><span class="fbar"></span><span class="fden">${d}</span></span>`;
+}
+// longDivHtml: 筆算の枠（割る数｜割られる数、商は枠の上）
+function longDivHtml(divisor, dividendStr, quotientStr) {
+  return `<span class="longdiv"><span class="ld-divisor">${divisor}</span><span class="ld-inner"><span class="ld-quot">${quotientStr}</span>${dividendStr}</span></span>`;
+}
+// hintStep: 「なぜ？／なにする？／どうなる？」の1ステップ分のHTMLを組み立てる
+function hintStep(kind, label, sub, extra, visual) {
+  const cls = kind === 'why' ? 'hs-why' : (kind === 'do' ? 'hs-do' : 'hs-goal');
+  const badge = kind === 'why' ? 'なぜ？' : (kind === 'do' ? 'なにする？' : 'どうなる？');
+  return `<div class="hint-step ${cls}"><span class="hint-badge">${badge}</span>` +
+    (visual ? `<div style="margin:4px 0 6px;">${visual}</div>` : '') +
+    `<div class="hint-label">${label}</div>` +
+    (sub ? `<div class="hint-sub">${sub}</div>` : '') +
+    (extra ? `<div class="hint-extra">${extra}</div>` : '') +
+    `</div>`;
+}
 function fracEq(userStr, n, d) {
   // ユーザー入力（帯分数 "1 3/4" or 仮分数 "7/4" or 整数）を n/d と比較
   if (userStr == null) return false;
@@ -357,13 +397,27 @@ function gen_k1_conv(rng) {
   const decStr = (Math.round(decVal * 100000) / 100000).toString();
 
   const sig = `k1_conv_${n}_${d}`;
-  const stem = `分数 <b>${fracStr(n, d)}</b> を小数で表しなさい。（わりきれるまで計算すること）`;
+  const stem = `分数 ${fracHtml(n, d)} を小数で表しなさい。（わりきれるまで計算すること）`;
   const answer = decVal;
   const fields = [{ id: 'a1', label: '答え', type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
   const hints = [
-    '分数を小数にするには、分子÷分母を計算します。',
-    `${n}÷${d} を筆算します。`,
-    'わり切れるまで計算し、小数で表します。'
+    hintStep('why',
+      '分数の線には「わり算」の意味がある',
+      `${fracHtml(n, d)} は「${n}を${d}等分したうちの1つぶん」ではなく、「${n}を${d}で割った答え」としても読める`,
+      `<b>おぼえておくこと：</b>分数 ▲/■ は、いつでも「▲ ÷ ■」に書きかえられる。だから小数にしたいときは、分子を分母で割ればいい。`,
+      fracHtml(n, d) + ' <span style="margin:0 6px;">=</span> ' + `${n} ÷ ${d}`
+    ),
+    hintStep('do',
+      `${n} ÷ ${d} を、小数点をつけたまま筆算する`,
+      `${n}は${d}で割れないので、${n}.0、${n}.00…と0を足しながら計算を続ける`,
+      `<b>手順：</b><br>① ${n}を${n}.000のように0をつけたす（何個でもOK）<br>② 商（答え）の小数点は、${n}.000の小数点の真上に打つ<br>③ わりきれるまで、あまりに0をおろして割りつづける<br>④ 出てきた数字を並べると ${decVal}`,
+      longDivHtml(d, `${n}.000`, decVal)
+    ),
+    hintStep('goal',
+      `${decVal} になる`,
+      `答えが出たら、${decVal}×${d}を計算して${n}にもどるか確かめると安心`,
+      `<b>見直しのコツ：</b>${decVal}×${d}＝${n}.000 になれば、計算が合っている証拠。逆算のくせをつけよう。`
+    )
   ];
   const solution = `${n} ÷ ${d} = ${decVal}<br>よって答えは <b>${decVal}</b>`;
   return { title: '分数と小数の変換', stem, fields, svg: '', hints, solution, sig };
@@ -380,12 +434,24 @@ function gen_k1_mul(rng) {
   if (num === 0) num = 1;
   [num, den] = reduceFrac(num, den);
   const sig = `k1_mul_${a}_${b}_${c}_${d}_${e}_${f}`;
-  const stem = `次の計算をしなさい。<br><b>${a}/${b} × ${c}/${d} ÷ ${e}/${f}</b>`;
+  const stem = `次の計算をしなさい。<br>${fracHtml(a,b)} × ${fracHtml(c,d)} ÷ ${fracHtml(e,f)}`;
   const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, num, den) }];
   const hints = [
-    'わり算は、わる数の逆数をかける形に直します。',
-    `${a}/${b} × ${c}/${d} × ${f}/${e} の形にしてから、まとめて計算します。`,
-    '約分できるところは先に約分してから、分子どうし・分母どうしをかけます。'
+    hintStep('why',
+      '分数のわり算だけ、特別なルールがある',
+      'かけ算はそのまま計算できるが、わり算は先に形を変える必要がある',
+      `<b>理由：</b>「${fracHtml(e,f)}で割る」は「${fracHtml(e,f)}が何個分入っているか」を求めること。分数のままでは数えにくいので、${fracHtml(f,e)}を「かける」ことで同じ答えが出せるように工夫されている（逆数のかけ算に直す、というルール）。`
+    ),
+    hintStep('do',
+      'わる数だけ上下を入れかえて、÷を×にする',
+      `${fracHtml(a,b)} × ${fracHtml(c,d)} × ${fracHtml(f,e)} という「かけ算だけの式」に書きかえる`,
+      `<b>注意点（まちがえやすいところ）：</b><br>・ひっくり返すのは「わる数（÷のうしろの分数）」だけ。最初の2つはそのまま。<br>・かける前に、ななめの数どうしで約分できないか確認すると、あとの計算がラクになる。`
+    ),
+    hintStep('goal',
+      '分子どうし・分母どうしをかけて答えを出す',
+      `${a}×${c}×${f}＝${a*c*f}、${b}×${d}×${e}＝${b*d*e} → ${fracHtml(a*c*f,b*d*e)}（約分できるかも確認）`,
+      `<b>見直しのコツ：</b>約分を忘れていないか、最後にもう一度分子と分母に共通の約数がないか確かめよう。`
+    )
   ];
   const solution = `÷${e}/${f} は ×${f}/${e} に直せるので、<br>${a}/${b} × ${c}/${d} × ${f}/${e} = ${a * c * f}/${b * d * e} = <b>${fracStr(num, den)}</b>`;
   return { title: '3つ以上の分数のかけ算・わり算', stem, fields, svg: '', hints, solution, sig };
@@ -405,12 +471,26 @@ function gen_k1_mix(rng) {
   let num = total, den = L;
   [num, den] = reduceFrac(num, den);
   const sig = `k1_mix_${intPart}_${decNum}_${cn}_${cd}`;
-  const stem = `次の計算をしなさい。<br><b>${intPart} + 0.${decNum} − ${cn}/${cd}</b>`;
+  const stem = `次の計算をしなさい。<br>${intPart} + 0.${decNum} − ${fracHtml(cn,cd)}`;
   const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, num, den) }];
+  const decAsFrac = fracHtml(decNum, 10);
+  const cL = L / cd, dL = L / den10;
   const hints = [
-    '小数と分数が混ざっているときは、どちらかにそろえます。',
-    '小数を分数に直し、分母をそろえて通分します。',
-    `0.${decNum} = ${decNum}/10 に直してから、${cn}/${cd} と通分して計算します。`
+    hintStep('why',
+      '整数・小数・分数は「同じ仲間」だが「見た目」がちがう',
+      'たし算・ひき算をするには、見た目（形）をそろえないと計算できない',
+      `<b>考え方：</b>小数にそろえるか、分数にそろえるか、どちらでもよい。ただし分母が割り切れない数になる場合は分数にそろえる方が正確。今回は分母${cd}が使いやすいので分数にそろえる。`
+    ),
+    hintStep('do',
+      `0.${decNum}を分数にし、${fracHtml(cn,cd)}と通分してそろえる`,
+      `10と${cd}の最小公倍数${L}を見つけて、両方を分母${L}の分数に直す`,
+      `<b>手順：</b><br>① 0.${decNum} ＝ ${decAsFrac}<br>② 10と${cd}の最小公倍数を探す → ${L}<br>③ ${decAsFrac} ＝ ${fracHtml(decNum*dL,L)}、${fracHtml(cn,cd)} ＝ ${fracHtml(cn*cL,L)} に直す<br>④ ${intPart} ＋ ${fracHtml(decNum*dL,L)} － ${fracHtml(cn*cL,L)} の形にしてから計算する`
+    ),
+    hintStep('goal',
+      `${fracStr(num,den)} になる`,
+      `${intPart}＋${decNum*dL}/${L}－${cn*cL}/${L} を通分どおりに計算すると ${fracStr(num,den)} が答え`,
+      `<b>見直しのコツ：</b>${fracStr(num,den)}を小数にして、${intPart}＋0.${decNum}－(${cn}÷${cd})の結果と近い値になるか照合できる。`
+    )
   ];
   const solution = `0.${decNum} = ${decNum}/10<br>${intPart} + ${decNum}/10 − ${cn}/${cd} を通分すると<br>= ${intPart * L}/${L} + ${decNum * (L / den10)}/${L} − ${cn * (L / cd)}/${L} = ${total}/${L} = <b>${fracStr(num, den)}</b>`;
   return { title: '整数・小数・分数の混合計算', stem, fields, svg: '', hints, solution, sig };
@@ -429,12 +509,24 @@ function gen_k1_int(rng) {
   // 最小の x/y: y = an（分子の値）、x = ad の倍数のうち... 実際には x/y = ad/an が最小
   const x = ad, y = an;
   const sig = `k1_int_${an}_${ad}`;
-  const stem = `${fracStr(an, ad)} にできるだけ小さい分数をかけて、積を整数にします。かける分数を求めなさい。`;
+  const stem = `${fracHtml(an, ad)} にできるだけ小さい分数をかけて、積を整数にします。かける分数を求めなさい。`;
   const fields = [{ id: 'a1', label: 'かける分数', type: 'frac', check: (v) => fracEq(v, x, y) }];
   const hints = [
-    '分数×分数を整数にするには、分母を消し、余計な数をかけすぎないようにします。',
-    `分母${ad}を消すには、分子に${ad}を持つ分数をかけます。`,
-    `かける分数の分母は、もとの分数の分子${an}にすると、それ以上約分できず最小になります。`
+    hintStep('why',
+      '分母を「消す」ことが目標',
+      `${fracHtml(an,ad)}×（かける分数）が整数になるのは、分母${ad}がきれいに消えたとき`,
+      `<b>考え方：</b>かけ算で分母を消すには、かける分数の分子に${ad}をふくませればよい。ただし、必要以上に大きい数をかけると「できるだけ小さい」にならないので注意。`
+    ),
+    hintStep('do',
+      `分子に${ad}を持つ分数をかける`,
+      `かける分数の分母は、もとの分数の分子${an}にすると、それ以上約分できず最小になる`,
+      `<b>手順：</b><br>① 消したい分母は${ad}なので、かける分数の分子を${ad}にする<br>② 余計な数をかけないよう、かける分数の分母はもとの分子${an}にする<br>③ ${fracHtml(an,ad)} × ${fracHtml(x,y)} で確かめる`
+    ),
+    hintStep('goal',
+      `${fracStr(x,y)} になる`,
+      `${fracHtml(an,ad)} × ${fracHtml(x,y)} = ${(an*x)}/${ad*y} = ${(an*x)/(ad*y)}（整数）`,
+      `<b>見直しのコツ：</b>これより小さい分数ではわりきれないか、他の候補と比べて確認しよう。`
+    )
   ];
   const solution = `${fracStr(an, ad)} × ${x}/${y} = ${an * x}/${ad * y} = ${(an * x) / (ad * y)}（整数）<br>これより小さい分数ではわりきれないので、答えは <b>${fracStr(x, y)}</b>`;
   return { title: '分数の積を整数にする', stem, fields, svg: '', hints, solution, sig };
@@ -753,7 +845,23 @@ function gen_b1_1(rng) {
     answer = perDay; label = '1日あたり(円)';
   }
   const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
-  const hints = ['「1日あたり×日数＝合計」の関係を使います。', `${perDay}×${days} または ${total}÷${days} を計算します。`, '単位（円・日）に注目して式を立てましょう。'];
+  const hints = [
+    hintStep('why',
+      '「1日あたり」の量が分かれば、日数をかけたり割ったりできる',
+      '合計・1日あたり・日数の3つは、いつも同じ関係でつながっている',
+      `<b>関係の式：</b>1日あたり × 日数 ＝ 合計。3つのうち2つが分かれば、残り1つはかけ算かわり算で求められる。`
+    ),
+    hintStep('do',
+      askTotal ? `${perDay}円 × ${days}日 を計算する` : `${total}円 ÷ ${days}日 を計算する`,
+      askTotal ? '1日あたりの金額に、日数をかけると合計金額になる' : '合計金額を日数で割ると、1日あたりの金額になる',
+      `<b>式の立て方：</b>何を求めるかで、かけ算かわり算かが決まる。「合計」を求めるならかけ算、「1日あたり」を求めるなら合計を日数でわる。`
+    ),
+    hintStep('goal',
+      askTotal ? `${total}円 になる` : `${perDay}円 になる`,
+      askTotal ? `${perDay}×${days}＝${total}` : `${total}÷${days}＝${perDay}`,
+      `<b>見直しのコツ：</b>求めた答えを使って逆の計算をし、もとの数字にもどるか確かめよう。`
+    )
+  ];
   const solution = askTotal
     ? `${perDay} × ${days} = <b>${total}</b>（円）`
     : `${total} ÷ ${days} = <b>${perDay}</b>（円）`;
@@ -773,9 +881,25 @@ function gen_b1_2(rng) {
   total += signs[1] === '+' ? cDec * (L / 10) : -cDec * (L / 10);
   let [num, den] = reduceFrac(total, L);
   const sig = `b1_2_${a}_${bn}_${bd}_${cDec}_${signs.join('')}`;
-  const stem = `次の計算をしなさい。<br><b>${a} ${signs[0]} ${bn}/${bd} ${signs[1]} 0.${cDec}</b>`;
+  const stem = `次の計算をしなさい。<br>${a} ${signs[0]} ${fracHtml(bn,bd)} ${signs[1]} 0.${cDec}`;
   const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, num, den) }];
-  const hints = ['小数を分数に直して、分母をそろえます。', `0.${cDec} = ${cDec}/10 として通分します。`, '通分してから分子だけ計算し、最後に約分します。'];
+  const hints = [
+    hintStep('why',
+      '分数と小数が混ざっているので、形をそろえる必要がある',
+      'そのままでは、たし算・ひき算ができない',
+      `<b>考え方：</b>0.${cDec}を分数に直せば、${fracHtml(bn,bd)}と同じ「分数の仲間」になり、通分して計算できるようになる。`
+    ),
+    hintStep('do',
+      `0.${cDec}を分数（${fracHtml(cDec,10)}）に直し、分母${bd}と通分する`,
+      `10と${bd}の最小公倍数を見つけて、両方の分数を同じ分母に直す`,
+      `<b>手順：</b><br>① 0.${cDec} ＝ ${fracHtml(cDec,10)}<br>② ${bd}と10の最小公倍数を求める<br>③ それぞれの分数を、その分母にそろえた形に直す<br>④ 分子だけ計算し、最後に約分する`
+    ),
+    hintStep('goal',
+      `${fracStr(num,den)} になる`,
+      '通分して計算した結果を、これ以上約分できないところまで簡単にする',
+      `<b>見直しのコツ：</b>分子と分母に共通の約数が残っていないか、もう一度確認しよう。`
+    )
+  ];
   const solution = `0.${cDec} = ${cDec}/10。通分して計算すると<br>答えは <b>${fracStr(num, den)}</b>`;
   return { title: '基本問題2：分数・小数混合計算', stem, fields, svg: '', hints, solution, sig };
 }
@@ -792,7 +916,23 @@ function gen_b1_3(rng) {
   const sig = `b1_3_${mul}_${sub}_${x}`;
   const stem = `ある数から${sub}をひいてから${mul}をかけるところを、まちがえて先に${mul}をかけてから${sub}をひいてしまい、答えが${wrongAns}になりました。正しく計算した答えを求めなさい。`;
   const fields = [{ id: 'a1', label: '正しい答え', type: 'int', check: (v) => intEq(v, correctAns) }];
-  const hints = ['まず「ある数」が何かを、まちがえた式から逆算しましょう。', `まちがえた式は (ある数×${mul}) − ${sub} = ${wrongAns} です。`, `ある数が分かったら、正しい順番（−${sub}してから×${mul}）で計算し直します。`];
+  const hints = [
+    hintStep('why',
+      '「ある数」が分からないと、正しい計算をやり直せない',
+      'まず、まちがえた計算から「ある数」がいくつだったかを逆算する必要がある',
+      `<b>考え方：</b>まちがえた式は「ある数×${mul}－${sub}＝${wrongAns}」。この式を逆にたどれば、ある数が求められる。`
+    ),
+    hintStep('do',
+      `まちがえた式を逆算して「ある数」を求める`,
+      `ある数×${mul}＝${wrongAns}＋${sub}＝${wrongAns+sub}、ある数＝${wrongAns+sub}÷${mul}`,
+      `<b>手順：</b><br>① まちがえた式：ある数×${mul}－${sub}＝${wrongAns}<br>② 両辺に${sub}をたす：ある数×${mul}＝${wrongAns+sub}<br>③ ${mul}でわる：ある数＝${x}<br>④ 求めた「ある数」を使って、正しい順番（先に－${sub}、次に×${mul}）で計算し直す`
+    ),
+    hintStep('goal',
+      `${correctAns} になる`,
+      `(${x}－${sub})×${mul}＝${correctAns}`,
+      `<b>見直しのコツ：</b>「ある数」を使って、まちがえた式（ある数×${mul}－${sub}）を計算すると${wrongAns}にもどるか確認しよう。`
+    )
+  ];
   const solution = `まちがえた式：ある数×${mul}−${sub}＝${wrongAns}<br>ある数×${mul}＝${wrongAns + sub}<br>ある数＝${x}<br>正しい式：ある数−${sub}を先にして×${mul}<br>(${x}−${sub})×${mul}＝<b>${correctAns}</b>`;
   return { title: '基本問題3：計算順序の逆算', stem, fields, svg: '', hints, solution, sig };
 }
@@ -815,7 +955,23 @@ function gen_b1_4(rng) {
     answer = weightB; label = '重さ(g)';
   }
   const fields = [{ id: 'a1', label, type: 'int', check: (v) => intEq(v, answer) }];
-  const hints = ['まず1mあたりの重さ（単位量）を求めます。', `${totalWeight}÷${lenA}＝1mあたりの重さ`, '単位量に、聞かれている長さ・重さをかけたりわったりします。'];
+  const hints = [
+    hintStep('why',
+      '「1mあたりの重さ」が分かれば、どんな長さ・重さにも対応できる',
+      '同じ種類のはり金なら、1mあたりの重さ（単位量）はいつも同じ',
+      `<b>考え方：</b>${lenA}mで${totalWeight}gという情報から、まず1mあたりの重さを求めておけば、あとは長さや重さが変わっても計算できる。`
+    ),
+    hintStep('do',
+      `1mあたりの重さを求めてから、${askLen ? 'それを使って長さを求める' : 'それを使って重さを求める'}`,
+      `${totalWeight}÷${lenA}＝1mあたりの重さ`,
+      `<b>手順：</b><br>① ${totalWeight}÷${lenA}で1mあたりの重さを求める<br>② ${askLen ? `${weightB}gがその何倍かを考えて、わり算で長さを求める` : `1mあたりの重さに${lenB}をかけて、重さを求める`}`
+    ),
+    hintStep('goal',
+      askLen ? `${weightB / weightPerM}m になる` : `${weightB}g になる`,
+      askLen ? `${weightB}÷${weightPerM}＝${weightB/weightPerM}` : `${weightPerM}×${lenB}＝${weightB}`,
+      `<b>見直しのコツ：</b>求めた答えに1mあたりの重さをかけ（またはわり）、もとの数字にもどるか確かめよう。`
+    )
+  ];
   const solution = askLen
     ? `1mあたり ${totalWeight}÷${lenA}＝${weightPerM}g<br>${weightB}÷${weightPerM}＝<b>${weightB / weightPerM}</b>（m）`
     : `1mあたり ${totalWeight}÷${lenA}＝${weightPerM}g<br>${weightPerM}×${lenB}＝<b>${weightB}</b>（g）`;
@@ -835,7 +991,23 @@ function gen_p1_1(rng) {
   const sig = `p1_1_${b1}_${h1}_${b2}`;
   const stem = `底辺${b1}cm、高さ${h1}cmの直角三角形と、底辺${b2}cmの直角三角形の面積が等しいとき、後者の高さを求めなさい。`;
   const fields = [{ id: 'a1', label: '高さ', type: 'frac', check: (v) => fracEq(v, an, ad) }];
-  const hints = ['三角形の面積＝底辺×高さ÷2 です。', `面積が等しいので、底辺×高さの値も等しくなります（÷2が共通なので）。`, `${b1}×${h1}＝${b2}×高さ として高さを求めます。`];
+  const hints = [
+    hintStep('why',
+      '「面積が等しい」を式にできれば、知りたい辺が求まる',
+      '三角形の面積＝底辺×高さ÷2 なので、面積が同じなら「底辺×高さ」も同じになる',
+      `<b>考え方：</b>÷2は両方の三角形に共通しているので、「底辺×高さ」の値だけを比べればよい。`
+    ),
+    hintStep('do',
+      `${b1}×${h1}＝${b2}×高さ という式を作って、高さを求める`,
+      'かけ算の答えが同じになる式を作り、わり算で残りの辺を求める',
+      `<b>手順：</b><br>① 三角形1の「底辺×高さ」を計算する：${b1}×${h1}＝${area2Times}<br>② これが三角形2の「底辺×高さ」とも等しい：${b2}×高さ＝${area2Times}<br>③ 高さ＝${area2Times}÷${b2} を計算する`
+    ),
+    hintStep('goal',
+      `${fracStr(an,ad)}cm になる`,
+      `${area2Times}÷${b2}＝${fracStr(an,ad)}`,
+      `<b>見直しのコツ：</b>底辺${b2}cm×高さ${fracStr(an,ad)}cmを計算して、${area2Times}にもどるか確かめよう。`
+    )
+  ];
   const solution = `${b1}×${h1}＝${area2Times}＝${b2}×高さ<br>高さ＝${area2Times}÷${b2}＝<b>${fracStr(an, ad)}</b>（cm）`;
   return { title: '練習問題1：等積の直角三角形', stem, fields, svg: '', hints, solution, sig };
 }
@@ -852,7 +1024,23 @@ function gen_p1_2(rng) {
     stem = `体積${vol}cm³で重さ${mass}gの金属があります。この金属1cm³あたりの重さ（密度）を求めなさい。`;
     answer = densityX10 / 10; label = '密度(g/cm³)';
     const fields = [{ id: 'a1', label, type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
-    const hints = ['密度＝重さ÷体積 で求めます。', `${mass}÷${vol} を計算します。`, '答えは小数で表しましょう。'];
+    const hints = [
+      hintStep('why',
+        '密度は「1cm³あたりの重さ」のこと',
+        '同じ種類の金属なら、体積が変わっても1cm³あたりの重さはいつも同じ',
+        `<b>考え方：</b>密度＝重さ÷体積 という関係を使えば、体積と重さから1cm³あたりの重さが求められる。`
+      ),
+      hintStep('do',
+        `${mass}÷${vol} を計算する`,
+        '重さを体積でわると、1cm³あたりの重さ（密度）になる',
+        `<b>手順：</b>①重さ${mass}gを体積${vol}cm³でわる ②答えは小数で表す`
+      ),
+      hintStep('goal',
+        `${answer}g/cm³ になる`,
+        `${mass}÷${vol}＝${answer}`,
+        `<b>見直しのコツ：</b>${answer}×${vol}を計算して、${mass}にもどるか確かめよう。`
+      )
+    ];
     const solution = `${mass} ÷ ${vol} = <b>${answer}</b>（g/cm³）`;
     return { title: '練習問題2：単位あたり量（密度）', stem, fields, svg: '', hints, solution, sig };
   } else {
@@ -861,7 +1049,24 @@ function gen_p1_2(rng) {
     stem = `体積${vol}cm³で重さ${mass}gの金属と同じ種類の金属で、体積${vol2}cm³のものの重さを求めなさい。`;
     answer = mass2; label = '重さ(g)';
     const fields = [{ id: 'a1', label, type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
-    const hints = ['まず1cm³あたりの重さ（密度）を求めます。', `${mass}÷${vol}＝密度`, '密度に新しい体積をかけます。'];
+    const density = densityX10 / 10;
+    const hints = [
+      hintStep('why',
+        '「1cm³あたりの重さ」が分かれば、どんな体積の重さも求められる',
+        '同じ種類の金属は、密度（1cm³あたりの重さ）がいつも同じ',
+        `<b>考え方：</b>先に密度を求めておけば、密度×体積で、別の体積のときの重さが計算できる。`
+      ),
+      hintStep('do',
+        `まず密度を求め、次に新しい体積をかける`,
+        `${mass}÷${vol}＝密度、密度×${vol2}＝重さ`,
+        `<b>手順：</b><br>① ${mass}÷${vol}で1cm³あたりの重さ（密度）を求める<br>② 求めた密度に、新しい体積${vol2}をかける`
+      ),
+      hintStep('goal',
+        `${mass2}g になる`,
+        `密度${density}×${vol2}＝${mass2}`,
+        `<b>見直しのコツ：</b>${mass2}÷${vol2}を計算して、密度${density}にもどるか確かめよう。`
+      )
+    ];
     const solution = `密度＝${mass}÷${vol}＝${densityX10 / 10}g/cm³<br>${densityX10 / 10}×${vol2}＝<b>${mass2}</b>（g）`;
     return { title: '練習問題2：単位あたり量（密度）', stem, fields, svg: '', hints, solution, sig };
   }
@@ -879,10 +1084,38 @@ function gen_p1_3(rng) {
   const stem = `1/${D}, 2/${D}, 3/${D}, …, 99/${D} という${N99}個の分数のうち、${askInt ? '整数になるもの' : '（それ以上約分できない）既約分数になるもの'}は何個ありますか。`;
   const answer = askInt ? intCount : coprimeCount;
   const fields = [{ id: 'a1', label: '個数', type: 'int', check: (v) => intEq(v, answer) }];
-  const hints = [
-    askInt ? `分子が${D}の倍数のとき、分数は整数になります。` : `分子と${D}が最大公約数1（互いに素）のとき、既約分数になります。`,
-    askInt ? `99までに${D}の倍数がいくつあるか数えます。` : `${D}＝2×3なので、2の倍数でも3の倍数でもない数を数えます。`,
-    askInt ? `99 ÷ ${D} の商（整数部分）を求めます。` : '2の倍数の個数＋3の倍数の個数−6の倍数の個数を全体から引く、という考え方もできます。'
+  const hints = askInt ? [
+    hintStep('why',
+      `分子が${D}の倍数のとき、分数は整数になる`,
+      `${fracHtml('k',D)} の形で、kが${D}の倍数なら約分してぴったり整数になる`,
+      `<b>考え方：</b>例えば${fracHtml(D*2,D)}＝2のように、分子が分母のちょうど倍数のとき、わり算がぴったり終わる＝整数になる。`
+    ),
+    hintStep('do',
+      `1〜99の中に、${D}の倍数がいくつあるか数える`,
+      `99÷${D}の商（整数部分）が、そのまま個数になる`,
+      `<b>手順：</b>①99を${D}でわる ②あまりは無視して、商（わり切れた回数）だけを答えにする`
+    ),
+    hintStep('goal',
+      `${answer}個 になる`,
+      `99÷${D}＝${Math.floor(99/D)}あまり${99%D}`,
+      `<b>見直しのコツ：</b>${D}×${answer}＝${D*answer}が99以下で、${D}×${answer+1}が99を超えることを確認しよう。`
+    )
+  ] : [
+    hintStep('why',
+      `分子と${D}に共通の約数がないとき、既約分数になる`,
+      `${D}＝2×3なので、2でも3でも割り切れない数を数えればよい`,
+      `<b>考え方：</b>約分できる＝分子と分母に共通の約数がある、ということ。共通の約数がまったくない状態が「既約分数」。`
+    ),
+    hintStep('do',
+      `2の倍数でも3の倍数でもない数を、1〜99の中で数える`,
+      '全体から、2の倍数の個数と3の倍数の個数を引き、重なり（6の倍数）を戻す',
+      `<b>手順（考え方の例）：</b><br>① 99個すべてから始める<br>② 2の倍数を除く、3の倍数を除く<br>③ 2にも3にも共通する6の倍数は2回引きすぎているので、1回分もどす`
+    ),
+    hintStep('goal',
+      `${answer}個 になる`,
+      '2の倍数でも3の倍数でもない数だけを数えた結果',
+      `<b>見直しのコツ：</b>数えた個数に、2の倍数・3の倍数の個数を足すと、99個にもどるか確認しよう。`
+    )
   ];
   const solution = askInt
     ? `99÷${D}＝${Math.floor(N99 / D)}あまり${N99 % D}より、${D}の倍数は<b>${intCount}</b>個`
@@ -919,9 +1152,21 @@ function gen_p1_4(rng) {
   const stem = `4枚のカード ${cards.join(', ')} を1回ずつ使って □/□ × □/□ の式を作るとき、積が${askMax ? '最大' : '最小'}になるときの値を求めなさい。`;
   const fields = [{ id: 'a1', label: '積', type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
   const hints = [
-    '積を大きくするには、分子に大きい数、分母に小さい数を置きます。積を小さくするには逆にします。',
-    askMax ? '分子候補の大きい2数と、分母候補の小さい2数の組み合わせを考えます。' : '分子候補の小さい2数と、分母候補の大きい2数の組み合わせを考えます。',
-    'すべての組み合わせを比べて確かめましょう。'
+    hintStep('why',
+      `積を${askMax?'大きく':'小さく'}するには、数字の置き場所にコツがある`,
+      askMax ? '分子は大きいほど、分母は小さいほど、積は大きくなる' : '分子は小さいほど、分母は大きいほど、積は小さくなる',
+      `<b>考え方：</b>分数は「分子÷分母」なので、分子を大きく・分母を小さくすれば値は大きくなり、逆にすれば小さくなる。`
+    ),
+    hintStep('do',
+      askMax ? '大きい2枚を分子、小さい2枚を分母に置く' : '小さい2枚を分子、大きい2枚を分母に置く',
+      `カード ${cards.join(', ')} を大きい順・小さい順に並べて考える`,
+      `<b>手順：</b><br>① カードを大きい順に並べる<br>② ${askMax?'一番大きい2枚を分子に、一番小さい2枚を分母に':'一番小さい2枚を分子に、一番大きい2枚を分母に'}置く<br>③ 分子どうし・分母どうしの組み合わせを変えて、他のパターンとも比べる`
+    ),
+    hintStep('goal',
+      `${Math.round(answer*1000)/1000} になる`,
+      `すべての組み合わせを比べた中で、${askMax?'最大':'最小'}になる積`,
+      `<b>見直しのコツ：</b>他の組み合わせをいくつか試して、これより${askMax?'大きく':'小さく'}ならないか確かめよう。`
+    )
   ];
   const solution = `すべての組み合わせを比べると、${askMax ? '最大' : '最小'}の積は <b>${Math.round(answer * 1000) / 1000}</b>`;
   return { title: '練習問題4：カードで作る分数の式', stem, fields, svg: '', hints, solution, sig };
@@ -937,9 +1182,25 @@ function gen_p1_5(rng) {
   // 整数Aをかけて整数にする最小のA＝ad（分母を消す最小の整数）
   const ansA = ad;
   const sig = `p1_5_${an}_${ad}`;
-  const stem = `${fracStr(an, ad)} にできるだけ小さい整数をかけて、積を整数にします。かける整数を求めなさい。`;
+  const stem = `${fracHtml(an, ad)} にできるだけ小さい整数をかけて、積を整数にします。かける整数を求めなさい。`;
   const fields = [{ id: 'a1', label: 'かける整数', type: 'int', check: (v) => intEq(v, ansA) }];
-  const hints = ['分数×整数を整数にするには、分母を消せる数をかけます。', `分母${ad}を消すには、分母と同じ${ad}をかけるのが最小です。`, `${fracStr(an, ad)}×${ad} を計算して確かめましょう。`];
+  const hints = [
+    hintStep('why',
+      '分母を「消す」ことができれば、答えは整数になる',
+      `${fracHtml(an,ad)}に整数をかけて、分母${ad}がきれいに消えればよい`,
+      `<b>考え方：</b>整数をかけるとき、分母${ad}で割り切れる数を分子にかければ、分母が消えて整数になる。`
+    ),
+    hintStep('do',
+      `分母${ad}と同じ数をかけてみる`,
+      '分母と同じ数をかけるのが、いちばん小さくかけられる数になる',
+      `<b>手順：</b><br>① 分母${ad}を消すには、分母と同じ${ad}をかければ必ず消える<br>② ${fracHtml(an,ad)}×${ad}を計算して、本当に整数になるか確かめる`
+    ),
+    hintStep('goal',
+      `${ansA} になる`,
+      `${fracHtml(an,ad)}×${ansA}＝${an*ansA}/${ad}＝${(an*ansA)/ad}（整数）`,
+      `<b>見直しのコツ：</b>これより小さい整数（${ansA-1}以下）でわり切れないか確認して、${ansA}が最小であることを確かめよう。`
+    )
+  ];
   const solution = `${fracStr(an, ad)} × ${ansA} = ${an * ansA}/${ad} = ${(an * ansA) / ad}（整数）<br>これより小さい整数ではわり切れないので、答えは <b>${ansA}</b>`;
   return { title: '練習問題5：分数×整数を整数にする', stem, fields, svg: '', hints, solution, sig };
 }
@@ -2082,7 +2343,7 @@ function renderQuestionCard(main,q,opts){
       if(hintStep<q.hints.length){
         const box=document.createElement('div');
         box.className='hint-box';
-        box.textContent=`ヒント${hintStep+1}: ${q.hints[hintStep]}`;
+        box.innerHTML=q.hints[hintStep];
         area.appendChild(box);
         hintStep++;
       }
