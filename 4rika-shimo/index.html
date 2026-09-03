@@ -468,7 +468,11 @@ function ensureFirebaseSignIn(){
   if(fbReadyPromise)return fbReadyPromise;
   fbReadyPromise=(async()=>{
     try{
-      if(!fbAuth.currentUser){
+      // 算数アプリ（同じFirebaseプロジェクトの別の固定アカウント）を同じブラウザで
+      // 先に使っていた場合、Firebase Authのセッションがそのまま引き継がれてしまい
+      // currentUserが「算数アプリのアカウント」になっていることがある。
+      // その場合は「未サインイン」とみなして理科アプリ専用アカウントへ明示的にサインインし直す。
+      if(!fbAuth.currentUser || fbAuth.currentUser.email!==FIXED_EMAIL){
         try{
           await fbAuth.signInWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
         }catch(err){
