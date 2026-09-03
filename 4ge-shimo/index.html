@@ -1642,8 +1642,90 @@ function cloudSaveNow(){
     console.warn('cloud save failed',e);
   });
 }
-// Firebase Authログイン完了後に呼ばれる：Firestoreの最新データを取得し、
-// ローカルより新しければ採用してから画面を再描画する
+
+// ---------- ローカル記録とクラウド記録の統合（マージ） ----------
+// 「新しい方が古い方を消す」のではなく、進んでいる/良い方の記録をキーごとに残す。
+// これにより、複数の端末それぞれでログイン前から貯めていた記録が消えることなく統合される。
+function srsRank(s){
+  // masteredが最上位。次にstage、同stage内はlow+highの多い方。
+  if(!s)return -1;
+  if(s.status==='mastered')return 1000+ (s.high||0);
+  return (s.stage||0)*100 + (s.low||0) + (s.high||0);
+}
+function mergeSrsEntry(a,b){
+  if(!a)return b; if(!b)return a;
+  return srsRank(a)>=srsRank(b)?a:b;
+}
+function mergeStatEntry(a,b){
+  if(!a)return b; if(!b)return a;
+  // どちらの端末の努力も失わないよう、各値の大きい方を残す
+  return {
+    a:Math.max(a.a||0,b.a||0),
+    c:Math.max(a.c||0,b.c||0),
+    t:Math.max(a.t||0,b.t||0)
+  };
+}
+function mergeDailyEntry(a,b){
+  if(!a)return b; if(!b)return a;
+  return {
+    learned:Math.max(a.learned||0,b.learned||0),
+    reviews:Math.max(a.reviews||0,b.reviews||0),
+    correct:Math.max(a.correct||0,b.correct||0),
+    attempts:Math.max(a.attempts||0,b.attempts||0),
+    timeSec:Math.max(a.timeSec||0,b.timeSec||0)
+  };
+}
+function mergeFlagEntry(a,b){
+  if(!a)return b; if(!b)return a;
+  const days=Array.from(new Set([...(a.days||[]),...(b.days||[])]));
+  return {
+    on: !!(a.on||b.on),
+    reason: a.on?a.reason:(b.on?b.reason:(a.reason||b.reason)),
+    days
+  };
+}
+function mergeArraysDedupe(a,b,keyFn){
+  const seen=new Set();
+  const out=[];
+  [...(a||[]),...(b||[])].forEach(item=>{
+    const k=keyFn(item);
+    if(seen.has(k))return;
+    seen.add(k);
+    out.push(item);
+  });
+  return out;
+}
+// 2つのDATAオブジェクトを統合した新しいDATAを返す（どちらも破壊しない）
+function mergeData(local,remote){
+  const out=normalizeData({});
+  const srsKeys=new Set([...Object.keys(local.srs||{}),...Object.keys(remote.srs||{})]);
+  srsKeys.forEach(k=>{ out.srs[k]=mergeSrsEntry(local.srs[k],remote.srs[k]); });
+
+  const statKeys=new Set([...Object.keys(local.stats||{}),...Object.keys(remote.stats||{})]);
+  statKeys.forEach(k=>{ out.stats[k]=mergeStatEntry(local.stats[k],remote.stats[k]); });
+
+  const dailyKeys=new Set([...Object.keys(local.mDaily||{}),...Object.keys(remote.mDaily||{})]);
+  dailyKeys.forEach(k=>{ out.mDaily[k]=mergeDailyEntry(local.mDaily[k],remote.mDaily[k]); });
+
+  const flagKeys=new Set([...Object.keys(local.flags||{}),...Object.keys(remote.flags||{})]);
+  flagKeys.forEach(k=>{ out.flags[k]=mergeFlagEntry(local.flags[k],remote.flags[k]); });
+
+  const lc=local.challenge||{best:null,history:[]};
+  const rc=remote.challenge||{best:null,history:[]};
+  out.challenge={
+    best: (lc.best==null)?rc.best:((rc.best==null)?lc.best:Math.min(lc.best,rc.best)), // タイムアタックなので小さい方が良い記録
+    history: mergeArraysDedupe(lc.history,rc.history,h=>JSON.stringify(h)).sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))).slice(-50)
+  };
+
+  out.flagLog=mergeArraysDedupe(local.flagLog,remote.flagLog,h=>JSON.stringify(h));
+  out.wcHistory=mergeArraysDedupe(local.wcHistory,remote.wcHistory,h=>JSON.stringify(h));
+  out.seeds=Object.assign({},remote.seeds,local.seeds);
+  out.updatedAt=Date.now();
+  return out;
+}
+
+// Firebase Authログイン完了後に呼ばれる：Firestoreの記録とこの端末の記録を統合し、
+// どちらの記録も失わないようにしてから画面を再描画する
 async function initCloudSync(){
   const user=fbAuth.currentUser;
   if(!user)return;
@@ -1651,16 +1733,15 @@ async function initCloudSync(){
     const snap=await fbDb.collection('users').doc(user.uid).get();
     if(snap.exists){
       const remote=normalizeData(snap.data());
-      if((remote.updatedAt||0)>(DATA.updatedAt||0)){
-        DATA=remote;
-        try{localStorage.setItem(KEY,JSON.stringify(DATA));}catch(e){}
-      }
+      const merged=mergeData(DATA,remote);
+      DATA=merged;
+      try{localStorage.setItem(KEY,JSON.stringify(DATA));}catch(e){}
     }
+    // リモートに何もなければ、この端末の記録がそのまま初回アップロードされる（後段のscheduleCloudSaveで反映）
   }catch(e){
     console.warn('cloud load failed',e);
   }
   cloudSyncReady=true;
-  // ローカルの方が新しかった場合や、初回でリモートが空の場合はここでクラウドへ反映
   scheduleCloudSave();
   renderNav(); renderHeaderStatus();
   go(CURRENT||'home');
