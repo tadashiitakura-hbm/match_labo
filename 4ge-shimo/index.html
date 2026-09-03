@@ -71,7 +71,7 @@ body.gate-open #appRoot{display:none;}
 <div id="loginGate">
   <div class="box">
     <h2>解法チャレンジ 4年下</h2>
-    <p>いつもの あいことば を にゅうりょくしてね</p>
+    <p>いつもの あいことば を にゅうりょくしてね（6文字いじょう）</p>
     <input type="text" id="gatePass" placeholder="あいことば" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
     <button id="gateBtn">はじめる</button>
     <div class="err" id="gateErr"></div>
@@ -141,8 +141,8 @@ function escapeHtml(s){
 
 async function doLogin(){
   const pass=document.getElementById('gatePass').value;
-  if(!pass||pass.trim().length<4){
-    gateSetErr('あいことばは4文字いじょうにしてね');
+  if(!pass||pass.trim().length<6){
+    gateSetErr('あいことばは6文字いじょうにしてね');
     return;
   }
   gateSetErr('');
@@ -169,6 +169,10 @@ async function doLogin(){
     document.getElementById('gateBtn').disabled=false;
     if(err.code==='auth/wrong-password' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
       gateSetErr('あいことばが ちがうみたい。もういちど にゅうりょくしてね');
+    }else if(err.code==='auth/weak-password'){
+      gateSetErr('あいことばは6文字いじょうにしてね');
+    }else if(err.code==='auth/network-request-failed'){
+      gateSetErr('インターネットに つながっていないみたい。Wi-Fiや通信をかくにんしてね');
     }else{
       gateSetErr('つながりませんでした（'+(err.code||err.message)+'）');
     }
