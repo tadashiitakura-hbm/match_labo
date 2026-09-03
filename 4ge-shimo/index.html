@@ -125,6 +125,20 @@ document.body.classList.add('gate-open');
 function gateSetErr(msg){document.getElementById('gateErr').textContent=msg||'';}
 function gateSetLoading(msg){document.getElementById('gateLoading').textContent=msg||'';}
 
+const GATE_PASS_KEY='sk_ch4ge_gatepass_v1';
+function saveGatePassDisplay(pass){
+  try{localStorage.setItem(GATE_PASS_KEY,pass);}catch(e){}
+}
+function loadGatePassDisplay(){
+  try{return localStorage.getItem(GATE_PASS_KEY)||'';}catch(e){return '';}
+}
+function clearGatePassDisplay(){
+  try{localStorage.removeItem(GATE_PASS_KEY);}catch(e){}
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 async function doLogin(){
   const pass=document.getElementById('gatePass').value;
   if(!pass||pass.trim().length<4){
@@ -145,6 +159,7 @@ async function doLogin(){
         throw err;
       }
     }
+    saveGatePassDisplay(pass.trim());
     gateSetLoading('');
     document.body.classList.remove('gate-open');
     document.getElementById('loginGate').style.display='none';
@@ -178,7 +193,7 @@ fbAuth.onAuthStateChanged(function(user){
 });
 
 function gateLogout(){
-  fbAuth.signOut().then(()=>{ location.reload(); });
+  fbAuth.signOut().then(()=>{ clearGatePassDisplay(); location.reload(); });
 }
 </script>
 
@@ -1867,7 +1882,10 @@ function go(mode,keepRuntime){
 function renderHeaderStatus(){
   const masteredCount=PROBLEMS.filter(p=>getSrs(p.key).status==='mastered').length;
   const weakCount=Object.values(DATA.flags).filter(f=>f.on).length;
-  document.getElementById('headerStatus').textContent=`習得 ${masteredCount}/${N}　苦手 ${weakCount}`;
+  const gatePass=loadGatePassDisplay();
+  const passPart=gatePass?`　あいことば: ${gatePass}`:'';
+  // textContentへの代入なのでHTMLエスケープは不要（そのまま文字として表示される）
+  document.getElementById('headerStatus').textContent=`習得 ${masteredCount}/${N}　苦手 ${weakCount}${passPart}`;
 }
 
 // ---------- ホーム ----------
@@ -1886,8 +1904,10 @@ function renderHome(main){
     const stPill=st==='none'?'':`<span class="${pillClass}">${ROUND_STATE_LABEL[st]}</span>`;
     roundRows+=`<div class="stat-row"><span>${label}</span>${stPill}</div>`;
   }
+  const gatePass=loadGatePassDisplay();
   main.innerHTML=`
     <div class="card"><b>いまの状況</b>
+      ${gatePass?`<div class="stat-row"><span>いまのあいことば</span><span>${escapeHtml(gatePass)}</span></div>`:''}
       <div class="stat-row"><span>習得ずみ</span><span>${masteredCount} / ${unlockedTotal}</span></div>
       <div class="progressbar"><div style="width:${(unlockedTotal?masteredCount/unlockedTotal*100:0).toFixed(0)}%"></div></div>
       <div class="stat-row"><span>苦手フラグ🚩</span><span>${weakCount}</span></div>
