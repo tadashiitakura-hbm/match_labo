@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>理科チャレンジ 4年下 第1回 ヒトのからだ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Hachi+Maru+Pop&display=swap');
+
+:root{
+  --bg:#FBF7EE;
+  --card:#FFFFFF;
+  --ink:#2E2A22;
+  --ink-soft:#6B6455;
+  --accent:#3C8F72;
+  --accent-dark:#2A6B54;
+  --accent-soft:#DCF0E6;
+  --warn:#C0553B;
+  --warn-soft:#FBE3DC;
+  --gold:#D6A63C;
+  --gold-soft:#FBF0D8;
+  --border:#E5DFCF;
+  --shadow:0 2px 8px rgba(60,50,20,.08), 0 8px 24px rgba(60,50,20,.06);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Kiwi Maru','Hiragino Maru Gothic ProN',-apple-system,sans-serif;
+  background:linear-gradient(180deg,#FDF9EF,#F6EFDC 400px, #FBF7EE);
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:40px;
+}
+.wrap{max-width:640px;margin:0 auto;padding:16px;}
+header{
+  text-align:center;
+  padding:18px 12px 10px;
+}
+header h1{
+  font-size:1.3rem;
+  margin:0 0 2px;
+  color:var(--accent-dark);
+  font-family:'Hachi Maru Pop',cursive;
+}
+header p{margin:0;color:var(--ink-soft);font-size:.8rem;}
+
+nav.tabs{
+  display:flex;
+  gap:6px;
+  margin:14px 0;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+nav.tabs button{
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--ink-soft);
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:.82rem;
+  font-family:inherit;
+  cursor:pointer;
+  transition:.15s;
+}
+nav.tabs button.active{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+  font-weight:bold;
+}
+
+.card{
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  margin-bottom:16px;
+}
+
+/* HOME */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:14px 0;
+}
+.stat-box{
+  background:var(--accent-soft);
+  border-radius:14px;
+  padding:12px 8px;
+  text-align:center;
+}
+.stat-box .num{font-size:1.5rem;font-weight:bold;color:var(--accent-dark);}
+.stat-box .lbl{font-size:.7rem;color:var(--ink-soft);margin-top:2px;}
+.stat-box.warn{background:var(--warn-soft);}
+.stat-box.warn .num{color:var(--warn);}
+.stat-box.gold{background:var(--gold-soft);}
+.stat-box.gold .num{color:#a37b1c;}
+
+.bigbtn{
+  display:block;
+  width:100%;
+  border:none;
+  border-radius:16px;
+  padding:16px;
+  font-size:1.05rem;
+  font-family:inherit;
+  font-weight:bold;
+  color:#fff;
+  background:var(--accent);
+  cursor:pointer;
+  margin-bottom:12px;
+  box-shadow:0 4px 0 var(--accent-dark);
+  transition:.1s;
+}
+.bigbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-dark);}
+.bigbtn.secondary{background:#8A8F99;box-shadow:0 4px 0 #666a72;}
+.bigbtn.secondary:active{box-shadow:0 1px 0 #666a72;}
+.bigbtn .sub{display:block;font-size:.72rem;font-weight:normal;opacity:.9;margin-top:2px;}
+
+.section-title{
+  font-size:.85rem;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+  font-weight:bold;
+}
+
+.progress-outer{
+  background:#EDE7D6;
+  border-radius:999px;
+  height:14px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.progress-inner{
+  background:linear-gradient(90deg,var(--accent),#59B48C);
+  height:100%;
+  border-radius:999px;
+  transition:width .3s;
+}
+
+/* QUIZ */
+.quiz-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  font-size:.78rem;
+  color:var(--ink-soft);
+}
+.quiz-top .badge{
+  background:var(--accent-soft);
+  color:var(--accent-dark);
+  padding:3px 10px;
+  border-radius:999px;
+  font-weight:bold;
+}
+.quiz-top .badge.review{background:var(--warn-soft);color:var(--warn);}
+
+.q-meta{font-size:.72rem;color:var(--ink-soft);margin-bottom:6px;}
+.q-stem{
+  font-size:1rem;
+  line-height:1.7;
+  margin:10px 0 16px;
+  white-space:pre-wrap;
+}
+.q-stem b{color:var(--accent-dark);}
+
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.choice-btn{
+  text-align:left;
+  border:2px solid var(--border);
+  background:#fff;
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:.92rem;
+  font-family:inherit;
+  cursor:pointer;
+  transition:.12s;
+  line-height:1.5;
+}
+.choice-btn:active{transform:scale(.98);}
+.choice-btn.selected{border-color:var(--accent);background:var(--accent-soft);}
+.choice-btn.correct{border-color:var(--accent);background:var(--accent-soft);font-weight:bold;}
+.choice-btn.wrong{border-color:var(--warn);background:var(--warn-soft);}
+
+.text-input-row{margin-bottom:14px;}
+.text-input-row input{
+  width:100%;
+  font-size:1.05rem;
+  font-family:inherit;
+  padding:12px 14px;
+  border:2px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+}
+.text-input-row input:focus{outline:none;border-color:var(--accent);}
+.text-input-row input.correct{border-color:var(--accent);background:var(--accent-soft);}
+.text-input-row input.wrong{border-color:var(--warn);background:var(--warn-soft);}
+.multi-input{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.multi-input .field{flex:1;min-width:110px;}
+.multi-input label{font-size:.72rem;color:var(--ink-soft);display:block;margin-bottom:3px;}
+
+.action-row{display:flex;gap:8px;}
+.action-row button{
+  flex:1;
+  border:none;
+  border-radius:12px;
+  padding:13px;
+  font-size:.95rem;
+  font-family:inherit;
+  font-weight:bold;
+  cursor:pointer;
+  color:#fff;
+  background:var(--accent);
+  box-shadow:0 3px 0 var(--accent-dark);
+}
+.action-row button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--accent-dark);}
+.action-row button:disabled{background:#CBC7B8;box-shadow:0 3px 0 #A8A492;cursor:default;}
+.action-row button.next{background:var(--gold);box-shadow:0 3px 0 #a37b1c;}
+.action-row button.next:active{box-shadow:0 1px 0 #a37b1c;}
+
+.feedback{
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+  font-size:.88rem;
+  line-height:1.6;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--accent-soft);color:var(--accent-dark);}
+.feedback.ng{background:var(--warn-soft);color:var(--warn);}
+.feedback .fb-title{font-weight:bold;margin-bottom:4px;font-size:.95rem;}
+
+.hint-box{
+  background:var(--gold-soft);
+  border-radius:12px;
+  padding:10px 14px;
+  font-size:.82rem;
+  color:#7a5c14;
+  margin-bottom:12px;
+  display:none;
+}
+.hint-box.show{display:block;}
+.hint-toggle{
+  font-size:.78rem;
+  color:var(--ink-soft);
+  background:none;
+  border:none;
+  text-decoration:underline;
+  cursor:pointer;
+  padding:0;
+  margin-bottom:10px;
+  font-family:inherit;
+}
+
+/* review list / done screen */
+.review-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 4px;
+  border-bottom:1px solid var(--border);
+  font-size:.85rem;
+}
+.review-item:last-child{border-bottom:none;}
+.review-item .tag{
+  background:var(--warn-soft);
+  color:var(--warn);
+  font-size:.68rem;
+  padding:2px 8px;
+  border-radius:999px;
+  margin-left:6px;
+}
+.empty-msg{color:var(--ink-soft);font-size:.85rem;text-align:center;padding:20px 0;}
+
+.done-emoji{font-size:2.6rem;text-align:center;margin-bottom:6px;}
+.done-title{text-align:center;font-size:1.15rem;font-weight:bold;color:var(--accent-dark);margin-bottom:14px;}
+
+footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4px;}
+
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>理科チャレンジ 4年下</h1>
+    <p>予習シリーズ準拠 ／ 第1回「ヒトのからだ」</p>
+  </header>
+
+  <nav class="tabs">
+    <button data-view="home" class="active">ホーム</button>
+    <button data-view="quiz">練習する</button>
+    <button data-view="review">復習リスト</button>
+  </nav>
+
+  <!-- HOME -->
+  <div id="view-home">
+    <div class="card">
+      <div class="section-title">今日のすすみぐあい</div>
+      <div class="progress-outer"><div class="progress-inner" id="homeProgressBar" style="width:0%"></div></div>
+      <div style="text-align:center;font-size:.8rem;color:var(--ink-soft);margin-top:4px;" id="homeProgressLabel">0 / 0 問クリア</div>
+
+      <div class="stat-grid">
+        <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">全問題数</div></div>
+        <div class="stat-box gold"><div class="num" id="statMastered">0</div><div class="lbl">おぼえた</div></div>
+        <div class="stat-box warn"><div class="num" id="statWeak">0</div><div class="lbl">復習リスト</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <button class="bigbtn" id="btnStart">つづきから練習する<span class="sub">全問をテンポよく順番に反復</span></button>
+      <button class="bigbtn secondary" id="btnRestart">はじめから練習する<span class="sub">記録をリセットせず最初の問題から</span></button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="view-quiz" class="hidden">
+    <div class="card" id="quizCard">
+      <div class="quiz-top">
+        <span id="quizBadge" class="badge">まとめてみよう</span>
+        <span id="quizCounter">1 / 10</span>
+      </div>
+      <div class="progress-outer"><div class="progress-inner" id="quizProgressBar" style="width:0%"></div></div>
+      <div class="q-meta" id="qMeta"></div>
+      <div class="q-stem" id="qStem"></div>
+
+      <button class="hint-toggle hidden" id="hintToggle">💡 ヒントを見る</button>
+      <div class="hint-box" id="hintBox"></div>
+
+      <div id="answerArea"></div>
+
+      <div class="feedback" id="feedback">
+        <div class="fb-title" id="fbTitle"></div>
+        <div id="fbBody"></div>
+      </div>
+
+      <div class="action-row">
+        <button id="btnCheck">こたえ合わせ</button>
+        <button id="btnNext" class="next hidden">つぎの問題へ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW LIST -->
+  <div id="view-review" class="hidden">
+    <div class="card">
+      <div class="section-title">復習リスト（まちがえた問題）</div>
+      <div id="reviewList"></div>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div id="view-done" class="hidden">
+    <div class="card">
+      <div class="done-emoji">🎉</div>
+      <div class="done-title">今日の分がおわりました！</div>
+      <div style="text-align:center;color:var(--ink-soft);font-size:.85rem;margin-bottom:16px;" id="doneSummary"></div>
+      <button class="bigbtn" id="btnDoneHome">ホームにもどる</button>
+    </div>
+  </div>
+
+  <footer>予習シリーズ理科4年下 第1回「ヒトのからだ」準拠　家庭学習用</footer>
+</div>
+
+<script>
+/* =========================================================
+   問題データ（予習シリーズ演習問題集 理科4年下 第1回 ヒトのからだ）
+   まとめてみよう / 練習問題 / 発展問題　すべて収録
+   ========================================================= */
+const PROBLEMS = [
+/* ---------- まとめてみよう！ 全10問 ---------- */
+{
+  id:'m1', unit:'まとめてみよう', src:'骨と筋肉',
+  stem:'ヒトは①（　　）をもつ動物（セキツイ動物）で、内側にある骨と筋肉を使ってからだを動かす。',
+  type:'choice',
+  choices:['骨格','筋肉','関節','消化管'],
+  answer:'骨格',
+  explain:'ヒトは体の中に骨格をもつセキツイ動物です。頭骨は脳を、ろっ骨は肺や心臓を守り、骨ばんは内臓を支えています。'
+},
+{
+  id:'m2', unit:'まとめてみよう', src:'骨と筋肉',
+  stem:'ろっ骨は肺や心臓を②（　　）はたらきをしている。あてはまることばを選びなさい。',
+  type:'choice',
+  choices:['守る','動かす','つくる','消化する'],
+  answer:'守る',
+  explain:'頭骨は脳を、ろっ骨は肺や心臓を守り、骨ばんは内臓を支えるはたらきをしています。'
+},
+{
+  id:'m3', unit:'まとめてみよう', src:'骨と筋肉',
+  stem:'ヒトのように骨がからだの③（　　）にある骨組みを内骨格という。セキツイ動物はどれも同じように内骨格をもっている。',
+  type:'choice',
+  choices:['内側','外側','中央','表面'],
+  answer:'内側',
+  explain:'ヒトの骨格はからだの内側にあるため「内骨格」といいます。'
+},
+{
+  id:'m4', unit:'まとめてみよう', src:'骨と筋肉',
+  stem:'からだを動かす骨は④（　　）というつくりでつながっている。',
+  type:'choice',
+  choices:['関節','けん','筋肉','神経'],
+  answer:'関節',
+  explain:'骨と骨のつなぎ目を関節といいます。関節があることで、からだを曲げたり回したりできます。'
+},
+{
+  id:'m5', unit:'まとめてみよう', src:'骨と筋肉',
+  stem:'筋肉は⑤（　　）というじょうぶなつくりで骨とつながっている。筋肉が縮んだり、ゆるんだりすることで骨が動く。',
+  type:'choice',
+  choices:['けん','関節','じん帯','軟骨'],
+  answer:'けん',
+  explain:'筋肉は「けん」というじょうぶなつくりで骨とつながっており、筋肉の収縮によって骨が動きます。'
+},
+{
+  id:'m6', unit:'まとめてみよう', src:'骨と筋肉',
+  stem:'右図はうでを曲げたときのようすで、このとき縮んでいる筋肉はどちらですか。（Aの筋肉がふくらんで縮んでいます）',
+  type:'choice',
+  choices:['A','B'],
+  answer:'A',
+  explain:'うでを曲げるとき、内側（力こぶ側）のＡの筋肉が縮み、外側のＢの筋肉はゆるみます。'
+},
+{
+  id:'m7', unit:'まとめてみよう', src:'呼吸',
+  stem:'ヒトは空気中の⑦（　　）を体内に取り入れ、養分と結びつけ、生きるために必要なエネルギーをつくり出す。',
+  type:'choice',
+  choices:['酸素','二酸化炭素','ちっ素','水素'],
+  answer:'酸素',
+  explain:'呼吸は酸素を体内に取り入れ、養分と結びつけてエネルギーをつくり出すはたらきです。'
+},
+{
+  id:'m8', unit:'まとめてみよう', src:'呼吸',
+  stem:'呼吸のとき、不要な⑧（　　）ができるので、からだの外に出す。',
+  type:'choice',
+  choices:['二酸化炭素','酸素','ちっ素','水蒸気のみ'],
+  answer:'二酸化炭素',
+  explain:'呼吸によって、不要な二酸化炭素が体内でつくられ、はく息として体外に出されます。'
+},
+{
+  id:'m9', unit:'まとめてみよう', src:'呼吸',
+  stem:'鼻や口から取り入れられた空気は、気管と気管支を通り肺に送られる。肺は左右に⑨（　　）つずつある。',
+  type:'choice',
+  choices:['1','2','3','4'],
+  answer:'2',
+  explain:'肺は左右に1つずつ、合計2つあります。'
+},
+{
+  id:'m10', unit:'まとめてみよう', src:'呼吸',
+  stem:'ヒトが呼吸をしたとき、はく息は、吸う息と比べると酸素が少なく、二酸化炭素が⑩（　　）なっている。',
+  type:'choice',
+  choices:['多く','少なく','同じに','なく'],
+  answer:'多く',
+  explain:'吸う息に比べてはく息は酸素が少なく、二酸化炭素が多くなっています。'
+},
+{
+  id:'m11', unit:'まとめてみよう', src:'消化',
+  stem:'ヒトが口から取り入れた食物は、そのままでは吸収することができないため、吸収できる⑪（　　）に変える必要がある。このはたらきを消化という。',
+  type:'choice',
+  choices:['別の物質','固体','気体','エネルギー'],
+  answer:'別の物質',
+  explain:'食物は吸収できる別の物質に変えられます。このはたらきを消化といいます。'
+},
+{
+  id:'m12', unit:'まとめてみよう', src:'消化',
+  stem:'ヒトの歯の門歯・犬歯は食物を⑫（　　）のに、小きゅう歯・大きゅう歯は食物をすりつぶすのにつごうのよいつくりになっている。',
+  type:'choice',
+  choices:['かみ切る','すりつぶす','丸のみする','消化する'],
+  answer:'かみ切る',
+  explain:'門歯・犬歯は食物をかみ切るのに、小きゅう歯・大きゅう歯はすりつぶすのに都合のよいつくりです。'
+},
+{
+  id:'m13', unit:'まとめてみよう', src:'消化',
+  stem:'小きゅう歯・大きゅう歯は食物を⑬（　　）のにつごうのよいつくりになっている。',
+  type:'choice',
+  choices:['すりつぶす','かみ切る','飲みこむ','味わう'],
+  answer:'すりつぶす',
+  explain:'小きゅう歯・大きゅう歯は食物をすりつぶすのに都合のよいつくりです。'
+},
+{
+  id:'m14', unit:'まとめてみよう', src:'消化',
+  stem:'食道を通り、胃などで消化された食物は、⑭（　　）で吸収される。',
+  type:'choice',
+  choices:['小腸','大腸','肝臓','すい臓'],
+  answer:'小腸',
+  explain:'消化された養分は主に小腸で吸収されます。'
+},
+{
+  id:'m15', unit:'まとめてみよう', src:'消化',
+  stem:'ヒトが必要とする栄養素は、デンプンなどの⑮（　　）・タンパク質・しぼう・ミネラル・ビタミンである。',
+  type:'choice',
+  choices:['炭水化物','セルロース','脂質のみ','ビタミンC'],
+  answer:'炭水化物',
+  explain:'デンプンなどの糖質は「炭水化物」というグループに分類されます。'
+},
+{
+  id:'m16', unit:'まとめてみよう', src:'血液の流れ',
+  stem:'ヒトの心臓の位置は胸のほぼ⑯（　　）にあり、にぎりこぶし1個分ほどの大きさになる。',
+  type:'choice',
+  choices:['中央','右側','左側','上部'],
+  answer:'中央',
+  explain:'ヒトの心臓の位置は胸のほぼ中央部にあり、にぎりこぶし1個分ほどの大きさです。'
+},
+{
+  id:'m17', unit:'まとめてみよう', src:'血液の流れ',
+  stem:'動脈は、心臓から⑰（　　）血液が流れる血管である。かべは厚く、よくのび縮みする。',
+  type:'choice',
+  choices:['送り出される','もどる','とどまる','逆流する'],
+  answer:'送り出される',
+  explain:'動脈は心臓から送り出される血液が流れる血管です。'
+},
+{
+  id:'m18', unit:'まとめてみよう', src:'血液の流れ',
+  stem:'静脈は、心臓に⑱（　　）血液が流れる血管である。かべはうすく、大きな静脈には血液の逆流を防ぐ弁がある。',
+  type:'choice',
+  choices:['もどる','送り出される','たまる','出ていく'],
+  answer:'もどる',
+  explain:'静脈は心臓にもどる血液が流れる血管です。'
+},
+{
+  id:'m19', unit:'まとめてみよう', src:'感覚器官',
+  stem:'目では、外から入る光が、角まく、⑲（　　）、レンズを通ってもうまく上に像をつくる。',
+  type:'choice',
+  choices:['ひとみ','こまく','鼓室','うずまき管'],
+  answer:'ひとみ',
+  explain:'光は角まく→ひとみ→レンズを通り、もうまくに像をつくります。'
+},
+{
+  id:'m20', unit:'まとめてみよう', src:'感覚器官',
+  stem:'耳の奥にある⑳（　　）が空気のしん動を内側の耳小骨に伝え、うずまき管からちょう神経を通り、音の情報は脳に伝わる。',
+  type:'choice',
+  choices:['こまく','角まく','レンズ','もうまく'],
+  answer:'こまく',
+  explain:'耳の奥にある「こまく」が空気のしん動を耳小骨に伝え、うずまき管からちょう神経を通って脳に伝わります。'
+},
+
+/* ---------- 練習問題 大問1（骨・筋肉） ---------- */
+{
+  id:'p1-1', unit:'練習問題1', src:'骨のある動物のなかま',
+  stem:'ヒトのように、背骨のある動物を何といいますか。ことばで答えなさい。',
+  type:'text', accept:['セキツイ動物'],
+  explain:'背骨をもつ動物をセキツイ動物といいます。'
+},
+{
+  id:'p1-2', unit:'練習問題1', src:'背骨のない動物',
+  stem:'次のうち、セキツイ動物にあてはまらないのはどれですか。\n(ア) イヌ　(イ) ヘビ　(ウ) メダカ　(エ) カブトムシ',
+  type:'choice',
+  choices:['(ア) イヌ','(イ) ヘビ','(ウ) メダカ','(エ) カブトムシ'],
+  answer:'(エ) カブトムシ',
+  explain:'カブトムシは昆虫（節足動物）で背骨がありません。イヌ・ヘビ・メダカはセキツイ動物です。'
+},
+{
+  id:'p1-3', unit:'練習問題1', src:'骨のはたらき',
+  stem:'図のA〜Cのうち、ろっ骨はどれですか。\n(ア) 頭骨　(イ) ろっ骨　(ウ) 骨ばん\nA:胸のあたりの骨　B:こしのあたりの骨　C:頭の骨　の位置で、ろっ骨にあたる記号を選びなさい。',
+  type:'choice',
+  choices:['A','B','C'],
+  answer:'A',
+  explain:'胸のあたりにあるAがろっ骨で、肺や心臓を守っています。Bの骨ばんは内臓を支え、Cの頭骨は脳を守っています。'
+},
+{
+  id:'p1-4', unit:'練習問題1', src:'骨のはたらき',
+  stem:'A〜Cの骨の中で、内臓を支えているのはどれですか。記号で答えなさい。（A=ろっ骨、B=骨ばん、C=頭骨）',
+  type:'choice',
+  choices:['A','B','C'],
+  answer:'B',
+  explain:'骨ばん（B）が内臓を支えています。'
+},
+{
+  id:'p1-5', unit:'練習問題1', src:'骨のつながり',
+  stem:'骨どうしをつないでいるつくりを何といいますか。ことばで答えなさい。',
+  type:'text', accept:['関節'],
+  explain:'骨と骨をつなぐつくりを関節といいます。'
+},
+{
+  id:'p1-6', unit:'練習問題1', src:'筋肉の動き',
+  stem:'曲がっているうでをのばすとき、力こぶ側の筋肉と、その反対側の筋肉はどのようになりますか。\n(ア) どちらの筋肉も縮む。　(イ) 力こぶ側の筋肉だけが縮む。　(ウ) 反対側の筋肉だけが縮む。　(エ) どちらの筋肉も縮まない。',
+  type:'choice',
+  choices:['(ア) どちらの筋肉も縮む。','(イ) 力こぶ側の筋肉だけが縮む。','(ウ) 反対側の筋肉だけが縮む。','(エ) どちらの筋肉も縮まない。'],
+  answer:'(ウ) 反対側の筋肉だけが縮む。',
+  explain:'うでをのばすときは、力こぶの反対側（外側）の筋肉が縮み、力こぶ側の筋肉はゆるみます。'
+},
+
+/* ---------- 練習問題 大問2（目・耳） ---------- */
+{
+  id:'p2-1', unit:'練習問題2', src:'目のつくり',
+  stem:'目のつくりのうち、レンズにあたるのはどれですか。\n①角まく　②ひとみ（こうさい）　③レンズ　④もうまく　の中から選びなさい。',
+  type:'choice',
+  choices:['①','②','③','④'],
+  answer:'③',
+  explain:'外から入ってきた光は①角まく→②ひとみ→③レンズを通り、④もうまくに像をつくります。レンズは③です。'
+},
+{
+  id:'p2-2', unit:'練習問題2', src:'目のつくり',
+  stem:'外から入ってきた光が像をつくるつくりを何といいますか。ことばで答えなさい。',
+  type:'text', accept:['もうまく','網膜'],
+  explain:'光が像をつくるのは「もうまく（網膜）」です。この情報が視神経を通って脳に伝わります。'
+},
+{
+  id:'p2-3', unit:'練習問題2', src:'耳のつくり',
+  stem:'耳のつくりのうち、空気のしん動を受け取って耳小骨に伝えるつくりを何といいますか。ことばで答えなさい。',
+  type:'text', accept:['こまく','鼓膜'],
+  explain:'こまく（鼓膜）が空気のしん動を受け取り、耳小骨に伝えます。'
+},
+{
+  id:'p2-4', unit:'練習問題2', src:'耳のつくり',
+  stem:'からだの回転を感じ、バランスを保つはたらきをするつくりの説明として、最もあてはまるのはどれですか。\n(ア) 空気をしん動させる。　(イ) 伝えられたしん動を直接脳に伝える。　(ウ) からだの回転を感じ、バランスを保つ。　(エ) こまくの角度を調節する。',
+  type:'choice',
+  choices:['(ア) 空気をしん動させる。','(イ) 伝えられたしん動を直接脳に伝える。','(ウ) からだの回転を感じ、バランスを保つ。','(エ) こまくの角度を調節する。'],
+  answer:'(ウ) からだの回転を感じ、バランスを保つ。',
+  explain:'三半規管（半規管）が、からだの回転を感じてバランスを保つはたらきをします。'
+},
+
+/* ---------- 練習問題 大問3（消化） ---------- */
+{
+  id:'p3-1', unit:'練習問題3', src:'歯のはたらき',
+  stem:'食物をすりつぶすはたらきをしているのはどれですか。2つ選びなさい。\n(ア) 門歯　(イ) 犬歯　(ウ) 小きゅう歯　(エ) 大きゅう歯',
+  type:'multi',
+  choices:['(ア) 門歯','(イ) 犬歯','(ウ) 小きゅう歯','(エ) 大きゅう歯'],
+  answer:['(ウ) 小きゅう歯','(エ) 大きゅう歯'],
+  explain:'食物をすりつぶすのは小きゅう歯と大きゅう歯です。門歯・犬歯は食物をかみ切るはたらきをします。'
+},
+{
+  id:'p3-2', unit:'練習問題3', src:'消化管の道すじ',
+  stem:'口から入った食物が通り、からだの外に出されるまでの道すじとして正しいものはどれですか。\n(ア) 口→食道→胃→小腸　(イ) 口→食道→胃→小腸→大腸　(ウ) 口→食道→胃→大腸→小腸　(エ) 口→食道→胃→小腸→大腸→肛門から出る',
+  type:'choice',
+  choices:['(ア) 口→食道→胃→小腸','(イ) 口→食道→胃→小腸→大腸','(ウ) 口→食道→胃→大腸→小腸','(エ) 口→食道→胃→小腸→大腸→こう門'],
+  answer:'(エ) 口→食道→胃→小腸→大腸→こう門',
+  explain:'食物は口→食道→胃→小腸→大腸を通り、残りかすはこう門からからだの外に出されます。'
+},
+{
+  id:'p3-3', unit:'練習問題3', src:'消化器官の名前',
+  stem:'胃と同じ消化管の一部で、胃の次にある消化器官（小腸の前）は何ですか。ことばで答えなさい。',
+  type:'text', accept:['小腸'],
+  explain:'胃の次は小腸です。小腸で養分が吸収されます。'
+},
+{
+  id:'p3-4', unit:'練習問題3', src:'養分を吸収する器官',
+  stem:'消化された栄養分を吸収する器官は何ですか。ことばで答えなさい。',
+  type:'text', accept:['小腸'],
+  explain:'養分を吸収する器官は小腸です。'
+},
+{
+  id:'p3-5', unit:'練習問題3', src:'栄養素と食品',
+  stem:'炭水化物を多くふくむ食べ物を2つ選びなさい。\n(ア) ジャガイモ　(イ) 肉　(ウ) ゴマ　(エ) 米　(オ) 魚',
+  type:'multi',
+  choices:['(ア) ジャガイモ','(イ) 肉','(ウ) ゴマ','(エ) 米','(オ) 魚'],
+  answer:['(ア) ジャガイモ','(エ) 米'],
+  explain:'ジャガイモと米は炭水化物（デンプン）を多くふくみます。肉や魚はタンパク質、ゴマはしぼうを多くふくみます。'
+},
+
+/* ---------- 練習問題 大問4（呼吸） ---------- */
+{
+  id:'p4-1', unit:'練習問題4', src:'呼吸をするつくり',
+  stem:'ヒトのからだで呼吸をするつくり全体（気管・気管支・その先の袋状の部分をふくむ器官）を何といいますか。ことばで答えなさい。',
+  type:'text', accept:['肺'],
+  explain:'呼吸をするつくりは肺です。'
+},
+{
+  id:'p4-2', unit:'練習問題4', src:'吸う息とはく息のちがい',
+  stem:'吸う息と比べると、はく息で少なくなっている気体は何ですか。ことばで答えなさい。',
+  type:'text', accept:['酸素'],
+  explain:'吸う息と比べ、はく息では酸素が少なくなっています。'
+},
+{
+  id:'p4-3', unit:'練習問題4', src:'呼吸のはたらき',
+  stem:'次の文の①〜③にあてはまることばを選びなさい。\n〔文〕体内に取り入れた（①）を養分と結びつけて、（②）をつくり出し、不要な（③）をからだの外に出すはたらきを呼吸といいます。\n①にあてはまることばは？\n(ア) ちっ素　(イ) 酸素　(ウ) 二酸化炭素　(エ) 光のエネルギー　(オ) 生きるためのエネルギー',
+  type:'choice',
+  choices:['(ア) ちっ素','(イ) 酸素','(ウ) 二酸化炭素','(エ) 光のエネルギー','(オ) 生きるためのエネルギー'],
+  answer:'(イ) 酸素',
+  explain:'①は「酸素」です。体内に取り入れた酸素を養分と結びつけてエネルギーをつくり出します。'
+},
+{
+  id:'p4-3b', unit:'練習問題4', src:'呼吸のはたらき',
+  stem:'同じ文の②にあてはまることばを選びなさい。\n〔文〕体内に取り入れた酸素を養分と結びつけて、（②）をつくり出し、不要な（③）をからだの外に出す。\n(ア) ちっ素　(イ) 酸素　(ウ) 二酸化炭素　(エ) 光のエネルギー　(オ) 生きるためのエネルギー',
+  type:'choice',
+  choices:['(ア) ちっ素','(イ) 酸素','(ウ) 二酸化炭素','(エ) 光のエネルギー','(オ) 生きるためのエネルギー'],
+  answer:'(オ) 生きるためのエネルギー',
+  explain:'②は「生きるためのエネルギー」です。'
+},
+{
+  id:'p4-3c', unit:'練習問題4', src:'呼吸のはたらき',
+  stem:'同じ文の③にあてはまることばを選びなさい。\n〔文〕体内に取り入れた酸素を養分と結びつけて、生きるためのエネルギーをつくり出し、不要な（③）をからだの外に出す。\n(ア) ちっ素　(イ) 酸素　(ウ) 二酸化炭素　(エ) 光のエネルギー　(オ) 生きるためのエネルギー',
+  type:'choice',
+  choices:['(ア) ちっ素','(イ) 酸素','(ウ) 二酸化炭素','(エ) 光のエネルギー','(オ) 生きるためのエネルギー'],
+  answer:'(ウ) 二酸化炭素',
+  explain:'③は「二酸化炭素」です。呼吸で不要になった二酸化炭素をからだの外に出します。'
+},
+
+/* ---------- 練習問題 大問5（心臓・血管） ---------- */
+{
+  id:'p5-1', unit:'練習問題5', src:'心臓の位置',
+  stem:'ヒトのからだを正面から見たとき、心臓があるのはどこですか。\n(ア) 体の右側　(イ) 体のほぼ中央　(ウ) 体の左端',
+  type:'choice',
+  choices:['(ア) 体の右側','(イ) 体のほぼ中央','(ウ) 体の左端'],
+  answer:'(イ) 体のほぼ中央',
+  explain:'ヒトの心臓の位置は胸のほぼ中央部にあります（やや左寄りに感じますが、中央よりにあります）。'
+},
+{
+  id:'p5-2a', unit:'練習問題5', src:'血管の特ちょう',
+  stem:'次の特ちょうをもつ血管はどれですか。\n「心臓にもどる血液が流れる血管で、かべはうすく、大きな血管には血液の逆流を防ぐ弁がある。」\n(ア) 動脈　(イ) 静脈　(ウ) 毛細血管',
+  type:'choice',
+  choices:['(ア) 動脈','(イ) 静脈','(ウ) 毛細血管'],
+  answer:'(イ) 静脈',
+  explain:'心臓にもどる血液が流れ、弁があるのは静脈の特ちょうです。'
+},
+{
+  id:'p5-2b', unit:'練習問題5', src:'血管の特ちょう',
+  stem:'次の特ちょうをもつ血管はどれですか。\n「心臓から送り出される血液が流れる血管で、かべは厚く、よくのび縮みする。」\n(ア) 動脈　(イ) 静脈　(ウ) 毛細血管',
+  type:'choice',
+  choices:['(ア) 動脈','(イ) 静脈','(ウ) 毛細血管'],
+  answer:'(ア) 動脈',
+  explain:'心臓から送り出され、かべが厚くのび縮みするのは動脈の特ちょうです。'
+},
+
+/* ---------- 発展問題（横浜共立学園中学校改題） ---------- */
+{
+  id:'dev-1', unit:'発展問題', src:'消化器官の名前',
+  stem:'図のA〜Fは消化管とそのまわりの器官を示しています。A=口、B=食道、C=胃、D=小腸、E=大腸、F=こう門です。\nBの名前を答えなさい。',
+  type:'text', accept:['食道'],
+  explain:'Bは食道です。'
+},
+{
+  id:'dev-2', unit:'発展問題', src:'消化器官の名前',
+  stem:'図のA〜Fのうち、Cの名前を答えなさい。（A=口、B=食道、C=？、D=小腸、E=大腸、F=こう門）',
+  type:'text', accept:['胃'],
+  explain:'Cは胃です。'
+},
+{
+  id:'dev-3', unit:'発展問題', src:'養分を吸収する部分',
+  stem:'文中の（X）にあてはまる、養分が主に吸収される部分はどれですか。\n(ア) 食道　(イ) 胃　(ウ) 小腸　(エ) 大腸',
+  type:'choice',
+  choices:['(ア) 食道','(イ) 胃','(ウ) 小腸','(エ) 大腸'],
+  answer:'(ウ) 小腸',
+  explain:'養分は主に小腸（D）から吸収されます。'
+},
+{
+  id:'dev-4', unit:'発展問題', src:'消化管の名前',
+  stem:'食物の通り道（口からこう門までの一続きの管）の名前を答えなさい。',
+  type:'text', accept:['消化管'],
+  explain:'食物の通り道を消化管といいます。'
+},
+{
+  id:'dev-5', unit:'発展問題', src:'養分の運搬と呼吸',
+  stem:'文中の①・②にあてはまることばを答えなさい。\n「消化された食物は、おもに小腸から吸収され（①）に取り入れられて、全身に運ばれる。全身に運ばれた養分は、呼吸によって取り入れられた（②）と結びつき、生きていくために必要なエネルギーをつくる。」\n①にあてはまることばを答えなさい。',
+  type:'text', accept:['血液'],
+  explain:'①は「血液」です。小腸で吸収された養分は血液に取り入れられ全身に運ばれます。'
+},
+{
+  id:'dev-5b', unit:'発展問題', src:'養分の運搬と呼吸',
+  stem:'同じ文の②にあてはまることばを答えなさい。\n「全身に運ばれた養分は、呼吸によって取り入れられた（②）と結びつき、生きていくために必要なエネルギーをつくる。」',
+  type:'text', accept:['酸素'],
+  explain:'②は「酸素」です。養分は酸素と結びつき、エネルギーがつくられます。'
+}
+];
+
+/* =========================================================
+   忘却曲線・反復学習エンジン
+   ========================================================= */
+const STORAGE_KEY = 'rika_ch1_v1';
+const N = PROBLEMS.length;
+const BY_ID = {};
+PROBLEMS.forEach((p,i)=>{ p.__index=i; BY_ID[p.id]=p; });
+
+// SRSの復習間隔（枚数=出題ステップ差。忘却曲線を考慮し短→長）
+const REVIEW_GAPS = [2, 4, 8, 16, 30];   // 通常の全問再表示は自動で回る。誤答した問題はこの間隔で優先的に再出題
+const WEAK_GAPS    = [1, 3, 6, 12];      // 復習リスト入り問題の優先再出題間隔（短め＝頻度を上げる）
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {
+    step: 0,                 // 全体の出題ステップカウンタ
+    order: null,             // 出題順（固定シーケンス。ランダムなし）
+    cursor: 0,                // orderの何番目まで済んだか
+    stats: {},                // id -> {seen, correct, wrong, dueStep, weak, lastResult}
+    doneOnce: false
+  };
+}
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+if(!state.order){
+  // 教科書の掲載順（まとめてみよう→練習問題→発展問題）を基本の反復順とする。ランダム要素なし。
+  state.order = PROBLEMS.map(p=>p.id);
+  state.cursor = 0;
+}
+PROBLEMS.forEach(p=>{
+  if(!state.stats[p.id]){
+    state.stats[p.id] = {seen:0, correct:0, wrong:0, dueStep:0, weak:false, lastResult:null, gapIdx:0};
+  }
+});
+saveState();
+
+/* 次に出題する問題を決めるロジック
+   - 優先度1: 復習リスト(weak)入りで、dueStep <= 現在stepの問題（頻度が高い）
+   - 優先度2: 通常シーケンス(order)の次の未消化分
+   - 全問は循環して繰り返し出題され続ける（忘却曲線に沿って全問再表示） */
+function pickNextId(){
+  const s = state;
+  // 復習優先: dueになっている弱点問題のうち、最も長く待たされているもの
+  let weakCandidates = PROBLEMS
+    .filter(p=>s.stats[p.id].weak && s.stats[p.id].dueStep<=s.step)
+    .sort((a,b)=> s.stats[a.id].dueStep - s.stats[b.id].dueStep);
+  if(weakCandidates.length>0){
+    return weakCandidates[0].id;
+  }
+  // 通常シーケンスを進める。末尾まで行ったら最初に戻り、全問を繰り返し反復する（忘却曲線対応）
+  if(s.cursor >= s.order.length){
+    s.cursor = 0;
+  }
+  const id = s.order[s.cursor];
+  s.cursor++;
+  return id;
+}
+
+function currentSessionTotalMastered(){
+  return PROBLEMS.filter(p=>state.stats[p.id].correct>0 && !state.stats[p.id].weak).length;
+}
+function currentWeakCount(){
+  return PROBLEMS.filter(p=>state.stats[p.id].weak).length;
+}
+
+/* =========================================================
+   UI ロジック
+   ========================================================= */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+const views = {
+  home: $('#view-home'),
+  quiz: $('#view-quiz'),
+  review: $('#view-review'),
+  done: $('#view-done')
+};
+function showView(name){
+  Object.keys(views).forEach(k=>{
+    views[k].classList.toggle('hidden', k!==name);
+  });
+  $$('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  if(name==='home') $('[data-view="home"]').classList.add('active');
+  if(name==='quiz') $('[data-view="quiz"]').classList.add('active');
+  if(name==='review') $('[data-view="review"]').classList.add('active');
+}
+
+function renderHome(){
+  const total = N;
+  const masteredOnce = PROBLEMS.filter(p=>state.stats[p.id].correct>0).length;
+  const weak = currentWeakCount();
+  $('#statTotal').textContent = total;
+  $('#statMastered').textContent = masteredOnce;
+  $('#statWeak').textContent = weak;
+  const pct = Math.round((masteredOnce/total)*100);
+  $('#homeProgressBar').style.width = pct+'%';
+  $('#homeProgressLabel').textContent = masteredOnce+' / '+total+' 問クリア';
+}
+
+function renderReview(){
+  const list = $('#reviewList');
+  const weakItems = PROBLEMS.filter(p=>state.stats[p.id].weak);
+  if(weakItems.length===0){
+    list.innerHTML = '<div class="empty-msg">今は復習リストに問題がありません。すばらしい！<br>まちがえた問題があるとここに表示されます。</div>';
+    return;
+  }
+  list.innerHTML = weakItems.map(p=>{
+    const st = state.stats[p.id];
+    return `<div class="review-item"><span>${p.unit}｜${p.src}</span><span class="tag">まちがえ ${st.wrong}回</span></div>`;
+  }).join('');
+}
+
+/* --- クイズ進行 --- */
+let curId = null;
+let answered = false;
+let selectedChoice = null;
+let selectedMulti = new Set();
+
+function startQuiz(){
+  showView('quiz');
+  nextQuestion();
+}
+
+function nextQuestion(){
+  answered = false;
+  selectedChoice = null;
+  selectedMulti = new Set();
+  curId = pickNextId();
+  saveState();
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const p = BY_ID[curId];
+  const st = state.stats[curId];
+
+  $('#quizBadge').textContent = st.weak ? '復習リスト' : p.unit;
+  $('#quizBadge').className = 'badge' + (st.weak ? ' review' : '');
+
+  const masteredOnce = PROBLEMS.filter(x=>state.stats[x.id].correct>0).length;
+  $('#quizCounter').textContent = masteredOnce + ' / ' + N + ' 問クリア';
+  $('#quizProgressBar').style.width = Math.round((masteredOnce/N)*100)+'%';
+
+  $('#qMeta').textContent = p.src;
+  $('#qStem').textContent = p.stem;
+
+  $('#feedback').classList.remove('show','ok','ng');
+  $('#hintBox').classList.remove('show');
+  $('#hintToggle').classList.add('hidden');
+
+  const area = $('#answerArea');
+  area.innerHTML = '';
+
+  if(p.type==='choice'){
+    const box = document.createElement('div');
+    box.className = 'choices';
+    p.choices.forEach(c=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c;
+      b.dataset.value = c;
+      b.addEventListener('click', ()=>{
+        if(answered) return;
+        selectedChoice = c;
+        $$('#answerArea .choice-btn').forEach(x=>x.classList.remove('selected'));
+        b.classList.add('selected');
+      });
+      box.appendChild(b);
+    });
+    area.appendChild(box);
+  } else if(p.type==='multi'){
+    const box = document.createElement('div');
+    box.className = 'choices';
+    p.choices.forEach(c=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c;
+      b.dataset.value = c;
+      b.addEventListener('click', ()=>{
+        if(answered) return;
+        if(selectedMulti.has(c)){
+          selectedMulti.delete(c);
+          b.classList.remove('selected');
+        }else{
+          selectedMulti.add(c);
+          b.classList.add('selected');
+        }
+      });
+      box.appendChild(b);
+    });
+    area.appendChild(box);
+    const note = document.createElement('div');
+    note.style.cssText='font-size:.72rem;color:var(--ink-soft);margin:-8px 0 12px;';
+    note.textContent = '※あてはまるものをすべて選んでください（複数選択）';
+    area.appendChild(note);
+  } else if(p.type==='text'){
+    const row = document.createElement('div');
+    row.className = 'text-input-row';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'ことばで答える';
+    input.id = 'textAnswer';
+    input.autocomplete = 'off';
+    row.appendChild(input);
+    area.appendChild(row);
+    setTimeout(()=>input.focus(), 50);
+  }
+
+  $('#btnCheck').classList.remove('hidden');
+  $('#btnCheck').disabled = false;
+  $('#btnNext').classList.add('hidden');
+}
+
+function normalizeText(s){
+  if(s==null) return '';
+  return s
+    .toString()
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0)) // 全角->半角
+    .replace(/\s+/g,'')
+    .replace(/[。．.、，,]/g,'')
+    .trim();
+}
+
+function checkAnswer(){
+  const p = BY_ID[curId];
+  if(answered) return;
+
+  let isCorrect = false;
+  let userAnswerDisplay = '';
+
+  if(p.type==='choice'){
+    if(!selectedChoice){ flashNeedSelect(); return; }
+    isCorrect = selectedChoice === p.answer;
+    userAnswerDisplay = selectedChoice;
+    $$('#answerArea .choice-btn').forEach(b=>{
+      if(b.dataset.value === p.answer) b.classList.add('correct');
+      else if(b.dataset.value === selectedChoice && !isCorrect) b.classList.add('wrong');
+      b.disabled = true;
+    });
+  } else if(p.type==='multi'){
+    if(selectedMulti.size===0){ flashNeedSelect(); return; }
+    const ans = new Set(p.answer);
+    isCorrect = ans.size===selectedMulti.size && [...ans].every(a=>selectedMulti.has(a));
+    userAnswerDisplay = [...selectedMulti].join('、');
+    $$('#answerArea .choice-btn').forEach(b=>{
+      const v = b.dataset.value;
+      if(ans.has(v)) b.classList.add('correct');
+      else if(selectedMulti.has(v)) b.classList.add('wrong');
+      b.disabled = true;
+    });
+  } else if(p.type==='text'){
+    const input = $('#textAnswer');
+    const val = input.value;
+    if(!val || !val.trim()){ flashNeedSelect(); return; }
+    userAnswerDisplay = val;
+    const norm = normalizeText(val);
+    isCorrect = p.accept.some(a=>normalizeText(a)===norm);
+    input.disabled = true;
+    input.classList.add(isCorrect?'correct':'wrong');
+  }
+
+  answered = true;
+  updateStats(p.id, isCorrect);
+
+  const fb = $('#feedback');
+  fb.classList.add('show');
+  if(isCorrect){
+    fb.classList.add('ok'); fb.classList.remove('ng');
+    $('#fbTitle').textContent = '⭕ せいかい！';
+  }else{
+    fb.classList.add('ng'); fb.classList.remove('ok');
+    const correctText = p.type==='multi' ? p.answer.join('、') : p.answer;
+    $('#fbTitle').textContent = '❌ おしい！ 正解は「'+correctText+'」';
+  }
+  $('#fbBody').textContent = p.explain;
+
+  $('#btnCheck').classList.add('hidden');
+  $('#btnNext').classList.remove('hidden');
+
+  saveState();
+}
+
+function flashNeedSelect(){
+  const btn = $('#btnCheck');
+  btn.textContent = 'こたえを選んでね';
+  setTimeout(()=>{ btn.textContent='こたえ合わせ'; }, 900);
+}
+
+function updateStats(id, isCorrect){
+  const st = state.stats[id];
+  st.seen++;
+  state.step++;
+  if(isCorrect){
+    st.correct++;
+    st.lastResult = 'correct';
+    if(st.weak){
+      // 復習リストの問題に正解 → 間隔を伸ばしながら、閾値回数正解したら復習リストから卒業
+      st.gapIdx = Math.min(st.gapIdx+1, WEAK_GAPS.length-1);
+      if(st.correct - st.wrong >= 2){
+        st.weak = false;
+        st.gapIdx = 0;
+      } else {
+        st.dueStep = state.step + WEAK_GAPS[st.gapIdx];
+      }
+    }
+  } else {
+    st.wrong++;
+    st.lastResult = 'wrong';
+    st.weak = true;
+    st.gapIdx = 0;
+    st.dueStep = state.step + WEAK_GAPS[0]; // まちがえたら早めにもう一度出す（再表示の頻度を上げる）
+  }
+}
+
+/* --- ボタン結線 --- */
+$('#btnCheck').addEventListener('click', checkAnswer);
+$('#btnNext').addEventListener('click', ()=>{
+  nextQuestion();
+});
+$('#btnStart').addEventListener('click', startQuiz);
+$('#btnRestart').addEventListener('click', ()=>{
+  state.cursor = 0;
+  saveState();
+  startQuiz();
+});
+$('#btnDoneHome').addEventListener('click', ()=>{
+  showView('home');
+  renderHome();
+});
+
+$$('nav.tabs button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const v = b.dataset.view;
+    if(v==='home'){ showView('home'); renderHome(); }
+    if(v==='quiz'){ startQuiz(); }
+    if(v==='review'){ showView('review'); renderReview(); }
+  });
+});
+
+/* 初期表示 */
+renderHome();
+showView('home');
+</script>
+</body>
+</html>
