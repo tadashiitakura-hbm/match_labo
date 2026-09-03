@@ -296,6 +296,24 @@ table.rec th{color:var(--ink-soft);font-weight:bold;font-size:.72rem;}
 #loginGate .loading{color:var(--ink-soft);font-size:.8rem;margin-top:10px;min-height:1.2em;}
 body.gate-open #appRoot{display:none;}
 .small-link{background:none;border:none;color:var(--ink-soft);font-size:.72rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:0;}
+
+#profileGate{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:99;padding:20px;}
+body.profile-open #profileGate{display:flex;}
+body.profile-open #appRoot{display:none;}
+#profileGate .box{background:var(--card);border-radius:20px;padding:32px 28px;box-shadow:var(--shadow);max-width:340px;width:100%;text-align:center;}
+#profileGate h2{font-family:'Hachi Maru Pop',cursive;color:var(--accent-dark);margin:0 0 6px;font-size:1.25rem;}
+#profileGate p{color:var(--ink-soft);font-size:.85rem;margin:0 0 16px;}
+#profileList{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+#profileList button{
+  width:100%;text-align:left;padding:12px 16px;border:2px solid var(--border);
+  border-radius:10px;font-size:1rem;font-family:inherit;background:#fff;color:var(--ink);
+  cursor:pointer;font-weight:bold;
+}
+#profileList button:hover{border-color:var(--accent);background:var(--accent-soft);}
+#profileGate .divider{color:var(--ink-soft);font-size:.75rem;margin:10px 0;}
+#profileGate input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:1.05rem;font-family:inherit;text-align:center;}
+#profileGate .addBtn{width:100%;margin-top:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:1rem;cursor:pointer;font-family:inherit;font-weight:bold;box-shadow:0 3px 0 var(--accent-dark);}
+#profileGate .err{color:var(--warn);font-size:.8rem;margin-top:10px;min-height:1.2em;}
 </style>
 </head>
 <body class="gate-open">
@@ -308,6 +326,18 @@ body.gate-open #appRoot{display:none;}
     <button id="gateBtn">はじめる</button>
     <div class="err" id="gateErr"></div>
     <div class="loading" id="gateLoading"></div>
+  </div>
+</div>
+
+<div id="profileGate">
+  <div class="box">
+    <h2>だれが れんしゅうする？</h2>
+    <p>なまえを えらんでね</p>
+    <div id="profileList"></div>
+    <div class="divider" id="profileDividerText">はじめての人はここに名前を入力してね</div>
+    <input type="text" id="profileNewName" placeholder="なまえ（ひらがなでOK）" autocomplete="off" maxlength="10">
+    <button class="addBtn" id="profileAddBtn">この名前ではじめる</button>
+    <div class="err" id="profileErr"></div>
   </div>
 </div>
 
@@ -395,7 +425,8 @@ body.gate-open #appRoot{display:none;}
       <div class="section-title">学習記録（日ごと）</div>
       <div class="rec-wrap"><table class="rec" id="historyTable"></table></div>
     </div>
-    <div class="card">
+    <div class="card" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <button class="small-link" id="btnSwitchProfile">👤 名前を変える</button>
       <button class="small-link" id="btnLogout">🔑 あいことばを変える</button>
     </div>
   </div>
@@ -497,6 +528,120 @@ fbAuth.onAuthStateChanged(function(user){
 function gateLogout(){
   fbAuth.signOut().then(()=>{ location.reload(); });
 }
+</script>
+
+<script>
+'use strict';
+/* =========================================================
+   プロフィール（名前）選択
+   - 1つの あいことば（Firebaseアカウント）を、複数の子どもで共有できるようにする
+   - Firestore: rika_users/{uid} に profileNames（名前の一覧）を保存
+   - 各名前の学習記録は rika_users/{uid}/profiles/{profileName} に保存
+   - localStorageは名前ごとにキーを分ける
+   ========================================================= */
+const PROFILE_LAST_KEY = 'rika_ch1_lastProfile';
+let currentProfile = null;
+
+function profileSetErr(msg){ document.getElementById('profileErr').textContent = msg || ''; }
+
+function profileStorageKey(name){
+  return 'rika_ch1_v2::' + name;
+}
+
+async function loadProfileNames(){
+  const user = fbAuth.currentUser;
+  if(!user) return [];
+  try{
+    const snap = await fbDb.collection('rika_users').doc(user.uid).get();
+    if(snap.exists){
+      const data = snap.data() || {};
+      if(Array.isArray(data.profileNames)) return data.profileNames;
+    }
+  }catch(e){ console.warn('load profile names failed', e); }
+  return [];
+}
+
+async function saveProfileNames(names){
+  const user = fbAuth.currentUser;
+  if(!user) return;
+  try{
+    await fbDb.collection('rika_users').doc(user.uid).set({ profileNames: names }, { merge:true });
+  }catch(e){ console.warn('save profile names failed', e); }
+}
+
+function renderProfileList(names){
+  const box = document.getElementById('profileList');
+  if(!names.length){
+    box.innerHTML = '';
+    return;
+  }
+  box.innerHTML = names.map(n=>
+    `<button type="button" data-name="${n.replace(/"/g,'&quot;')}">${escapeHtmlSafe(n)}</button>`
+  ).join('');
+  box.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      selectProfile(btn.dataset.name);
+    });
+  });
+}
+function escapeHtmlSafe(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function openProfileGate(){
+  document.body.classList.add('profile-open');
+  profileSetErr('');
+  document.getElementById('profileNewName').value='';
+  const names = await loadProfileNames();
+  renderProfileList(names);
+  const divider = document.getElementById('profileDividerText');
+  divider.textContent = names.length ? 'ちがう名前で はじめる場合はこちら' : 'はじめての人はここに名前を入力してね';
+}
+
+function selectProfile(name){
+  const trimmed = (name||'').trim();
+  if(!trimmed){
+    profileSetErr('なまえを にゅうりょくしてね');
+    return;
+  }
+  if(trimmed.length>10){
+    profileSetErr('なまえは10文字いないにしてね');
+    return;
+  }
+  currentProfile = trimmed;
+  try{ localStorage.setItem(PROFILE_LAST_KEY, trimmed); }catch(e){}
+  document.body.classList.remove('profile-open');
+  onProfileReady();
+}
+
+document.getElementById('profileAddBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('profileNewName').value;
+  const trimmed = (name||'').trim();
+  if(!trimmed){
+    profileSetErr('なまえを にゅうりょくしてね');
+    return;
+  }
+  if(trimmed.length>10){
+    profileSetErr('なまえは10文字いないにしてね');
+    return;
+  }
+  profileSetErr('');
+  const names = await loadProfileNames();
+  if(!names.includes(trimmed)){
+    names.push(trimmed);
+    await saveProfileNames(names);
+  }
+  selectProfile(trimmed);
+});
+document.getElementById('profileNewName').addEventListener('keydown',(e)=>{
+  if(e.key==='Enter') document.getElementById('profileAddBtn').click();
+});
+
+function switchProfile(){
+  openProfileGate();
+}
+
+let onProfileReady = function(){};
 </script>
 
 <script>
@@ -909,7 +1054,10 @@ const PROBLEMS = [
    - 翌日以降、忘却曲線の間隔（1→2→4→7→14→30日）で再出題される
    - 全問がこの同じしくみで回るので、正解し続けている問題もいずれ再登場する
    ========================================================= */
-const STORAGE_KEY = 'rika_ch1_v2';
+const STORAGE_KEY_BASE = 'rika_ch1_v2';
+function currentStorageKey(){
+  return currentProfile ? profileStorageKey(currentProfile) : STORAGE_KEY_BASE;
+}
 const N = PROBLEMS.length;
 const BY_ID = {};
 PROBLEMS.forEach((p,i)=>{ p.__index=i; BY_ID[p.id]=p; });
@@ -948,13 +1096,13 @@ function normalizeState(s){
 }
 function loadLocalState(){
   try{
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(currentStorageKey());
     if(raw) return normalizeState(JSON.parse(raw));
   }catch(e){}
   return normalizeState({});
 }
 
-let state = loadLocalState();
+let state = normalizeState({}); // プロフィール確定後にloadLocalState()で読み直す
 let queue = [];       // 今日出題する残りの問題id（クラウド同期はしないその場限りの作業列）
 let queueDate = null;
 let cloudSyncReady = false;
@@ -962,7 +1110,7 @@ let cloudSaveTimer = null;
 
 function saveLocal(){
   state.updatedAt = Date.now();
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  try{ localStorage.setItem(currentStorageKey(), JSON.stringify(state)); }catch(e){}
   scheduleCloudSave();
 }
 function scheduleCloudSave(){
@@ -973,11 +1121,16 @@ function scheduleCloudSave(){
 function cloudPayload(){
   return { stats: state.stats, mDaily: state.mDaily, updatedAt: state.updatedAt };
 }
+function profileDocRef(){
+  const user = fbAuth.currentUser;
+  if(!user || !currentProfile) return null;
+  return fbDb.collection('rika_users').doc(user.uid).collection('profiles').doc(currentProfile);
+}
 function cloudSaveNow(){
   cloudSaveTimer = null;
-  const user = fbAuth.currentUser;
-  if(!user) return;
-  fbDb.collection('rika_users').doc(user.uid).set(cloudPayload()).catch(e=>{
+  const ref = profileDocRef();
+  if(!ref) return;
+  ref.set(cloudPayload()).catch(e=>{
     console.warn('cloud save failed', e);
   });
 }
@@ -1024,21 +1177,29 @@ function mergeState(local, remote){
 }
 async function initCloudSync(){
   const user = fbAuth.currentUser;
-  if(!user) return;
+  if(!user || !currentProfile) return;
+  cloudSyncReady = false;
+  state = loadLocalState(); // 選ばれたプロフィールのローカル記録を読み直す
   try{
-    const snap = await fbDb.collection('rika_users').doc(user.uid).get();
+    const ref = profileDocRef();
+    const snap = await ref.get();
     if(snap.exists){
       const remote = normalizeState(snap.data());
       state = mergeState(state, remote);
-      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+      try{ localStorage.setItem(currentStorageKey(), JSON.stringify(state)); }catch(e){}
     }
   }catch(e){
     console.warn('cloud load failed', e);
   }
   cloudSyncReady = true;
   scheduleCloudSave();
+  updateHeaderProfileLabel();
   renderHome();
   go('home');
+}
+function updateHeaderProfileLabel(){
+  const el = document.getElementById('headerStatus');
+  if(el) el.textContent = currentProfile ? `👤 ${currentProfile} さんの記録` : '';
 }
 
 function getStat(id){ return state.stats[id]; }
@@ -1430,6 +1591,9 @@ $('#btnLogout').addEventListener('click', ()=>{
     gateLogout();
   }
 });
+$('#btnSwitchProfile').addEventListener('click', ()=>{
+  switchProfile();
+});
 
 $$('nav.tabs button').forEach(b=>{
   b.addEventListener('click', ()=>{
@@ -1443,6 +1607,9 @@ $$('nav.tabs button').forEach(b=>{
 renderHome();
 go('home');
 onAuthReady = function(){
+  openProfileGate();
+};
+onProfileReady = function(){
   initCloudSync();
 };
 </script>
