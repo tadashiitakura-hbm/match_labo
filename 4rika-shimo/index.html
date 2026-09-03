@@ -472,8 +472,21 @@ function ensureFirebaseSignIn(){
         try{
           await fbAuth.signInWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
         }catch(err){
-          if(err.code==='auth/user-not-found'){
-            await fbAuth.createUserWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+          // 固定アカウントがまだ存在しない場合のエラーコードはFirebaseの設定により
+          // 'auth/user-not-found' のことも 'auth/invalid-credential' のこともあるため、
+          // どちらの場合も「まだ作成されていない」とみなして新規作成を試みる。
+          if(err.code==='auth/user-not-found' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
+            try{
+              await fbAuth.createUserWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+            }catch(err2){
+              // 別タブ等で既に作成済みだった場合はメールアドレス重複エラーになるので、
+              // その場合は本来のパスワード誤りとしてサインインし直す。
+              if(err2.code==='auth/email-already-in-use'){
+                await fbAuth.signInWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+              }else{
+                throw err2;
+              }
+            }
           }else{
             throw err;
           }
