@@ -634,19 +634,18 @@ function gen_b1_2(rng) {
 
 // b1_3: 計算の順序を間違えた逆算問題
 function gen_b1_3(rng) {
-  // 「ある数」に○をかけてから△をひくべきところを、逆に△をひいてから○をかけて答えが違った、というタイプ
+  // 「ある数」から○をひいてから△をかけるべきところを、逆に△をかけてからひいて答えが違った、というタイプ
+  // まちがえた式: x*mul - sub = wrongAns  →  x = (wrongAns+sub)/mul
   const mul = randInt(rng, 2, 6);
   const sub = randInt(rng, 3, 20);
-  const wrongAns = randInt(rng, 10, 40); // 間違えて計算した答え（(x-sub)*mul）
-  // wrongAns = (x - sub) * mul  →  x = wrongAns/mul + sub
-  if (wrongAns % mul !== 0) return gen_b1_3(rng);
-  const x = wrongAns / mul + sub;
-  const correctAns = x * mul - sub;
-  const sig = `b1_3_${mul}_${sub}_${wrongAns}`;
+  const x = randInt(rng, sub + 1, sub + 20); // 「ある数」（sub超で正しい答えが正になるように）
+  const wrongAns = x * mul - sub; // まちがえて計算した答え
+  const correctAns = (x - sub) * mul; // 正しく計算した答え
+  const sig = `b1_3_${mul}_${sub}_${x}`;
   const stem = `ある数から${sub}をひいてから${mul}をかけるところを、まちがえて先に${mul}をかけてから${sub}をひいてしまい、答えが${wrongAns}になりました。正しく計算した答えを求めなさい。`;
   const fields = [{ id: 'a1', label: '正しい答え', type: 'int', check: (v) => intEq(v, correctAns) }];
-  const hints = ['まず「ある数」が何かを、まちがえた式から逆算しましょう。', `まちがえた式は (ある数×${mul}) − ${sub} = ${wrongAns} です。`, 'ある数が分かったら、正しい順番（−${sub}してから×${mul}）で計算し直します。'];
-  const solution = `まちがえた式：ある数×${mul}−${sub}＝${wrongAns}<br>ある数×${mul}＝${wrongAns + sub}<br>ある数＝${(wrongAns + sub) / mul}<br>正しい式：ある数−${sub}を先にして×${mul}<br>(${(wrongAns + sub) / mul}−${sub})×${mul}＝<b>${correctAns}</b>`;
+  const hints = ['まず「ある数」が何かを、まちがえた式から逆算しましょう。', `まちがえた式は (ある数×${mul}) − ${sub} = ${wrongAns} です。`, `ある数が分かったら、正しい順番（−${sub}してから×${mul}）で計算し直します。`];
+  const solution = `まちがえた式：ある数×${mul}−${sub}＝${wrongAns}<br>ある数×${mul}＝${wrongAns + sub}<br>ある数＝${x}<br>正しい式：ある数−${sub}を先にして×${mul}<br>(${x}−${sub})×${mul}＝<b>${correctAns}</b>`;
   return { title: '基本問題3：計算順序の逆算', stem, fields, svg: '', hints, solution, sig };
 }
 
