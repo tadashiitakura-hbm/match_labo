@@ -352,7 +352,7 @@ function gen_k2_wake_fuhen(rng) {
     `最初の差は ${bigStart} − ${smallStart} = ${diff}円のままです。`,
     `残額の比が${a_after_ratio}:1なので、差の${diff}円が(${a_after_ratio}-1)にあたります。妹の残りを求めてから、出した金額を逆算します。`
   ];
-  const solution = `2人が同額出しても差は変わらないので、残額の差は最初と同じ ${diff}円。<br>残額の比は${a_after_ratio}:1なので、差${diff}円は(${a_after_ratio}−1)＝${a_after_ratio - 1}にあたる。<br>妹の残り＝${diff}÷${a_after_ratio - 1}＝${small_after}円<br>妹が出した金額＝${smallStart}−${small_after}＝<b>${pay / 2}円</b>`;
+  const solution = `2人が同額出しても差は変わらないので、残額の差は最初と同じ ${diff}円。<br>残額の比は${a_after_ratio}:1なので、差${diff}円は(${a_after_ratio}−1)＝${a_after_ratio - 1}にあたる。<br>妹の残り＝${diff}÷${a_after_ratio - 1}＝${small_after}円<br>妹が出した金額＝${smallStart}−${small_after}＝<b>${pay / 2}</b>円`;
   return { title: '分配算（不変量に注目）', stem, fields, svg: '', hints, solution, sig };
 }
 
