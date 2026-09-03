@@ -56,9 +56,29 @@ table.rec th,table.rec td{border-bottom:1px solid var(--line);padding:6px 4px;te
 #cutin .msg{background:#fff;padding:26px 40px;border-radius:20px;font-size:1.6em;font-family:'Hachi Maru Pop',cursive;color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.2);}
 footer{text-align:center;padding:20px;color:#9a8a7a;font-size:.8em;}
 .timer{font-size:1.3em;font-weight:bold;color:var(--accent);}
+#loginGate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+#loginGate .box{background:var(--card);border-radius:20px;padding:32px 28px;box-shadow:0 4px 16px rgba(0,0,0,.1);max-width:340px;width:100%;text-align:center;}
+#loginGate h2{font-family:'Hachi Maru Pop',cursive;color:var(--accent);margin:0 0 6px;font-size:1.3em;}
+#loginGate p{color:#8a7a6a;font-size:.88em;margin:0 0 18px;}
+#loginGate input{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:1.1em;font-family:inherit;text-align:center;letter-spacing:.1em;}
+#loginGate button{width:100%;margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:1.05em;cursor:pointer;font-family:inherit;}
+#loginGate .err{color:var(--warn);font-size:.85em;margin-top:10px;min-height:1.2em;}
+#loginGate .loading{color:#8a7a6a;font-size:.85em;margin-top:10px;min-height:1.2em;}
+body.gate-open #appRoot{display:none;}
 </style>
 </head>
 <body>
+<div id="loginGate">
+  <div class="box">
+    <h2>解法チャレンジ 4年下</h2>
+    <p>いつもの あいことば を にゅうりょくしてね</p>
+    <input type="password" id="gatePass" placeholder="あいことば" autocomplete="off">
+    <button id="gateBtn">はじめる</button>
+    <div class="err" id="gateErr"></div>
+    <div class="loading" id="gateLoading"></div>
+  </div>
+</div>
+<div id="appRoot">
 <header>
   <div>
     <h1>解法チャレンジ 4年下</h1>
@@ -69,7 +89,98 @@ footer{text-align:center;padding:20px;color:#9a8a7a;font-size:.8em;}
 <nav id="navbar"></nav>
 <main id="main"></main>
 <div id="cutin"><div class="msg" id="cutinMsg">すごい！</div></div>
-<footer>解法チャレンジ 4年下 — 家庭学習用（データはこの端末のブラウザ内にのみ保存されます）</footer>
+<footer>解法チャレンジ 4年下 — 家庭学習用（データはこの端末とサーバーに保存されます）</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-firestore-compat.min.js"></script>
+<script>
+'use strict';
+const firebaseConfig={
+  apiKey:"AIzaSyD307IornF-BGD55DSlNL9UBA3P6avqI6s",
+  authDomain:"hbmsansu.firebaseapp.com",
+  projectId:"hbmsansu",
+  storageBucket:"hbmsansu.firebasestorage.app",
+  messagingSenderId:"360846130418",
+  appId:"1:360846130418:web:3b54bb3239158cc675e46b"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth=firebase.auth();
+const fbDb=firebase.firestore();
+
+// パスフレーズ→決定論的メールアドレス変換（パスフレーズ自体がアカウントIDとパスワードを兼ねる）
+function passphraseToEmail(pass){
+  const norm=pass.trim();
+  let hash=0;
+  for(let i=0;i<norm.length;i++){
+    hash=((hash<<5)-hash+norm.charCodeAt(i))|0;
+  }
+  const h=(hash>>>0).toString(36);
+  return `u${h}_${norm.length}@ch4ge.local`;
+}
+
+document.body.classList.add('gate-open');
+
+function gateSetErr(msg){document.getElementById('gateErr').textContent=msg||'';}
+function gateSetLoading(msg){document.getElementById('gateLoading').textContent=msg||'';}
+
+async function doLogin(){
+  const pass=document.getElementById('gatePass').value;
+  if(!pass||pass.trim().length<4){
+    gateSetErr('あいことばは4文字いじょうにしてね');
+    return;
+  }
+  gateSetErr('');
+  gateSetLoading('つないでいます…');
+  document.getElementById('gateBtn').disabled=true;
+  const email=passphraseToEmail(pass);
+  try{
+    try{
+      await fbAuth.signInWithEmailAndPassword(email,pass);
+    }catch(err){
+      if(err.code==='auth/user-not-found' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
+        await fbAuth.createUserWithEmailAndPassword(email,pass);
+      }else{
+        throw err;
+      }
+    }
+    gateSetLoading('');
+    document.body.classList.remove('gate-open');
+    document.getElementById('loginGate').style.display='none';
+    onAuthReady();
+  }catch(err){
+    gateSetLoading('');
+    document.getElementById('gateBtn').disabled=false;
+    if(err.code==='auth/wrong-password' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
+      gateSetErr('あいことばが ちがうみたい。もういちど にゅうりょくしてね');
+    }else{
+      gateSetErr('つながりませんでした（'+(err.code||err.message)+'）');
+    }
+  }
+}
+document.getElementById('gateBtn').addEventListener('click',doLogin);
+document.getElementById('gatePass').addEventListener('keydown',(e)=>{if(e.key==='Enter')doLogin();});
+
+let onAuthReady=function(){}; // メインスクリプトで上書きされる
+let _autoLoginChecked=false;
+
+// 前回ログイン済みならブラウザに認証状態が残っているので、あいことば入力なしで再開する
+fbAuth.onAuthStateChanged(function(user){
+  if(!_autoLoginChecked){
+    _autoLoginChecked=true;
+    if(user){
+      document.body.classList.remove('gate-open');
+      document.getElementById('loginGate').style.display='none';
+      onAuthReady();
+    }
+  }
+});
+
+function gateLogout(){
+  fbAuth.signOut().then(()=>{ location.reload(); });
+}
+</script>
 
 <script>
 'use strict';
@@ -1491,10 +1602,7 @@ function isRoundUnlocked(r){
   return r<=currentRound();
 }
 
-function loadData(){
-  let raw=null;
-  try{raw=localStorage.getItem(KEY);}catch(e){}
-  let d=raw?JSON.parse(raw):null;
+function normalizeData(d){
   if(!d)d={};
   d.srs=d.srs||{};
   d.stats=d.stats||{};
@@ -1504,10 +1612,59 @@ function loadData(){
   d.flagLog=d.flagLog||[];
   d.wcHistory=d.wcHistory||[];
   d.seeds=d.seeds||{};
+  d.updatedAt=d.updatedAt||0;
   return d;
 }
+function loadData(){
+  let raw=null;
+  try{raw=localStorage.getItem(KEY);}catch(e){}
+  let d=raw?JSON.parse(raw):null;
+  return normalizeData(d);
+}
 let DATA=loadData();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(DATA));}catch(e){}}
+let cloudSyncReady=false; // Firestoreからの初回読み込みが終わるまではクラウド書き込みを保留
+let cloudSaveTimer=null;
+function save(){
+  DATA.updatedAt=Date.now();
+  try{localStorage.setItem(KEY,JSON.stringify(DATA));}catch(e){}
+  scheduleCloudSave();
+}
+function scheduleCloudSave(){
+  if(!cloudSyncReady)return;
+  if(cloudSaveTimer)clearTimeout(cloudSaveTimer);
+  cloudSaveTimer=setTimeout(cloudSaveNow,800);
+}
+function cloudSaveNow(){
+  cloudSaveTimer=null;
+  const user=fbAuth.currentUser;
+  if(!user)return;
+  fbDb.collection('users').doc(user.uid).set(DATA).catch(e=>{
+    console.warn('cloud save failed',e);
+  });
+}
+// Firebase Authログイン完了後に呼ばれる：Firestoreの最新データを取得し、
+// ローカルより新しければ採用してから画面を再描画する
+async function initCloudSync(){
+  const user=fbAuth.currentUser;
+  if(!user)return;
+  try{
+    const snap=await fbDb.collection('users').doc(user.uid).get();
+    if(snap.exists){
+      const remote=normalizeData(snap.data());
+      if((remote.updatedAt||0)>(DATA.updatedAt||0)){
+        DATA=remote;
+        try{localStorage.setItem(KEY,JSON.stringify(DATA));}catch(e){}
+      }
+    }
+  }catch(e){
+    console.warn('cloud load failed',e);
+  }
+  cloudSyncReady=true;
+  // ローカルの方が新しかった場合や、初回でリモートが空の場合はここでクラウドへ反映
+  scheduleCloudSave();
+  renderNav(); renderHeaderStatus();
+  go(CURRENT||'home');
+}
 
 function getStat(key){DATA.stats[key]=DATA.stats[key]||{a:0,c:0,t:0};return DATA.stats[key];}
 function recordAttempt(key,correct,sec){
@@ -2124,6 +2281,7 @@ function renderRecords(main){
     <div class="card">
       <button class="ghost" id="btnResetFlags">🚩 苦手フラグをリセット</button>
       <button class="ghost" id="btnClearAll" style="color:#c0392b;">🧹 キャッシュ・記録をぜんぶクリア</button>
+      <button class="ghost" id="btnLogout" style="color:#8a7a6a;">🔑 あいことばを変える</button>
     </div>
   `;
   main.querySelector('#btnResetFlags').onclick=()=>{
@@ -2137,11 +2295,21 @@ function renderRecords(main){
       location.reload();
     }
   };
+  main.querySelector('#btnLogout').onclick=()=>{
+    if(confirm('いまの あいことば から ログアウトしますか？\n（つぎに べつの あいことば で ログインできます）')){
+      gateLogout();
+    }
+  };
 }
 
 // ---------- 初期化 ----------
+// ログイン（ログインゲート側のonAuthReady）が完了してから画面を初期描画する。
+// ログイン前でもnav/homeの下地は作っておく（画面がロード直後に真っ白にならないように）。
 renderNav();
 go('home');
+onAuthReady=function(){
+  initCloudSync();
+};
 </script>
 </body>
 </html>
