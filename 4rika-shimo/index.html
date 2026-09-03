@@ -168,6 +168,8 @@ nav.tabs button.active{
   white-space:pre-wrap;
 }
 .q-stem b{color:var(--accent-dark);}
+.q-image{margin:0 0 16px;text-align:center;}
+.q-image img{max-width:100%;max-height:280px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;}
 
 .choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .choice-btn{
@@ -270,6 +272,8 @@ footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4
 .list-item:last-child{border-bottom:none;}
 .list-item .li-no{font-size:.68rem;color:var(--ink-soft);}
 .list-item .li-stem{font-size:.86rem;line-height:1.6;white-space:pre-wrap;margin:2px 0 6px;}
+.list-item .li-image{margin:4px 0 8px;}
+.list-item .li-image img{max-width:100%;max-height:200px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px;}
 .list-item .li-ans{font-size:.82rem;color:var(--accent-dark);font-weight:bold;background:var(--accent-soft);border-radius:8px;padding:6px 10px;display:inline-block;}
 .list-item details{margin-top:4px;}
 .list-item summary{font-size:.72rem;color:var(--ink-soft);cursor:pointer;}
@@ -353,6 +357,7 @@ body.gate-open #appRoot{display:none;}
       <div class="progress-outer"><div class="progress-inner" id="quizProgressBar" style="width:0%"></div></div>
       <div class="q-meta" id="qMeta"></div>
       <div class="q-stem" id="qStem"></div>
+      <div class="q-image" id="qImage"></div>
 
       <div id="answerArea"></div>
 
@@ -544,8 +549,8 @@ const PROBLEMS = [
   explain:'筋肉は「けん」というじょうぶなつくりで骨とつながっており、筋肉の収縮によって骨が動きます。'
 },
 {
-  id:'m6', unit:'まとめてみよう', src:'骨と筋肉',
-  stem:'右図はうでを曲げたときのようすで、このとき縮んでいる筋肉はどちらですか。（内側＝力こぶ側がA、外側がBです）',
+  id:'m6', unit:'まとめてみよう', src:'骨と筋肉', image:'hone_matome.png',
+  stem:'右図はうでを曲げたときのようすで、このとき縮んでいる筋肉はどちらですか。',
   type:'choice',
   choices:['A','B'],
   answer:'A',
@@ -680,64 +685,66 @@ const PROBLEMS = [
   explain:'カブトムシは昆虫（節足動物）で背骨がありません。イヌ・ヘビ・メダカはセキツイ動物です。'
 },
 {
-  id:'p1-3', unit:'練習問題1', src:'骨のはたらき',
-  stem:'図1のA〜Cの骨のうち、Aの骨を何といいますか。下から選び、記号で答えなさい。\n（Aは胸のあたりにある骨です）\n(ア) 頭骨　(イ) ろっ骨　(ウ) 骨ばん',
+  id:'p1-3', unit:'練習問題1', src:'骨のはたらき', image:'hone1.png',
+  stem:'図1のA〜Cの骨のうち、Aの骨を何といいますか。下から選び、記号で答えなさい。\n(ア) 頭骨　(イ) ろっ骨　(ウ) 骨ばん',
   type:'choice',
   choices:['(ア) 頭骨','(イ) ろっ骨','(ウ) 骨ばん'],
   answer:'(イ) ろっ骨',
   explain:'胸のあたりにあるAの骨はろっ骨で、肺や心臓を守っています。Bの骨ばんは内臓を支え、Cの頭骨は脳を守っています。'
 },
 {
-  id:'p1-4', unit:'練習問題1', src:'骨のはたらき',
-  stem:'A〜Cの骨の中で、内臓を支えているのはどれですか。記号で答えなさい。（A=ろっ骨、B=骨ばん、C=頭骨）',
+  id:'p1-4', unit:'練習問題1', src:'骨のはたらき', image:'hone1.png',
+  stem:'図1のA〜Cの骨の中で、内臓を支えているのはどれですか。記号で答えなさい。',
   type:'choice',
   choices:['A','B','C'],
   answer:'B',
   explain:'骨ばん（B）が内臓を支えています。'
 },
 {
-  id:'p1-5', unit:'練習問題1', src:'骨のつながり',
+  id:'p1-5', unit:'練習問題1', src:'骨のつながり', image:'hone2.png',
   stem:'図2の「あ」のように、からだを動かす骨どうしをつないでいるつくりを何といいますか。ことばで答えなさい。',
   type:'text', accept:['関節'],
   explain:'骨と骨をつなぐつくりを関節といいます。'
 },
 {
-  id:'p1-6', unit:'練習問題1', src:'筋肉の動き',
-  stem:'曲がっているうでをのばすとき、力こぶ側の筋肉と、その反対側の筋肉はどのようになりますか。\n(ア) どちらの筋肉も縮む。　(イ) 力こぶ側の筋肉だけが縮む。　(ウ) 反対側の筋肉だけが縮む。　(エ) どちらの筋肉も縮まない。',
+  id:'p1-6', unit:'練習問題1', src:'筋肉の動き', image:'hone2.png',
+  stem:'図2について、曲がっているうでをのばすときに、い・うの筋肉はどのようになりますか。下から選び、記号で答えなさい。\n(ア) いの筋肉もうの筋肉も縮む。　(イ) いの筋肉だけが縮む。　(ウ) うの筋肉だけが縮む。　(エ) いの筋肉もうの筋肉も縮まない。',
   type:'choice',
-  choices:['(ア) どちらの筋肉も縮む。','(イ) 力こぶ側の筋肉だけが縮む。','(ウ) 反対側の筋肉だけが縮む。','(エ) どちらの筋肉も縮まない。'],
-  answer:'(ウ) 反対側の筋肉だけが縮む。',
-  explain:'うでをのばすときは、力こぶの反対側（外側）の筋肉が縮み、力こぶ側の筋肉はゆるみます。'
+  choices:['(ア) いの筋肉もうの筋肉も縮む。','(イ) いの筋肉だけが縮む。','(ウ) うの筋肉だけが縮む。','(エ) いの筋肉もうの筋肉も縮まない。'],
+  answer:'(ウ) うの筋肉だけが縮む。',
+  explain:'図2のいは力こぶ側（内側）の筋肉、うは反対側（外側）の筋肉です。うでをのばすときは、外側のうの筋肉だけが縮みます。'
 },
 
 /* ---------- 練習問題 大問2（目・耳） ---------- */
 {
-  id:'p2-1', unit:'練習問題2', src:'目のつくり',
-  stem:'図1の①〜④は目のつくりを表しています。①はもうまく、②は角まく、③はこうさい、④はレンズです。\nこの中で、光を屈折させて像を結ばせる「レンズ」はどれですか。番号で答えなさい。',
+  id:'p2-1', unit:'練習問題2', src:'目のつくり', image:'me1.png',
+  stem:'図1の①〜④のうち、レンズはどれですか。番号で答えなさい。',
   type:'choice',
   choices:['①','②','③','④'],
   answer:'④',
   explain:'外から入ってきた光は、角まく（②）→こうさい（③、ひとみの大きさを変える）→レンズ（④）を通り、もうまく（①）に像をつくります。'
 },
 {
-  id:'p2-2', unit:'練習問題2', src:'目のつくり',
-  stem:'外から入ってきた光が像をつくるつくりを何といいますか。ことばで答えなさい。',
-  type:'text', accept:['もうまく','網膜'],
-  explain:'光が像をつくるのは「もうまく（網膜）」です。この情報が視神経を通って脳に伝わります。'
-},
-{
-  id:'p2-3', unit:'練習問題2', src:'耳のつくり',
-  stem:'耳のつくりのうち、空気のしん動を受け取って耳小骨に伝えるつくりを何といいますか。ことばで答えなさい。',
-  type:'text', accept:['こまく','鼓膜'],
-  explain:'こまく（鼓膜）が空気のしん動を受け取り、耳小骨に伝えます。'
-},
-{
-  id:'p2-4', unit:'練習問題2', src:'耳のつくり',
-  stem:'耳の奥にある「三半規管」のはたらきの説明として、最もあてはまるのはどれですか。\n(ア) 空気をしん動させる。　(イ) 伝えられたしん動を直接脳に伝える。　(ウ) からだの回転を感じ、バランスを保つ。　(エ) こまくの角度を調節する。',
+  id:'p2-2', unit:'練習問題2', src:'目のつくり', image:'me1.png',
+  stem:'図1の①〜④のうち、外から入ってきた光が像をつくるつくりはどれですか。番号で答えなさい。また、そのつくりを何といいますか。ことばで答えなさい。（ここでは番号のみ答えなさい）',
   type:'choice',
-  choices:['(ア) 空気をしん動させる。','(イ) 伝えられたしん動を直接脳に伝える。','(ウ) からだの回転を感じ、バランスを保つ。','(エ) こまくの角度を調節する。'],
+  choices:['①','②','③','④'],
+  answer:'①',
+  explain:'光が像をつくるのは①「もうまく（網膜）」です。この情報が視神経を通って脳に伝わります。'
+},
+{
+  id:'p2-3', unit:'練習問題2', src:'耳のつくり', image:'mimi2.png',
+  stem:'図2の⑤のつくりを何といいますか。ことばで答えなさい。',
+  type:'text', accept:['こまく','鼓膜'],
+  explain:'⑤はこまく（鼓膜）です。空気のしん動を受け取り、耳小骨（⑥）に伝えます。'
+},
+{
+  id:'p2-4', unit:'練習問題2', src:'耳のつくり', image:'mimi2.png',
+  stem:'図2の⑥のつくりの説明として、最もあてはまるのはどれですか。下から選び、記号で答えなさい。\n(ア) 空気をしん動させる。　(イ) 伝えられたしん動を直接脳に伝える。　(ウ) からだの回転を感じ、バランスを保つ。　(エ) ⑤のつくりの角度を調節する。',
+  type:'choice',
+  choices:['(ア) 空気をしん動させる。','(イ) 伝えられたしん動を直接脳に伝える。','(ウ) からだの回転を感じ、バランスを保つ。','(エ) ⑤のつくりの角度を調節する。'],
   answer:'(ウ) からだの回転を感じ、バランスを保つ。',
-  explain:'三半規管（半規管）が、からだの回転を感じてバランスを保つはたらきをします。'
+  explain:'⑥は三半規管（半規管）をふくむつくりで、からだの回転を感じてバランスを保つはたらきをします。'
 },
 
 /* ---------- 練習問題 大問3（消化） ---------- */
@@ -750,34 +757,36 @@ const PROBLEMS = [
   explain:'食物をすりつぶすのは小きゅう歯と大きゅう歯です。門歯・犬歯は食物をかみ切るはたらきをします。'
 },
 {
-  id:'p3-2', unit:'練習問題3', src:'消化管の道すじ',
-  stem:'口から入った食物が通り、からだの外に出されるまでの道すじとして正しいものはどれですか。\n(ア) 口→食道→胃→大腸\n(イ) 口→食道→胃→大腸→小腸\n(ウ) 口→食道→胃→小腸→大腸\n(エ) 口→食道→胃→すい臓→小腸→大腸',
+  id:'p3-2', unit:'練習問題3', src:'消化管の道すじ', image:'shoka.png',
+  stem:'図の①〜⑧は、ヒトのからだの消化器官を模式的に表したものです。口から入った食物が通り、からだの外に出されるまでの道すじとして正しいものはどれですか。下から選び、記号で答えなさい。\n(ア) ①→②→⑤→⑦\n(イ) ①→②→⑤→⑦→⑧\n(ウ) ①→②→⑤→⑧→⑦\n(エ) ①→②→⑤→⑥→⑧→⑦',
   type:'choice',
-  choices:['(ア) 口→食道→胃→大腸','(イ) 口→食道→胃→大腸→小腸','(ウ) 口→食道→胃→小腸→大腸','(エ) 口→食道→胃→すい臓→小腸→大腸'],
-  answer:'(ウ) 口→食道→胃→小腸→大腸',
-  explain:'食物は口→食道→胃→小腸→大腸の順に通り、消化・吸収されたあと、残りかすはこう門からからだの外に出されます。すい臓は消化液を出す臓器ですが、食物そのものが通る道（消化管）にはふくまれません。'
+  choices:['(ア) ①→②→⑤→⑦','(イ) ①→②→⑤→⑦→⑧','(ウ) ①→②→⑤→⑧→⑦','(エ) ①→②→⑤→⑥→⑧→⑦'],
+  answer:'(ウ) ①→②→⑤→⑧→⑦',
+  explain:'食物は①口→②食道→⑤胃→⑧小腸→⑦大腸の順に通り、消化・吸収されたあと、残りかすはこう門からからだの外に出されます。⑥すい臓は消化液を出す臓器ですが、食物そのものが通る道（消化管）にはふくまれません。'
 },
 {
-  id:'p3-3', unit:'練習問題3', src:'消化器官の名前',
-  stem:'次の説明にあてはまる消化器官はどれですか。下から選び、記号で答えなさい。\n「口から入った食物は、食道を通ったあと、この器官に運ばれて消化される。ここでは強い消化液が出される。」\n(ア) たんのう　(イ) 胃　(ウ) すい臓　(エ) 肝臓　(オ) 大腸',
+  id:'p3-3', unit:'練習問題3', src:'消化器官の名前', image:'shoka.png',
+  stem:'図の⑤と⑦の消化器官を何といいますか。下から選び、それぞれ記号で答えなさい。（ここでは⑤について答えなさい）\n(ア) たんのう　(イ) 胃　(ウ) すい臓　(エ) 肝臓　(オ) 大腸',
   type:'choice',
   choices:['(ア) たんのう','(イ) 胃','(ウ) すい臓','(エ) 肝臓','(オ) 大腸'],
   answer:'(イ) 胃',
-  explain:'食道を通った食物は胃に運ばれ、消化されます。たんのう・すい臓・肝臓は食物の通り道ではありませんが、消化に関係する消化器官です。'
+  explain:'⑤は胃です。食道を通った食物が運ばれ、消化されます。'
 },
 {
-  id:'p3-3b', unit:'練習問題3', src:'消化器官の名前',
-  stem:'次の説明にあてはまる消化器官はどれですか。下から選び、記号で答えなさい。\n「小腸を通ったあとの食物（の残りかす）が運ばれる、消化管の最後の部分。ここを通ったあと、こう門からからだの外に出される。」\n(ア) たんのう　(イ) 胃　(ウ) すい臓　(エ) 肝臓　(オ) 大腸',
+  id:'p3-3b', unit:'練習問題3', src:'消化器官の名前', image:'shoka.png',
+  stem:'図の⑤と⑦の消化器官を何といいますか。下から選び、それぞれ記号で答えなさい。（ここでは⑦について答えなさい）\n(ア) たんのう　(イ) 胃　(ウ) すい臓　(エ) 肝臓　(オ) 大腸',
   type:'choice',
   choices:['(ア) たんのう','(イ) 胃','(ウ) すい臓','(エ) 肝臓','(オ) 大腸'],
   answer:'(オ) 大腸',
-  explain:'小腸を通ったあと、残りかすは大腸を通り、こう門からからだの外に出されます。'
+  explain:'⑦は大腸です。小腸（⑧）を通ったあとの残りかすが運ばれ、こう門からからだの外に出されます。'
 },
 {
-  id:'p3-4', unit:'練習問題3', src:'養分を吸収する器官',
-  stem:'消化された栄養分を吸収する器官は何ですか。ことばで答えなさい。',
-  type:'text', accept:['小腸'],
-  explain:'養分を吸収する器官は小腸です。'
+  id:'p3-4', unit:'練習問題3', src:'養分を吸収する器官', image:'shoka.png',
+  stem:'図の①〜⑧のうち、消化された栄養分を吸収する器官はどれですか。番号で答えなさい。また、その器官を何といいますか。ことばで答えなさい。（ここでは番号のみ答えなさい）',
+  type:'choice',
+  choices:['⑤','⑦','⑧'],
+  answer:'⑧',
+  explain:'養分を吸収する器官は⑧小腸です。'
 },
 {
   id:'p3-5', unit:'練習問題3', src:'栄養素と食品',
@@ -854,39 +863,39 @@ const PROBLEMS = [
 
 /* ---------- 発展問題（横浜共立学園中学校改題） ---------- */
 {
-  id:'dev-1', unit:'発展問題', src:'消化器官の名前',
-  stem:'図のA〜Fは消化管とそのまわりの器官を示しています。A=口、B=食道、C=胃、D=小腸、E=大腸、F=こう門です。\nBの名前を答えなさい。',
+  id:'dev-1', unit:'発展問題', src:'消化器官の名前', image:'shoka_dev.png',
+  stem:'ヒトは食物を食べ、その中にふくまれている養分と水を取り入れて生きています。食物は、A、B、C、D、Eを通り、Fから便となって出されます。\n図のA〜Fは、この文中のA〜Fの部分を示しています。Bの名前を答えなさい。',
   type:'text', accept:['食道'],
   explain:'Bは食道です。'
 },
 {
-  id:'dev-2', unit:'発展問題', src:'消化器官の名前',
-  stem:'図のA〜Fのうち、Cの名前を答えなさい。（A=口、B=食道、C=？、D=小腸、E=大腸、F=こう門）',
+  id:'dev-2', unit:'発展問題', src:'消化器官の名前', image:'shoka_dev.png',
+  stem:'図のA〜Fのうち、Cの名前を答えなさい。',
   type:'text', accept:['胃'],
   explain:'Cは胃です。'
 },
 {
-  id:'dev-3', unit:'発展問題', src:'養分を吸収する部分',
-  stem:'文中の（X）にあてはまる、養分が主に吸収される部分はどれですか。\n(ア) 食道　(イ) 胃　(ウ) 小腸　(エ) 大腸',
+  id:'dev-3', unit:'発展問題', src:'養分を吸収する部分', image:'shoka_dev.png',
+  stem:'消化された食物は、おもに（X）から吸収され、①に取り入れられて全身に運ばれます。文中の（X）にあてはまる部分を、図のA〜Fから選びなさい。',
   type:'choice',
-  choices:['(ア) 食道','(イ) 胃','(ウ) 小腸','(エ) 大腸'],
-  answer:'(ウ) 小腸',
+  choices:['A','B','C','D','E','F'],
+  answer:'D',
   explain:'養分は主に小腸（D）から吸収されます。'
 },
 {
-  id:'dev-4', unit:'発展問題', src:'消化管の名前',
-  stem:'食物の通り道（口からこう門までの一続きの管）の名前を答えなさい。',
+  id:'dev-4', unit:'発展問題', src:'消化管の名前', image:'shoka_dev.png',
+  stem:'文中で下線が引かれた「食物は、A、B、C、D、Eを通り、Fから便となって出される」という食物の通り道の名前を答えなさい。',
   type:'text', accept:['消化管'],
   explain:'食物の通り道を消化管といいます。'
 },
 {
-  id:'dev-5', unit:'発展問題', src:'養分の運搬と呼吸',
-  stem:'文中の①・②にあてはまることばを答えなさい。\n「消化された食物は、おもに小腸から吸収され（①）に取り入れられて、全身に運ばれる。全身に運ばれた養分は、呼吸によって取り入れられた（②）と結びつき、生きていくために必要なエネルギーをつくる。」\n①にあてはまることばを答えなさい。',
+  id:'dev-5', unit:'発展問題', src:'養分の運搬と呼吸', image:'shoka_dev.png',
+  stem:'文中の①・②にあてはまることばを答えなさい。\n「消化された食物は、おもに（X）から吸収され（①）に取り入れられて、全身に運ばれる。全身に運ばれた養分は、呼吸によって取り入れられた（②）と結びつき、生きていくために必要なエネルギーをつくる。」\n①にあてはまることばを答えなさい。',
   type:'text', accept:['血液'],
   explain:'①は「血液」です。小腸で吸収された養分は血液に取り入れられ全身に運ばれます。'
 },
 {
-  id:'dev-5b', unit:'発展問題', src:'養分の運搬と呼吸',
+  id:'dev-5b', unit:'発展問題', src:'養分の運搬と呼吸', image:'shoka_dev.png',
   stem:'同じ文の②にあてはまることばを答えなさい。\n「全身に運ばれた養分は、呼吸によって取り入れられた（②）と結びつき、生きていくために必要なエネルギーをつくる。」',
   type:'text', accept:['酸素'],
   explain:'②は「酸素」です。養分は酸素と結びつき、エネルギーがつくられます。'
@@ -1154,9 +1163,11 @@ function renderList(){
       lastUnit = p.unit;
     }
     const ansText = Array.isArray(p.answer) ? p.answer.join('、') : (p.answer!=null ? p.answer : (p.accept?p.accept[0]:''));
+    const imgHtml = p.image ? `<div class="li-image"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.src)}"></div>` : '';
     html += `<div class="list-item">
       <div class="li-no">${i+1}. ${escapeHtml(p.src)}</div>
       <div class="li-stem">${escapeHtml(p.stem)}</div>
+      ${imgHtml}
       <div class="li-ans">正解：${escapeHtml(ansText)}</div>
       <details><summary>解説を見る</summary><div class="li-explain">${escapeHtml(p.explain||'')}</div></details>
     </div>`;
@@ -1227,6 +1238,7 @@ function renderQuestion(){
 
   $('#qMeta').textContent = p.src;
   $('#qStem').textContent = p.stem;
+  $('#qImage').innerHTML = p.image ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.src)}">` : '';
 
   $('#feedback').classList.remove('show','ok','ng');
 
