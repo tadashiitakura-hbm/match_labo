@@ -2655,8 +2655,12 @@ function renderRecords(main){
   ).join('');
   const weakRows=PROBLEMS.filter(p=>DATA.flags[p.key]&&DATA.flags[p.key].on).map(p=>{
     const f=DATA.flags[p.key];
-    return `<tr><td>第${p.round}回</td><td>${p.key}</td><td>${f.reason}</td><td>${(f.days||[]).length}/${DRILL_DAYS}</td></tr>`;
-  }).join('')||'<tr><td colspan="4">なし</td></tr>';
+    const unlocked=isRoundUnlocked(p.round);
+    const linkCell=unlocked
+      ? `<button class="ghost small weak-solve-btn" data-k="${p.key}">この問題を解く</button>`
+      : `<span class="small-note">未解放</span>`;
+    return `<tr><td>第${p.round}回</td><td>${p.key}</td><td>${f.reason}</td><td>${(f.days||[]).length}/${DRILL_DAYS}</td><td>${linkCell}</td></tr>`;
+  }).join('')||'<tr><td colspan="5">なし</td></tr>';
   const wcRows=DATA.wcHistory.slice(-10).reverse().map(h=>
     `<tr><td>${h.date}</td><td>${h.correct}/${h.answered}</td><td>+${h.newFlag}</td><td>${h.flaggedNow}</td></tr>`
   ).join('')||'<tr><td colspan="4">なし</td></tr>';
@@ -2666,7 +2670,7 @@ function renderRecords(main){
       <table class="rec"><tr><th>日付</th><th>習得</th><th>復習</th><th>正解/挑戦</th><th>時間</th></tr>${dailyRows||'<tr><td colspan="5">まだ記録なし</td></tr>'}</table>
     </div>
     <div class="card"><h3>苦手一覧🚩</h3>
-      <table class="rec"><tr><th>回</th><th>解法</th><th>理由</th><th>進捗</th></tr>${weakRows}</table>
+      <table class="rec"><tr><th>回</th><th>解法</th><th>理由</th><th>進捗</th><th></th></tr>${weakRows}</table>
     </div>
     <div class="card"><h3>苦手チェック履歴</h3>
       <table class="rec"><tr><th>日付</th><th>正解</th><th>新規🚩</th><th>現在の苦手数</th></tr>${wcRows}</table>
@@ -2696,6 +2700,15 @@ function renderRecords(main){
       gateLogout();
     }
   };
+  main.querySelectorAll('.weak-solve-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      const k=btn.dataset.k;
+      go('weakdrill');
+      RUNTIME.drillKey=k;
+      RUNTIME.drillStreak=0;
+      go('weakdrill',true);
+    };
+  });
 }
 
 // ---------- 初期化 ----------
