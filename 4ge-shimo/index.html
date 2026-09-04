@@ -2544,18 +2544,30 @@ function renderWeakDrill(main){
       const f=DATA.flags[p.key];
       const doneToday=f.lastDoneDay===today();
       return `<div class="card mode-card" data-k="${p.key}" style="display:flex;justify-content:space-between;align-items:center;">
-        <div><b>第${p.round}回</b> ${p.key} <span class="small-note">(${(f.days||[]).length}/${DRILL_DAYS}日クリア)</span></div>
+        <div><b>第${p.round}回 ${CAT_LABEL[p.cat]}${p.no}</b> <span class="small-note">(${(f.days||[]).length}/${DRILL_DAYS}日クリア)</span></div>
         <div>${doneToday?'<span class="pill mastered">✅今日ずみ</span>':'<span class="pill on">未</span>'}</div>
       </div>`;
     }).join('');
     main2.innerHTML=`<div class="card"><h3>にがて復習：単元をえらぶ</h3><p class="small-note">選んだ単元を3問連続正解でその日クリア。別々の3日クリアで🚩解消。</p></div>${listHtml}
       <div class="card"><button class="primary" id="btnOmakase">今日やる分をまとめて（おまかせ）</button></div>`;
     main2.querySelectorAll('.mode-card').forEach(el=>{
-      el.onclick=()=>{RUNTIME.drillKey=el.dataset.k;RUNTIME.drillStreak=0;go('weakdrill');};
+      el.onclick=()=>{
+        const k=el.dataset.k;
+        go('weakdrill');
+        RUNTIME.drillKey=k;
+        RUNTIME.drillStreak=0;
+        go('weakdrill',true);
+      };
     });
     main2.querySelector('#btnOmakase').onclick=()=>{
       const notDone=weakList.filter(p=>!(DATA.flags[p.key].lastDoneDay===today()));
-      if(notDone.length){RUNTIME.drillKey=notDone[0].key;RUNTIME.drillStreak=0;go('weakdrill');}
+      if(notDone.length){
+        const k=notDone[0].key;
+        go('weakdrill');
+        RUNTIME.drillKey=k;
+        RUNTIME.drillStreak=0;
+        go('weakdrill',true);
+      }
     };
     return;
   }
