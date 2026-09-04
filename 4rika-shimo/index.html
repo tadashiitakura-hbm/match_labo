@@ -1751,7 +1751,7 @@ function renderQuestion(){
   $('#quizBadge').textContent = st.weak ? '復習リスト' : p.unit;
   $('#quizBadge').className = 'badge' + (st.weak ? ' review' : '');
 
-  const doneToday = ORDER.length - queue.length; // 今日すでに出題した数（このカードを含む）
+  const doneToday = unlockedOrder().length - queue.length; // 今日すでに出題した数（このカードを含む）。週送りで未解放の回は母数に含めない
   const totalToday = doneToday + queue.length;
   $('#quizCounter').textContent = doneToday + ' / ' + totalToday + '（今日）';
   $('#quizProgressBar').style.width = totalToday>0 ? Math.round((doneToday/totalToday)*100)+'%' : '0%';
