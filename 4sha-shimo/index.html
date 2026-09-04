@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>社会チャレンジ 4年下 第1回 ふるさとじまん(1)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Hachi+Maru+Pop&display=swap');
+
+:root{
+  --bg:#FBF7EE;
+  --card:#FFFFFF;
+  --ink:#2E2A22;
+  --ink-soft:#6B6455;
+  --accent:#3C8F72;
+  --accent-dark:#2A6B54;
+  --accent-soft:#DCF0E6;
+  --warn:#C0553B;
+  --warn-soft:#FBE3DC;
+  --gold:#D6A63C;
+  --gold-soft:#FBF0D8;
+  --border:#E5DFCF;
+  --shadow:0 2px 8px rgba(60,50,20,.08), 0 8px 24px rgba(60,50,20,.06);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Kiwi Maru','Hiragino Maru Gothic ProN',-apple-system,sans-serif;
+  background:linear-gradient(180deg,#FDF9EF,#F6EFDC 400px, #FBF7EE);
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:40px;
+}
+.wrap{max-width:680px;margin:0 auto;padding:16px;}
+header{
+  text-align:center;
+  padding:18px 12px 10px;
+  position:relative;
+}
+header h1{
+  font-size:1.3rem;
+  margin:0 0 2px;
+  color:var(--accent-dark);
+  font-family:'Hachi Maru Pop',cursive;
+}
+header p{margin:0;color:var(--ink-soft);font-size:.8rem;}
+.headerStatus{font-size:.68rem;color:var(--ink-soft);margin-top:4px;}
+
+nav.tabs{
+  display:flex;
+  gap:6px;
+  margin:14px 0;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+nav.tabs button{
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--ink-soft);
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:.78rem;
+  font-family:inherit;
+  cursor:pointer;
+  transition:.15s;
+}
+nav.tabs button.active{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+  font-weight:bold;
+}
+
+.card{
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  margin-bottom:16px;
+}
+
+/* HOME */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:14px 0;
+}
+.stat-box{
+  background:var(--accent-soft);
+  border-radius:14px;
+  padding:12px 8px;
+  text-align:center;
+}
+.stat-box .num{font-size:1.5rem;font-weight:bold;color:var(--accent-dark);}
+.stat-box .lbl{font-size:.7rem;color:var(--ink-soft);margin-top:2px;}
+.stat-box.warn{background:var(--warn-soft);}
+.stat-box.warn .num{color:var(--warn);}
+.stat-box.gold{background:var(--gold-soft);}
+.stat-box.gold .num{color:#a37b1c;}
+
+.stat-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 4px;
+  border-bottom:1px solid var(--line);
+  font-size:.88rem;
+}
+.stat-row:last-child{border-bottom:none;}
+
+.bigbtn{
+  display:block;
+  width:100%;
+  border:none;
+  border-radius:16px;
+  padding:16px;
+  font-size:1.05rem;
+  font-family:inherit;
+  font-weight:bold;
+  color:#fff;
+  background:var(--accent);
+  cursor:pointer;
+  margin-bottom:12px;
+  box-shadow:0 4px 0 var(--accent-dark);
+  transition:.1s;
+}
+.bigbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-dark);}
+.bigbtn.secondary{background:#8A8F99;box-shadow:0 4px 0 #666a72;}
+.bigbtn.secondary:active{box-shadow:0 1px 0 #666a72;}
+.bigbtn:disabled{background:#CBC7B8;box-shadow:0 4px 0 #A8A492;cursor:default;}
+.bigbtn .sub{display:block;font-size:.72rem;font-weight:normal;opacity:.9;margin-top:2px;}
+
+.section-title{
+  font-size:.85rem;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+  font-weight:bold;
+}
+
+.progress-outer{
+  background:#EDE7D6;
+  border-radius:999px;
+  height:14px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.progress-inner{
+  background:linear-gradient(90deg,var(--accent),#59B48C);
+  height:100%;
+  border-radius:999px;
+  transition:width .3s;
+}
+
+/* QUIZ */
+.quiz-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  font-size:.78rem;
+  color:var(--ink-soft);
+}
+.quiz-top .badge{
+  background:var(--accent-soft);
+  color:var(--accent-dark);
+  padding:3px 10px;
+  border-radius:999px;
+  font-weight:bold;
+}
+.quiz-top .badge.review{background:var(--warn-soft);color:var(--warn);}
+
+.q-meta{font-size:.72rem;color:var(--ink-soft);margin-bottom:6px;}
+.q-stem{
+  font-size:1rem;
+  line-height:1.7;
+  margin:10px 0 16px;
+  white-space:pre-wrap;
+}
+.q-stem b{color:var(--accent-dark);}
+.q-image{margin:0 0 16px;text-align:center;}
+.q-image img{max-width:100%;max-height:280px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;}
+
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.choice-btn{
+  text-align:left;
+  border:2px solid var(--border);
+  background:#fff;
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:.92rem;
+  font-family:inherit;
+  cursor:pointer;
+  transition:.12s;
+  line-height:1.5;
+}
+.choice-btn:active{transform:scale(.98);}
+.choice-btn.selected{border-color:var(--accent);background:var(--accent-soft);}
+.choice-btn.correct{border-color:var(--accent);background:var(--accent-soft);font-weight:bold;}
+.choice-btn.wrong{border-color:var(--warn);background:var(--warn-soft);}
+
+.text-input-row{margin-bottom:14px;}
+.text-input-row input{
+  width:100%;
+  font-size:1.05rem;
+  font-family:inherit;
+  padding:12px 14px;
+  border:2px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+}
+.text-input-row input:focus{outline:none;border-color:var(--accent);}
+.text-input-row input.correct{border-color:var(--accent);background:var(--accent-soft);}
+.text-input-row input.wrong{border-color:var(--warn);background:var(--warn-soft);}
+.multi-input{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.multi-input .field{flex:1;min-width:110px;}
+.multi-input label{font-size:.72rem;color:var(--ink-soft);display:block;margin-bottom:3px;}
+
+.action-row{display:flex;gap:8px;}
+.action-row button{
+  flex:1;
+  border:none;
+  border-radius:12px;
+  padding:13px;
+  font-size:.95rem;
+  font-family:inherit;
+  font-weight:bold;
+  cursor:pointer;
+  color:#fff;
+  background:var(--accent);
+  box-shadow:0 3px 0 var(--accent-dark);
+}
+.action-row button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--accent-dark);}
+.action-row button:disabled{background:#CBC7B8;box-shadow:0 3px 0 #A8A492;cursor:default;}
+.action-row button.next{background:var(--gold);box-shadow:0 3px 0 #a37b1c;}
+.action-row button.next:active{box-shadow:0 1px 0 #a37b1c;}
+
+.feedback{
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+  font-size:.88rem;
+  line-height:1.6;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--accent-soft);color:var(--accent-dark);}
+.feedback.ng{background:var(--warn-soft);color:var(--warn);}
+.feedback .fb-title{font-weight:bold;margin-bottom:4px;font-size:.95rem;}
+
+/* review list / done screen */
+.review-item{
+  padding:12px 4px;
+  border-bottom:1px solid var(--border);
+  font-size:.85rem;
+}
+.review-item:last-child{border-bottom:none;}
+.review-item .ri-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;}
+.review-item .tag{
+  background:var(--warn-soft);
+  color:var(--warn);
+  font-size:.68rem;
+  padding:2px 8px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.review-item .ri-stem{color:var(--ink);font-size:.85rem;line-height:1.5;white-space:pre-wrap;margin-bottom:4px;}
+.review-item .ri-due{font-size:.68rem;color:var(--ink-soft);}
+.empty-msg{color:var(--ink-soft);font-size:.85rem;text-align:center;padding:20px 0;}
+
+.done-emoji{font-size:2.6rem;text-align:center;margin-bottom:6px;}
+.done-title{text-align:center;font-size:1.15rem;font-weight:bold;color:var(--accent-dark);margin-bottom:14px;}
+
+footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4px;}
+
+.hidden{display:none !important;}
+
+/* list view */
+.unit-head{font-size:.9rem;font-weight:bold;color:var(--accent-dark);margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent-soft);}
+.unit-head:first-child{margin-top:0;}
+.list-item{border-bottom:1px solid var(--border);padding:10px 2px;}
+.list-item:last-child{border-bottom:none;}
+.list-item .li-no{font-size:.68rem;color:var(--ink-soft);}
+.list-item .li-stem{font-size:.86rem;line-height:1.6;white-space:pre-wrap;margin:2px 0 6px;}
+.list-item .li-image{margin:4px 0 8px;}
+.list-item .li-image img{max-width:100%;max-height:200px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px;}
+.list-item .li-ans{font-size:.82rem;color:var(--accent-dark);font-weight:bold;background:var(--accent-soft);border-radius:8px;padding:6px 10px;display:inline-block;}
+.list-item details{margin-top:4px;}
+.list-item summary{font-size:.72rem;color:var(--ink-soft);cursor:pointer;}
+.list-item .li-explain{font-size:.78rem;color:var(--ink-soft);line-height:1.5;margin-top:4px;}
+
+/* history table */
+table.rec{width:100%;border-collapse:collapse;font-size:.8rem;}
+table.rec th,table.rec td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);}
+table.rec th{color:var(--ink-soft);font-weight:bold;font-size:.72rem;}
+.rec-wrap{overflow-x:auto;}
+
+/* login gate */
+#loginGate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+#loginGate .box{background:var(--card);border-radius:20px;padding:32px 28px;box-shadow:var(--shadow);max-width:340px;width:100%;text-align:center;}
+#loginGate h2{font-family:'Hachi Maru Pop',cursive;color:var(--accent-dark);margin:0 0 6px;font-size:1.25rem;}
+#loginGate p{color:var(--ink-soft);font-size:.85rem;margin:0 0 16px;}
+#loginGate input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:1.05rem;font-family:inherit;text-align:center;letter-spacing:.08em;}
+#loginGate button{width:100%;margin-top:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:1rem;cursor:pointer;font-family:inherit;font-weight:bold;box-shadow:0 3px 0 var(--accent-dark);}
+#loginGate .err{color:var(--warn);font-size:.8rem;margin-top:10px;min-height:1.2em;}
+#loginGate .loading{color:var(--ink-soft);font-size:.8rem;margin-top:10px;min-height:1.2em;}
+body.gate-open #appRoot{display:none;}
+.small-link{background:none;border:none;color:var(--ink-soft);font-size:.72rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:0;}
+</style>
+</head>
+<body class="gate-open">
+
+<div id="loginGate">
+  <div class="box">
+    <h2>社会チャレンジ 4年下</h2>
+    <p>なまえ を にゅうりょくしてね</p>
+    <input type="text" id="gatePass" placeholder="なまえ（例：さくら）" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <button id="gateBtn">はじめる</button>
+    <div class="err" id="gateErr"></div>
+    <div class="loading" id="gateLoading"></div>
+  </div>
+</div>
+
+<div id="appRoot">
+<div class="wrap">
+  <header>
+    <h1>社会チャレンジ 4年下</h1>
+    <p>予習シリーズ準拠 ／ 第1回「ふるさとじまん(1)」</p>
+    <div class="headerStatus" id="headerStatus"></div>
+  </header>
+
+  <nav class="tabs">
+    <button data-view="home" class="active">ホーム</button>
+    <button data-view="quiz">練習する</button>
+    <button data-view="review">復習リスト</button>
+    <button data-view="list">問題一覧</button>
+    <button data-view="history">学習記録</button>
+  </nav>
+
+  <!-- HOME -->
+  <div id="view-home">
+    <div class="card">
+      <div class="section-title">ぜんたいのすすみぐあい</div>
+      <div class="progress-outer"><div class="progress-inner" id="homeProgressBar" style="width:0%"></div></div>
+      <div style="text-align:center;font-size:.8rem;color:var(--ink-soft);margin-top:4px;" id="homeProgressLabel">0 / 0 問クリア</div>
+
+      <div class="stat-grid">
+        <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">全問題数</div></div>
+        <div class="stat-box gold"><div class="num" id="statMastered">0</div><div class="lbl">おぼえた</div></div>
+        <div class="stat-box warn"><div class="num" id="statWeak">0</div><div class="lbl">復習リスト</div></div>
+      </div>
+      <div id="scheduleStatus"></div>
+    </div>
+
+    <div class="card">
+      <button class="bigbtn" id="btnStart">今日のぶんを練習する<span class="sub" id="btnStartSub">忘却曲線に沿って出題／ランダムなし</span></button>
+      <button class="bigbtn secondary" id="btnRestart">全問をもう一度練習する<span class="sub">記録は消さずに、今日ぶんとして全問を出題</span></button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="view-quiz" class="hidden">
+    <div class="card" id="quizCard">
+      <div class="quiz-top">
+        <span id="quizBadge" class="badge">まとめてみよう</span>
+        <span id="quizCounter">1 / 10</span>
+      </div>
+      <div class="progress-outer"><div class="progress-inner" id="quizProgressBar" style="width:0%"></div></div>
+      <div class="q-meta" id="qMeta"></div>
+      <div class="q-stem" id="qStem"></div>
+      <div class="q-image" id="qImage"></div>
+
+      <div id="answerArea"></div>
+
+      <div class="feedback" id="feedback">
+        <div class="fb-title" id="fbTitle"></div>
+        <div id="fbBody"></div>
+      </div>
+
+      <div class="action-row">
+        <button id="btnCheck">こたえ合わせ</button>
+        <button id="btnNext" class="next hidden">つぎの問題へ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW LIST -->
+  <div id="view-review" class="hidden">
+    <div class="card">
+      <div class="section-title">復習リスト（まちがえた問題）</div>
+      <div id="reviewList"></div>
+    </div>
+  </div>
+
+  <!-- PROBLEM LIST -->
+  <div id="view-list" class="hidden">
+    <div class="card">
+      <div class="section-title">問題一覧（全問の問題と正解）</div>
+      <div id="probList"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="view-history" class="hidden">
+    <div class="card">
+      <div class="section-title">学習記録（日ごと）</div>
+      <div class="rec-wrap"><table class="rec" id="historyTable"></table></div>
+    </div>
+    <div class="card" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <button class="small-link" id="btnLogout">🔑 なまえを変える</button>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div id="view-done" class="hidden">
+    <div class="card">
+      <div class="done-emoji">🎉</div>
+      <div class="done-title">今日の分がおわりました！</div>
+      <div style="text-align:center;color:var(--ink-soft);font-size:.85rem;margin-bottom:16px;" id="doneSummary"></div>
+      <button class="bigbtn" id="btnDoneHome">ホームにもどる</button>
+    </div>
+  </div>
+
+  <footer>予習シリーズ社会4年下 第1回「ふるさとじまん(1)」準拠　家庭学習用（データはこの端末とサーバーに保存されます）</footer>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-firestore-compat.min.js"></script>
+<script>
+'use strict';
+const firebaseConfig={
+  apiKey:"AIzaSyD307IornF-BGD55DSlNL9UBA3P6avqI6s",
+  authDomain:"hbmsansu.firebaseapp.com",
+  projectId:"hbmsansu",
+  storageBucket:"hbmsansu.firebasestorage.app",
+  messagingSenderId:"360846130418",
+  appId:"1:360846130418:web:3b54bb3239158cc675e46b"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth=firebase.auth();
+const fbDb=firebase.firestore();
+
+// Firebaseへのログインはアプリ共通の固定アカウントを使う（利用者ごとの
+// 使い分けはこのメール/パスワードではなく、下の「なまえ」で行う。算数アプリと同じ設計）
+const FIXED_EMAIL='ch4sha-shimo@hbmsansu.local';
+const FIXED_PASSWORD='Qx7mNpZ4tRvKdWs2Lc9Bfy6Eh';
+
+document.body.classList.add('gate-open');
+
+function gateSetErr(msg){document.getElementById('gateErr').textContent=msg||'';}
+function gateSetLoading(msg){document.getElementById('gateLoading').textContent=msg||'';}
+
+const GATE_NAME_KEY='sha_ch1_gatename_v1';
+function saveGateNameDisplay(name){
+  try{localStorage.setItem(GATE_NAME_KEY,name);}catch(e){}
+}
+function loadGateNameDisplay(){
+  try{return localStorage.getItem(GATE_NAME_KEY)||'';}catch(e){return '';}
+}
+function clearGateNameDisplay(){
+  try{localStorage.removeItem(GATE_NAME_KEY);}catch(e){}
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+// Firestoreのドキュメントパスに使えない文字（/ など）を除いた、名前の正規化キー
+function normalizeName(name){
+  return name.trim().replace(/[\/\.\#\$\[\]<>]/g,'').slice(0,30);
+}
+
+let fbReady=false; // 固定アカウントでのサインインが完了したか
+let fbReadyPromise=null;
+
+// アプリ起動時に一度だけ、共通の固定アカウントへ自動サインインする。
+// 利用者は名前を入力するだけでよく、このログイン自体を意識しない。
+function ensureFirebaseSignIn(){
+  if(fbReadyPromise)return fbReadyPromise;
+  fbReadyPromise=(async()=>{
+    try{
+      // 算数アプリ（同じFirebaseプロジェクトの別の固定アカウント）を同じブラウザで
+      // 先に使っていた場合、Firebase Authのセッションがそのまま引き継がれてしまい
+      // currentUserが「算数アプリのアカウント」になっていることがある。
+      // その場合は「未サインイン」とみなして理科アプリ専用アカウントへ明示的にサインインし直す。
+      if(!fbAuth.currentUser || fbAuth.currentUser.email!==FIXED_EMAIL){
+        try{
+          await fbAuth.signInWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+        }catch(err){
+          // 固定アカウントがまだ存在しない場合のエラーコードはFirebaseの設定により
+          // 'auth/user-not-found' のことも 'auth/invalid-credential' のこともあるため、
+          // どちらの場合も「まだ作成されていない」とみなして新規作成を試みる。
+          if(err.code==='auth/user-not-found' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
+            try{
+              await fbAuth.createUserWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+            }catch(err2){
+              // 別タブ等で既に作成済みだった場合はメールアドレス重複エラーになるので、
+              // その場合は本来のパスワード誤りとしてサインインし直す。
+              if(err2.code==='auth/email-already-in-use'){
+                await fbAuth.signInWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+              }else{
+                throw err2;
+              }
+            }
+          }else{
+            throw err;
+          }
+        }
+      }
+      fbReady=true;
+    }catch(err){
+      fbReady=false;
+      throw err;
+    }
+  })();
+  return fbReadyPromise;
+}
+
+async function doLogin(){
+  const nameRaw=document.getElementById('gatePass').value;
+  const name=normalizeName(nameRaw);
+  if(!name){
+    gateSetErr('なまえを にゅうりょくしてね');
+    return;
+  }
+  gateSetErr('');
+  gateSetLoading('つないでいます…');
+  document.getElementById('gateBtn').disabled=true;
+  try{
+    await ensureFirebaseSignIn();
+    saveGateNameDisplay(name);
+    gateSetLoading('');
+    document.body.classList.remove('gate-open');
+    document.getElementById('loginGate').style.display='none';
+    onAuthReady();
+  }catch(err){
+    gateSetLoading('');
+    document.getElementById('gateBtn').disabled=false;
+    if(err.code==='auth/network-request-failed'){
+      gateSetErr('インターネットに つながっていないみたい。Wi-Fiや通信をかくにんしてね');
+    }else{
+      gateSetErr('つながりませんでした（'+(err.code||err.message)+'）');
+    }
+  }
+}
+document.getElementById('gateBtn').addEventListener('click',doLogin);
+document.getElementById('gatePass').addEventListener('keydown',(e)=>{if(e.key==='Enter')doLogin();});
+
+let onAuthReady=function(){}; // メインスクリプトで上書きされる
+
+// 前回すでに名前を入力したことがあれば、その名前でそのまま再開する
+(function tryAutoEnter(){
+  const savedName=loadGateNameDisplay();
+  if(!savedName)return;
+  ensureFirebaseSignIn().then(()=>{
+    document.body.classList.remove('gate-open');
+    document.getElementById('loginGate').style.display='none';
+    onAuthReady();
+  }).catch(()=>{
+    // 自動サインインに失敗した場合は通常のゲート画面のまま待つ（doLoginで再試行できる）
+  });
+})();
+
+function gateLogout(){
+  clearGateNameDisplay();
+  location.reload();
+}
+</script>
+
+<script>
+'use strict';
+/* =========================================================
+   問題データ（予習シリーズ演習問題集 理科4年下 第1回 ヒトのからだ）
+   まとめてみよう / 練習問題 / 発展問題　すべて収録
+   別冊「解答と解説」と全問照合済み（2026年再チェック）
+   ========================================================= */
+/* =========================================================
+   問題データ（予習シリーズ演習問題集 社会4年下 第1回 ふるさとじまん(1)）
+   まとめてみよう / 練習問題 / 発展問題 / 記述問題　すべて収録
+   別冊「解答と解説」と全問照合済み
+   ========================================================= */
+const PROBLEMS = [
+/* ---------- まとめてみよう！ 全22問（道県名の下に道県庁所在地） ---------- */
+{
+  id:'m1', round:1, unit:'まとめてみよう', src:'北海道の農業', image:'hakuchizu1.png',
+  stem:'①北海道の道庁所在地はどこですか。市の名前を答えなさい。',
+  type:'text', accept:['札幌市','さっぽろ市'],
+  explain:'北海道の道庁所在地は札幌市です。人口200万人近い大都市で、明治時代に計画的に建設されたため道路が碁盤の目のように交わっています。'
+},
+{
+  id:'m2', round:1, unit:'まとめてみよう', src:'北海道の農業',
+  stem:'北海道では畑作や②（　　）などの農業がさかんである。乳牛を飼って牛乳を生産する。あてはまることばを選びなさい。',
+  type:'choice',
+  choices:['酪農','稲作','養蚕','促成栽培'],
+  answer:'酪農',
+  explain:'北海道では畑作や酪農（乳牛を飼って牛乳などを生産する農業）がさかんです。'
+},
+{
+  id:'m3', round:1, unit:'まとめてみよう', src:'北海道の世界自然遺産',
+  stem:'北海道の③（　　）は世界自然遺産に登録されている。あてはまる地名を選びなさい。',
+  type:'choice',
+  choices:['知床','白神山地','屋久島','小笠原諸島'],
+  answer:'知床',
+  explain:'北海道の知床は世界自然遺産に登録されています。手つかずの自然が残り、貴重な生態系が評価されました。'
+},
+{
+  id:'m4', round:1, unit:'まとめてみよう', src:'青森県の都市',
+  stem:'④青森県の県庁所在地はどこですか。市の名前を答えなさい。',
+  type:'text', accept:['青森市'],
+  explain:'青森県の県庁所在地は青森市です。'
+},
+{
+  id:'m5', round:1, unit:'まとめてみよう', src:'青森県と北海道の交通',
+  stem:'青森県は北海道とは⑤（　　）で結ばれている。鉄道専用の海底トンネルである。あてはまることばを選びなさい。',
+  type:'choice',
+  choices:['青函トンネル','関門トンネル','東京湾アクアライン','瀬戸大橋'],
+  answer:'青函トンネル',
+  explain:'青森県の津軽半島と北海道は、鉄道専用の海底トンネルである青函トンネルで結ばれています。'
+},
+{
+  id:'m6', round:1, unit:'まとめてみよう', src:'津軽平野の農業',
+  stem:'津軽平野では⑥（　　）の栽培がさかんである。全国のおよそ半分を青森県で生産している。あてはまることばを選びなさい。',
+  type:'choice',
+  choices:['りんご','みかん','もも','ぶどう'],
+  answer:'りんご',
+  explain:'津軽平野ではりんごの栽培がさかんで、全国のおよそ半分を青森県で生産しています。'
+},
+{
+  id:'m7', round:1, unit:'まとめてみよう', src:'青森市の祭り',
+  stem:'青森市では東北三大祭りの1つ、⑦（　　）が行われる。あてはまる祭りを選びなさい。',
+  type:'choice',
+  choices:['ねぶた','竿燈','七夕'],
+  answer:'ねぶた',
+  explain:'青森市では東北三大祭りの1つ「ねぶた」が行われます。大きな武者などの絵が描かれた山車を、人々が引きながらおどります。'
+},
+{
+  id:'m8', round:1, unit:'まとめてみよう', src:'秋田県の都市',
+  stem:'⑧秋田県の県庁所在地はどこですか。市の名前を答えなさい。',
+  type:'text', accept:['秋田市'],
+  explain:'秋田県の県庁所在地は秋田市です。'
+},
+{
+  id:'m9', round:1, unit:'まとめてみよう', src:'秋田県と青森県の境',
+  stem:'秋田県は青森県との境に⑨（　　）山地がある。世界最大級のぶなの原生林があり、世界自然遺産に登録されている。あてはまる地名を選びなさい。',
+  type:'choice',
+  choices:['白神','日高','奥羽','出羽'],
+  answer:'白神',
+  explain:'青森県との境にある白神山地には世界最大級のぶなの原生林があり、世界自然遺産に登録されています。'
+},
+{
+  id:'m10', round:1, unit:'まとめてみよう', src:'秋田市の祭り',
+  stem:'秋田市では東北三大祭りの1つ、⑩（　　）が行われる。あてはまる祭りを選びなさい。',
+  type:'choice',
+  choices:['竿燈','ねぶた','七夕'],
+  answer:'竿燈',
+  explain:'秋田市では東北三大祭りの1つ「竿燈まつり」が行われます。多くの提灯を下げた竹のさおを肩などに乗せる技をきそいます。'
+},
+{
+  id:'m11', round:1, unit:'まとめてみよう', src:'山形県の都市',
+  stem:'⑪山形県の県庁所在地はどこですか。市の名前を答えなさい。',
+  type:'text', accept:['山形市'],
+  explain:'山形県の県庁所在地は山形市です。'
+},
+{
+  id:'m12', round:1, unit:'まとめてみよう', src:'山形県の三大急流',
+  stem:'山形県には三大急流の1つである⑫（　　）川が流れる。ほかに富士川と球磨川がある。あてはまる川の名を選びなさい。',
+  type:'choice',
+  choices:['最上','北上','信濃','阿武隈'],
+  answer:'最上',
+  explain:'山形県を流れる最上川は、富士川・球磨川とともに日本三大急流の1つです。'
+},
+{
+  id:'m13', round:1, unit:'まとめてみよう', src:'山形県のくだもの',
+  stem:'⑬（　　）の生産量は全国の4分の3近くが山形県でしめられている。あてはまることばを選びなさい。',
+  type:'choice',
+  choices:['おうとう','りんご','もも','ぶどう'],
+  answer:'おうとう',
+  explain:'おうとう（さくらんぼ）の生産量は全国の4分の3近くが山形県です。'
+},
+{
+  id:'m14', round:1, unit:'まとめてみよう', src:'岩手県の都市',
+  stem:'⑭岩手県の県庁所在地はどこですか。市の名前を答えなさい。',
+  type:'text', accept:['盛岡市'],
+  explain:'岩手県の県庁所在地は盛岡市です。北上高地と奥羽山脈に囲まれた盆地の北部に位置しています。'
+},
+{
+  id:'m15', round:1, unit:'まとめてみよう', src:'岩手県の海岸',
+  stem:'岩手県の東部の⑮（　　）海岸にはリアス海岸が見られる。青森県から宮城県にかけて続く海岸である。あてはまる地名を選びなさい。',
+  type:'choice',
+  choices:['三陸','若狭','志摩','リアス'],
+  answer:'三陸',
+  explain:'岩手県の東部の三陸海岸には、日本を代表するリアス海岸が見られます。'
+},
+{
+  id:'m16', round:1, unit:'まとめてみよう', src:'岩手県の伝統的工芸品',
+  stem:'岩手県の伝統的工芸品の⑯（　　）は、鉄びんなどで有名である。あてはまることばを選びなさい。',
+  type:'choice',
+  choices:['南部鉄器','将棋の駒','こけし','西陣織'],
+  answer:'南部鉄器',
+  explain:'岩手県の伝統的工芸品である南部鉄器は、鉄びんや風鈴などの製品で有名です。'
+},
+{
+  id:'m17', round:1, unit:'まとめてみよう', src:'宮城県の都市',
+  stem:'⑰宮城県の県庁所在地はどこですか。市の名前を答えなさい。',
+  type:'text', accept:['仙台市'],
+  explain:'宮城県の県庁所在地は仙台市です。東北地方の政治・経済・文化の中心都市で、東北最大の都市です。'
+},
+{
+  id:'m18', round:1, unit:'まとめてみよう', src:'仙台市の祭り',
+  stem:'宮城県では東北三大祭りの1つ、⑱（　　）が行われる。あてはまる祭りを選びなさい。',
+  type:'choice',
+  choices:['七夕','ねぶた','竿燈'],
+  answer:'七夕',
+  explain:'仙台市では東北三大祭りの1つ「七夕まつり」が行われます。大きなふきながしを商店街につるし、人々がその下を歩いていきます。'
+},
+{
+  id:'m19', round:1, unit:'まとめてみよう', src:'日本三景',
+  stem:'宮城県には日本三景の1つ、⑲（　　）がある。ほかに天橋立と宮島がある。あてはまる地名を選びなさい。',
+  type:'choice',
+  choices:['松島','天橋立','宮島','三陸'],
+  answer:'松島',
+  explain:'宮城県には日本三景の1つである松島があります。ほかの2つは天橋立（京都府）と宮島（広島県）です。'
+},
+{
+  id:'m20', round:1, unit:'まとめてみよう', src:'福島県の都市',
+  stem:'⑳福島県の県庁所在地はどこですか。市の名前を答えなさい。',
+  type:'text', accept:['福島市'],
+  explain:'福島県の県庁所在地は福島市です。県の北部の阿武隈高地と奥羽山脈にはさまれた盆地に位置しています。'
+},
+{
+  id:'m21', round:1, unit:'まとめてみよう', src:'福島県のくだもの',
+  stem:'福島県では㉑（　　）などのくだものの生産がさかんである。生産量は全国第2位である。あてはまることばを選びなさい。',
+  type:'choice',
+  choices:['もも','りんご','みかん','おうとう'],
+  answer:'もも',
+  explain:'福島県ではももの生産がさかんで、生産量は全国第2位です。かつては養蚕がさかんでした。'
+},
+{
+  id:'m22', round:1, unit:'まとめてみよう', src:'福島県の湖',
+  stem:'福島県には東北地方で最も広い㉒（　　）湖がある。湖の水は発電や農業などに使われる。あてはまる湖の名を選びなさい。',
+  type:'choice',
+  choices:['猪苗代','田沢','十和田','霞ヶ浦'],
+  answer:'猪苗代',
+  explain:'福島県には東北地方で最も広い猪苗代湖があります。湖の水は発電や農業などに使われています。'
+},
+
+/* ---------- 白地図に書きこもう！（道県名・道県庁所在地・山脈・川、全13項目） ---------- */
+{
+  id:'hc1', round:1, unit:'白地図', src:'北海道の川', image:'hakuchizu1.png',
+  stem:'白地図の北海道を流れる川（地図いちばん上）の名前を答えなさい。',
+  type:'text', accept:['石狩川'],
+  explain:'北海道の中央部を流れ、日本海に注ぐ川は石狩川です。上流には石狩平野が広がります。'
+},
+{
+  id:'hc2', round:1, unit:'白地図', src:'北海道の道庁所在地', image:'hakuchizu1.png',
+  stem:'白地図の北海道にある市（道庁所在地、〇印の都市）の名前を答えなさい。',
+  type:'text', accept:['札幌市','さっぽろ市'],
+  explain:'北海道の道庁所在地は札幌市です。'
+},
+{
+  id:'hc3', round:1, unit:'白地図', src:'北海道の山脈', image:'hakuchizu1.png',
+  stem:'白地図の北海道にある山脈（右側の破線の楕円で示された部分）の名前を答えなさい。',
+  type:'text', accept:['日高山脈'],
+  explain:'北海道にある日高山脈です。'
+},
+{
+  id:'hc4', round:1, unit:'白地図', src:'青森県', image:'hakuchizu1.png',
+  stem:'白地図で、線が青森県内陸部を指している「県」の空欄に入る道県名を答えなさい（地図いちばん上の「県」の空欄）。',
+  type:'text', accept:['青森県'],
+  explain:'北海道の南、本州最北端にあるのが青森県です。'
+},
+{
+  id:'hc5', round:1, unit:'白地図', src:'青森県の県庁所在地', image:'hakuchizu1.png',
+  stem:'白地図の青森県にある市（県庁所在地、〇印の都市）の名前を答えなさい。',
+  type:'text', accept:['青森市'],
+  explain:'青森県の県庁所在地は青森市です。'
+},
+{
+  id:'hc6', round:1, unit:'白地図', src:'秋田県', image:'hakuchizu1.png',
+  stem:'白地図で、線が秋田・岩手の内陸部を指している「県」の空欄（上から2番目の「県」）に入る道県名を答えなさい。',
+  type:'text', accept:['秋田県'],
+  explain:'青森県の南、日本海側にあるのが秋田県です。'
+},
+{
+  id:'hc7', round:1, unit:'白地図', src:'岩手県の県庁所在地', image:'hakuchizu1.png',
+  stem:'白地図の岩手県にある市（県庁所在地、上のほうの〇印の都市）の名前を答えなさい。',
+  type:'text', accept:['盛岡市'],
+  explain:'岩手県の県庁所在地は盛岡市です。'
+},
+{
+  id:'hc8', round:1, unit:'白地図', src:'岩手県の海岸沿いを流れる川', image:'hakuchizu1.png',
+  stem:'白地図で、岩手県の海岸沿い（点線）を指している「川」の空欄に入る川の名前を答えなさい。東北で最も長い川である。',
+  type:'text', accept:['北上川'],
+  explain:'岩手県から宮城県へ流れる北上川は、東北地方で最も長い川です。'
+},
+{
+  id:'hc9', round:1, unit:'白地図', src:'山形県', image:'hakuchizu1.png',
+  stem:'白地図で、線が山形県の内陸部を指している「県」の空欄（3番目の「県」）に入る道県名を答えなさい。',
+  type:'text', accept:['山形県'],
+  explain:'秋田県の南、日本海側にあるのが山形県です。'
+},
+{
+  id:'hc10', round:1, unit:'白地図', src:'山形県を流れる川', image:'hakuchizu1.png',
+  stem:'白地図で、山形県の内陸部を指している「川」の空欄（2番目の「川」）に入る川の名前を答えなさい。三大急流の1つである。',
+  type:'text', accept:['最上川'],
+  explain:'山形県を流れる最上川は日本三大急流の1つです。'
+},
+{
+  id:'hc11', round:1, unit:'白地図', src:'宮城県の県庁所在地', image:'hakuchizu1.png',
+  stem:'白地図の宮城県にある市（県庁所在地、下のほうの〇印の都市）の名前を答えなさい。',
+  type:'text', accept:['仙台市'],
+  explain:'宮城県の県庁所在地は仙台市です。'
+},
+{
+  id:'hc12', round:1, unit:'白地図', src:'東北地方を南北に連なる山脈', image:'hakuchizu1.png',
+  stem:'白地図で、東北地方を南北に連なる山脈（中央を縦に走る太い破線で示された部分）の名前を答えなさい。',
+  type:'text', accept:['奥羽山脈'],
+  explain:'東北地方の中央部を南北に連なるのが奥羽山脈です。'
+},
+{
+  id:'hc13', round:1, unit:'白地図', src:'福島県', image:'hakuchizu1.png',
+  stem:'白地図で、線がいちばん南（内陸南部）を指している「県」の空欄に入る道県名を答えなさい。',
+  type:'text', accept:['福島県'],
+  explain:'宮城県・山形県の南にあるのが福島県です。'
+},
+
+/* ---------- 練習問題（北海道・東北地方） ---------- */
+{
+  id:'p1', round:1, unit:'練習問題', src:'本州と北海道の連絡',
+  stem:'（文1）道県庁所在地は百万都市で、日本で5番目に人口が多い都市です。本州のA半島と青函トンネルで結ばれています。Aにあてはまることばを答えなさい。',
+  type:'text', accept:['津軽'],
+  explain:'青函トンネルは、青森県の津軽半島と北海道の函館市付近を結んでいます。'
+},
+{
+  id:'p2', round:1, unit:'練習問題', src:'岩手県の伝統的工芸品',
+  stem:'（文4）東部には日本を代表するリアス海岸があります。伝統的工芸品のBには、鉄びんや風鈴などの製品があります。Bにあてはまるものを選びなさい。',
+  type:'choice',
+  choices:['将棋の駒','こけし','南部鉄器'],
+  answer:'南部鉄器',
+  explain:'岩手県の伝統的工芸品である南部鉄器には、鉄びんや風鈴などの製品があります。'
+},
+{
+  id:'p3', round:1, unit:'練習問題', src:'福島県のくだもの',
+  stem:'（文5）中央には東北地方で最も広い湖があります。また、Cなどのくだものの生産がさかんです。Cにあてはまるくだものは山梨県で最も多く生産されています。このくだものを選びなさい。',
+  type:'choice',
+  choices:['みかん','もも','りんご'],
+  answer:'もも',
+  explain:'ももは山梨県で最も多く生産されており、福島県でも生産がさかんです。'
+},
+{
+  id:'p4', round:1, unit:'練習問題', src:'日本三景（宮城県）',
+  stem:'（文1）日本三景の1つがあります。この道県庁所在地では、8月に東北三大祭りの1つが盛大に行われます。下線の日本三景を選びなさい。',
+  type:'choice',
+  choices:['宮島','松島','天橋立'],
+  answer:'松島',
+  explain:'宮城県には日本三景の1つである松島があります。'
+},
+{
+  id:'p5', round:1, unit:'練習問題', src:'仙台市の説明',
+  stem:'宮城県の道県庁所在地の名前を答えなさい。また、この都市は緑が豊かであることから「Dの都」とよばれています。Dにあてはまることばを選びなさい（都市名のみ答えなさい）。',
+  type:'text', accept:['仙台市'],
+  explain:'宮城県の道県庁所在地は仙台市です。緑が豊かなことから「杜の都」とよばれています。'
+},
+{
+  id:'p5b', round:1, unit:'練習問題', src:'仙台市のよび名',
+  stem:'仙台市は緑が豊かであることから「Dの都」とよばれています。Dにあてはまることばを選びなさい。',
+  type:'choice',
+  choices:['森','林','杜'],
+  answer:'杜',
+  explain:'仙台市は緑が豊かなことから「杜の都」とよばれています。'
+},
+{
+  id:'p6', round:1, unit:'練習問題', src:'宮城県（日本三景）の祭り',
+  stem:'（文1）日本三景の1つがあります。この道県庁所在地（仙台市）では、8月に東北三大祭りの1つが盛大に行われます。この祭りを選びなさい。',
+  type:'choice',
+  choices:['ねぶた','竿燈','七夕'],
+  answer:'七夕',
+  explain:'日本三景の1つ松島がある宮城県の県庁所在地・仙台市では、8月に東北三大祭りの1つ「七夕まつり」が行われます。'
+},
+{
+  id:'p6b', round:1, unit:'練習問題', src:'七夕まつりのようす',
+  stem:'仙台の七夕まつりのようすとして正しいものを選びなさい。',
+  type:'choice',
+  choices:['大きなふきながしを商店街につるし、人々がその下を歩いていく。','多くの提灯を下げた竹のさおを肩などに乗せる技をきそう。','大きな武者などの絵が描かれた山車を、人々が引きながらおどる。'],
+  answer:'大きなふきながしを商店街につるし、人々がその下を歩いていく。',
+  explain:'仙台の七夕まつりは、大きなふきながしを商店街につるし、人々がその下を歩いていく祭りです。'
+},
+{
+  id:'p7', round:1, unit:'練習問題', src:'北海道（百万都市）',
+  stem:'（文2）道県庁所在地は百万都市で、日本で5番目に人口が多い都市です。この都市の名前を答えなさい。',
+  type:'text', accept:['札幌市','さっぽろ市'],
+  explain:'北海道の道庁所在地・札幌市は百万都市で、日本で5番目に人口が多い都市です。'
+},
+{
+  id:'p7b', round:1, unit:'練習問題', src:'百万都市でないもの',
+  stem:'次のうち、百万都市として正しくないものを選びなさい。',
+  type:'choice',
+  choices:['横浜市','大阪市','名古屋市','新潟市'],
+  answer:'新潟市',
+  explain:'横浜市・大阪市・名古屋市は人口100万人をこえる百万都市ですが、新潟市は百万都市ではありません。'
+},
+{
+  id:'p8', round:1, unit:'練習問題', src:'世界自然遺産（白神山地）',
+  stem:'（文2）豊かな自然にめぐまれ、世界自然遺産に登録されている地域もあります。この世界自然遺産の名前を漢字で答えなさい。',
+  type:'text', accept:['白神山地'],
+  explain:'青森県と秋田県の境にある白神山地は世界自然遺産に登録されています。'
+},
+{
+  id:'p8b', round:1, unit:'練習問題', src:'白神山地の位置',
+  stem:'白神山地は、この道県（青森県）のどのあたりにありますか。選びなさい。',
+  type:'choice',
+  choices:['北西部','北東部','南東部','南西部'],
+  answer:'北東部',
+  explain:'白神山地は青森県の北東部にあたる、青森県と秋田県の境に位置しています。'
+},
+{
+  id:'p9', round:1, unit:'練習問題', src:'最上川',
+  stem:'この道県を流れる川は三大急流に数えられ、下流の平野では米づくりがさかんに行われています。この川の名前を答えなさい。',
+  type:'text', accept:['最上川'],
+  explain:'山形県を流れる最上川は日本三大急流の1つで、下流には庄内平野が広がり米づくりがさかんです。'
+},
+{
+  id:'p10', round:1, unit:'練習問題', src:'庄内平野',
+  stem:'最上川下流の平野の名前を答えなさい。また、この平野のある県について述べた文として正しいものを選びなさい（ここでは平野名を答えなさい）。',
+  type:'text', accept:['庄内平野'],
+  explain:'最上川下流に広がる平野は庄内平野です。'
+},
+{
+  id:'p10b', round:1, unit:'練習問題', src:'山形県の特ちょう',
+  stem:'庄内平野のある山形県について述べた文として正しいものを選びなさい。',
+  type:'choice',
+  choices:['「こまち」という新幹線が走っている。','日本海に面している。','平野の南側に白神山地がある。','冬に流氷が見られる。'],
+  answer:'日本海に面している。',
+  explain:'山形県は日本海に面しています。「こまち」は秋田新幹線、白神山地は平野の北側、流氷は北海道のオホーツク海側で見られます。'
+},
+{
+  id:'p11', round:1, unit:'練習問題', src:'三陸海岸と親潮',
+  stem:'日本を代表するリアス海岸の名前を答えなさい。また、この海岸の沖を北から南へ流れる寒流の名前を答えなさい（ここでは海岸名を答えなさい）。',
+  type:'text', accept:['三陸海岸'],
+  explain:'岩手県東部には日本を代表するリアス海岸である三陸海岸があります。'
+},
+{
+  id:'p11b', round:1, unit:'練習問題', src:'三陸海岸沖の寒流',
+  stem:'三陸海岸の沖を北から南へ流れる寒流の名前を答えなさい。',
+  type:'text', accept:['親潮','千島海流'],
+  explain:'三陸海岸の沖には、魚のえさとなるプランクトンが多いことから親潮（千島海流）とよばれる寒流が流れています。'
+},
+{
+  id:'p12', round:1, unit:'練習問題', src:'輪郭図にあてはまらない道県（文1〜5）', image:'prefshapes1.png',
+  stem:'この練習問題の文1〜5（宮城県・北海道・山形県・岩手県・福島県）が述べている道県のうち、右のア〜エ（北海道・岩手県・青森県・福島県）の輪郭図のどれにもあてはまらない道県を、文の番号（1〜5）で答えなさい。',
+  type:'choice',
+  choices:['1','2','3','4','5'],
+  answer:'3',
+  explain:'文1は宮城県、文2は北海道、文3は山形県、文4は岩手県、文5は福島県です。ア〜エの輪郭図は北海道・岩手県・青森県・福島県なので、あてはまらないのは文3の山形県です。'
+},
+{
+  id:'p12b', round:1, unit:'練習問題', src:'輪郭図にあてはまらない道県の名前', image:'prefshapes1.png',
+  stem:'p12で選んだ道県の名前を答えなさい。',
+  type:'text', accept:['山形県'],
+  explain:'ア〜エの輪郭図（北海道・岩手県・青森県・福島県）のどれにもあてはまらないのは山形県です。'
+},
+
+/* ---------- 発展問題（立教新座・東京都市大学付属　一部改題） ---------- */
+{
+  id:'dev1', round:1, unit:'発展問題', src:'奥羽山脈', image:'devmap1.png',
+  stem:'地図のAの山脈の名前を答えなさい。',
+  type:'text', accept:['奥羽山脈'],
+  explain:'Aは奥羽山脈です。日本海側の県との間にある、東北地方で最も長い山脈です。'
+},
+{
+  id:'dev2', round:1, unit:'発展問題', src:'白神山地の樹木', image:'devmap1.png',
+  stem:'地図のBの山地（世界自然遺産）で見られる原生林を構成するおもな樹木を選びなさい。',
+  type:'choice',
+  choices:['ひば','すぎ','ぶな','ひのき'],
+  answer:'ぶな',
+  explain:'Bは白神山地です。世界最大級のぶなの原生林があり、貴重な生態系が評価されて世界自然遺産に登録されています。'
+},
+{
+  id:'dev3', round:1, unit:'発展問題', src:'田沢湖', image:'devmap1.png',
+  stem:'地図のCに示された、日本一の深さをほこる湖の名前を答えなさい。',
+  type:'text', accept:['田沢湖'],
+  explain:'Cは田沢湖です。秋田県にあり、日本一深い湖として知られています。'
+},
+{
+  id:'dev4', round:1, unit:'発展問題', src:'庄内平野', image:'devmap1.png',
+  stem:'地図のDの川（最上川）の下流に広がる平野の名前を答えなさい。',
+  type:'text', accept:['庄内平野'],
+  explain:'Dの最上川の下流には庄内平野が広がります。'
+},
+{
+  id:'dev5', round:1, unit:'発展問題', src:'オホーツク海', image:'devmap1.png',
+  stem:'地図の①の道県（北海道）を取り囲む3つの海のうち、①の北東に広がり、冬には流氷が見られる海の名前を答えなさい。',
+  type:'text', accept:['オホーツク海'],
+  explain:'北海道の北東に広がるオホーツク海では、冬に流氷が見られます。'
+},
+{
+  id:'dev6', round:1, unit:'発展問題', src:'知床半島', image:'devmap1.png',
+  stem:'手つかずの自然がたくさん残り、貴重な生態系が評価されて、（　　）半島周辺が世界自然遺産に登録されました。あてはまることばを答えなさい。',
+  type:'text', accept:['知床'],
+  explain:'知床半島周辺は世界自然遺産に登録されています。'
+},
+{
+  id:'dev7', round:1, unit:'発展問題', src:'東北三大祭りの都市（3つ）', image:'devmap1.png',
+  stem:'地図の②〜⑦（青森県・秋田県・山形県・岩手県・宮城県・福島県）の県庁所在地のうち、東北三大祭りが行われている県庁所在地の説明として、次から正しいものを1つ選びなさい。\n(ア) この都市は、県の海ぞいのほぼ中央部に位置し、東には出羽山地、西には日本海が広がる。（秋田市）\n(イ) この都市は、北上高地と奥羽山脈に囲まれた盆地の北部に位置する。（盛岡市）\n(ウ) この都市は、県の中央部の東側に位置する。夏は暑く冬は寒い内陸性の気候。（山形市）\n(エ) この都市は、県のほぼ中央部に位置し、本州と北海道を結ぶ交通と物流の中心。（青森市）\n(オ) この都市は、県の北部の阿武隈高地と奥羽山脈にはさまれた盆地に位置する。（福島市）\n(カ) この都市は、東北地方の政治・経済・文化の中心都市。「杜の都」。（仙台市）',
+  type:'multi',
+  choices:['(ア) 秋田市','(イ) 盛岡市','(ウ) 山形市','(エ) 青森市','(オ) 福島市','(カ) 仙台市'],
+  answer:['(ア) 秋田市','(エ) 青森市','(カ) 仙台市'],
+  explain:'東北三大祭り（ねぶた・竿燈・七夕）が行われるのは、青森市（ねぶた）・秋田市（竿燈）・仙台市（七夕）です。'
+},
+
+/* ---------- 記述問題にチャレンジ！（開智　一部改題） ---------- */
+{
+  id:'desc1', round:1, unit:'記述問題', src:'竿燈まつりの写真選択', image:'festival_all.png',
+  stem:'秋田県で開かれる「竿燈まつり」の写真を、ア・イ・ウの中から選びなさい。',
+  type:'choice',
+  choices:['ア','イ','ウ'],
+  answer:'ア',
+  explain:'アが竿燈まつりの写真です。イは仙台の七夕まつり、ウは青森のねぶた祭りです。'
+},
+{
+  id:'desc2', round:1, unit:'記述問題', src:'竿燈まつりの由来', image:'festival_all.png',
+  stem:'「竿燈まつり」はどのようなことを祈って行われる祭りですか。東北地方で夏の時期に開かれることをふまえ、また、写真の中に見られるもの（提灯）を参考にして、20〜40字程度で説明しなさい。',
+  type:'text', accept:['眠気や病虫害を追い払って夏の農作業がうまくいくことと豊作を祈る','眠気や病虫害を追い払い豊作を祈る'],
+  explain:'竿燈は「ねぶり流し」と七夕が1つになったものと考えられています。稲の花が開く夏には台風などによる風水害や病虫害が起こりやすくなります。これらの被害を受けることなく、無事に豊かな収穫を迎えられるように、稲穂に見立てた提灯をつるして、眠気や病虫害を追い払い、夏の農作業がうまくいくことと豊作を祈る祭りです。'
+}
+];
+
+/* =========================================================
+   忘却曲線・反復学習エンジン（日付ベース）
+   - まちがえた問題は正解するまで「今日」の中で何度も出題される
+   - 一度正解すると、その日はもう出題されない
+   - 翌日以降、忘却曲線の間隔（1→2→4→7→14→30日）で再出題される
+   - 全問がこの同じしくみで回るので、正解し続けている問題もいずれ再登場する
+   ========================================================= */
+// localStorageのキーは「なまえ」ごとに分ける（同じ端末で名前を切り替えても記録が混ざらないように）。
+// ログイン前はまだ名前が確定していないので、いったん共通のプレースホルダーで読み込んでおき、
+// ログイン確定後（onAuthReady内）に正しいキーで読み直す。
+function storageKeyForName(name){
+  return name ? ('sha_ch1_v1_'+name) : 'sha_ch1_v1___anon__';
+}
+let KEY = storageKeyForName(loadGateNameDisplay());
+const N = PROBLEMS.length;
+const BY_ID = {};
+PROBLEMS.forEach((p,i)=>{ p.__index=i; BY_ID[p.id]=p; });
+const ORDER = PROBLEMS.map(p=>p.id); // 教科書の掲載順（まとめてみよう→練習問題→発展問題）。ランダム要素なし。
+
+/* ---------- 週送りスケジュール（算数アプリと同じ方式） ---------- */
+// 2026-08-31(月)を第1週の開始とし、1週間で1回ずつ解放する
+function todayObj(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+const SCHEDULE_START = new Date(2026,7,31); // 月は0始まりなので8月=7
+const SCHEDULE_TOTAL_ROUNDS = 1;
+function currentWeekIndex(){
+  // 開始週を0とする経過週数（0始まり）。開始日より前は0扱い。
+  const now = todayObj();
+  const diffDays = Math.floor((now-SCHEDULE_START)/86400000);
+  const w = Math.floor(diffDays/7);
+  return Math.max(0,w);
+}
+function currentRound(){
+  // 第1週=第1回。全回解放後は最終回のまま。
+  return Math.min(SCHEDULE_TOTAL_ROUNDS, currentWeekIndex()+1);
+}
+function isRoundUnlocked(r){
+  return r<=currentRound();
+}
+const UNLOCKED_ORDER_CACHE_TTL = 0; // 都度計算（週送りなので毎回軽い計算で十分）
+function unlockedOrder(){
+  return ORDER.filter(id=>isRoundUnlocked(BY_ID[id].round));
+}
+function unlockedProblems(){
+  return PROBLEMS.filter(p=>isRoundUnlocked(p.round));
+}
+function unlockedN(){
+  return unlockedProblems().length;
+}
+
+const GAPS = [1, 2, 4, 7, 14, 30]; // 忘却曲線に沿った復習間隔（日）
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+}
+function addDays(dateStr, n){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate()+n);
+  return `${dt.getFullYear()}-${pad2(dt.getMonth()+1)}-${pad2(dt.getDate())}`;
+}
+function fmtDateShort(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return `${m}/${d}`;
+}
+
+function defaultStat(){
+  return {seen:0, correct:0, wrong:0, weak:false, dueDate:null, gapIdx:-1, lastResult:null};
+}
+function normalizeState(s){
+  if(!s || typeof s!=='object') s={};
+  s.stats = s.stats || {};
+  PROBLEMS.forEach(p=>{
+    s.stats[p.id] = Object.assign(defaultStat(), s.stats[p.id]||{});
+  });
+  s.mDaily = s.mDaily || {};
+  s.updatedAt = s.updatedAt || 0;
+  return s;
+}
+function loadLocalState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) return normalizeState(JSON.parse(raw));
+  }catch(e){}
+  return normalizeState({});
+}
+
+let state = loadLocalState();
+let queue = [];       // 今日出題する残りの問題id（クラウド同期はしないその場限りの作業列）
+let queueDate = null;
+let cloudSyncReady = false;
+let cloudSaveTimer = null;
+
+function saveLocal(){
+  state.updatedAt = Date.now();
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  scheduleCloudSave();
+}
+function scheduleCloudSave(){
+  if(!cloudSyncReady) return;
+  if(cloudSaveTimer) clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(cloudSaveNow, 800);
+}
+function cloudPayload(){
+  return { stats: state.stats, mDaily: state.mDaily, updatedAt: state.updatedAt };
+}
+function profileDocRef(){
+  const user = fbAuth.currentUser;
+  const name = loadGateNameDisplay();
+  if(!user || !name) return null;
+  return fbDb.collection('users').doc(user.uid).collection('profiles').doc(name);
+}
+function cloudSaveNow(){
+  cloudSaveTimer = null;
+  const ref = profileDocRef();
+  if(!ref) return;
+  ref.set(cloudPayload()).catch(e=>{
+    console.warn('cloud save failed', e);
+  });
+}
+
+/* ---------- ローカルとクラウドのマージ（進んでいる方を残す） ---------- */
+function statScore(s){
+  if(!s) return -1;
+  return (s.gapIdx||-1)*1000 + (s.correct||0) - (s.wrong||0);
+}
+function mergeStat(a,b){
+  if(!a) return b; if(!b) return a;
+  const winner = statScore(a) >= statScore(b) ? a : b;
+  let dueDate = null;
+  if(a.dueDate && b.dueDate) dueDate = (a.dueDate > b.dueDate) ? a.dueDate : b.dueDate;
+  else dueDate = a.dueDate || b.dueDate || null;
+  return {
+    seen: Math.max(a.seen||0, b.seen||0),
+    correct: Math.max(a.correct||0, b.correct||0),
+    wrong: Math.max(a.wrong||0, b.wrong||0),
+    weak: winner.weak,
+    dueDate: dueDate,
+    gapIdx: Math.max(a.gapIdx==null?-1:a.gapIdx, b.gapIdx==null?-1:b.gapIdx),
+    lastResult: winner.lastResult
+  };
+}
+function mergeDailyEntry(a,b){
+  if(!a) return b; if(!b) return a;
+  return {
+    learned: Math.max(a.learned||0, b.learned||0),
+    reviews: Math.max(a.reviews||0, b.reviews||0),
+    correct: Math.max(a.correct||0, b.correct||0),
+    attempts: Math.max(a.attempts||0, b.attempts||0),
+    timeSec: Math.max(a.timeSec||0, b.timeSec||0)
+  };
+}
+function mergeState(local, remote){
+  const out = normalizeState({});
+  const keys = new Set([...Object.keys(local.stats||{}), ...Object.keys(remote.stats||{})]);
+  keys.forEach(k=>{ out.stats[k] = mergeStat(local.stats[k], remote.stats[k]); });
+  const dkeys = new Set([...Object.keys(local.mDaily||{}), ...Object.keys(remote.mDaily||{})]);
+  dkeys.forEach(k=>{ out.mDaily[k] = mergeDailyEntry(local.mDaily[k], remote.mDaily[k]); });
+  out.updatedAt = Date.now();
+  return out;
+}
+// Firebase Authログイン完了後に呼ばれる：Firestoreの記録とこの端末の記録を統合し、
+// どちらの記録も失わないようにしてから画面を再描画する
+async function initCloudSync(){
+  const ref = profileDocRef();
+  if(!ref) return;
+  cloudSyncReady = false;
+  try{
+    const snap = await ref.get();
+    if(snap.exists){
+      const remote = normalizeState(snap.data());
+      state = mergeState(state, remote);
+      try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+    }
+    // リモートに何もなければ、この端末の記録がそのまま初回アップロードされる（後段のscheduleCloudSaveで反映）
+  }catch(e){
+    console.warn('cloud load failed', e);
+  }
+  cloudSyncReady = true;
+  scheduleCloudSave();
+  updateHeaderProfileLabel();
+  renderHome();
+  go('home');
+}
+function updateHeaderProfileLabel(){
+  const el = document.getElementById('headerStatus');
+  const name = loadGateNameDisplay();
+  if(el) el.textContent = name ? `👤 ${name} さんの記録` : '';
+}
+
+function getStat(id){ return state.stats[id]; }
+
+/* ---------- 今日の出題キューを組み立てる ---------- */
+function buildQueueForToday(force){
+  const t = todayStr();
+  if(!force && queueDate===t && Array.isArray(queue)) return;
+  let ids;
+  const uOrder = unlockedOrder(); // 週送りでまだ解放されていない回は出題しない
+  if(force){
+    ids = uOrder.slice(); // 解放ずみの全問を今日ぶんとして出題（記録はリセットしない）
+  }else{
+    ids = uOrder.filter(id=>{
+      const st = getStat(id);
+      return !st.dueDate || st.dueDate <= t;
+    });
+  }
+  queue = ids;
+  queueDate = t;
+}
+
+function todaysMDaily(){
+  const t = todayStr();
+  state.mDaily[t] = state.mDaily[t] || {learned:0, reviews:0, correct:0, attempts:0, timeSec:0};
+  return state.mDaily[t];
+}
+
+function currentMasteredCount(){
+  return unlockedProblems().filter(p=>{
+    const st = getStat(p.id);
+    return st.correct>0 && !st.weak;
+  }).length;
+}
+function currentWeakCount(){
+  return unlockedProblems().filter(p=>getStat(p.id).weak).length;
+}
+function everAnsweredCount(){
+  return unlockedProblems().filter(p=>getStat(p.id).seen>0).length;
+}
+
+/* =========================================================
+   UI ロジック
+   ========================================================= */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+const views = {
+  home: $('#view-home'),
+  quiz: $('#view-quiz'),
+  review: $('#view-review'),
+  list: $('#view-list'),
+  history: $('#view-history'),
+  done: $('#view-done')
+};
+function showView(name){
+  Object.keys(views).forEach(k=>{
+    views[k].classList.toggle('hidden', k!==name);
+  });
+  $$('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  const btn = document.querySelector(`nav.tabs button[data-view="${name}"]`);
+  if(btn) btn.classList.add('active');
+}
+function go(name){
+  if(name==='home'){ showView('home'); renderHome(); }
+  else if(name==='review'){ showView('review'); renderReview(); }
+  else if(name==='list'){ showView('list'); renderList(); }
+  else if(name==='history'){ showView('history'); renderHistory(); }
+  else { showView(name); }
+}
+
+function renderHome(){
+  const total = unlockedN();
+  const masteredOnce = everAnsweredCount();
+  const weak = currentWeakCount();
+  $('#statTotal').textContent = total;
+  $('#statMastered').textContent = currentMasteredCount();
+  $('#statWeak').textContent = weak;
+  const pct = total>0 ? Math.round((masteredOnce/total)*100) : 0;
+  $('#homeProgressBar').style.width = pct+'%';
+  $('#homeProgressLabel').textContent = masteredOnce+' / '+total+' 問に挑戦ずみ';
+  renderScheduleStatus();
+
+  buildQueueForToday(false);
+  const remain = queue.length;
+  const btnStart = $('#btnStart');
+  if(remain>0){
+    btnStart.disabled = false;
+    $('#btnStartSub').textContent = `今日はあと ${remain} 問／忘却曲線に沿って出題`;
+  }else{
+    btnStart.disabled = false;
+    $('#btnStartSub').textContent = '今日のぶんはおわりました。もう一度練習することもできます';
+  }
+}
+
+function renderReview(){
+  const list = $('#reviewList');
+  const t = todayStr();
+  const weakItems = unlockedProblems().filter(p=>getStat(p.id).weak);
+  if(weakItems.length===0){
+    list.innerHTML = '<div class="empty-msg">今は復習リストに問題がありません。すばらしい！<br>まちがえた問題があるとここに表示されます。</div>';
+    return;
+  }
+  list.innerHTML = weakItems.map(p=>{
+    const st = getStat(p.id);
+    let dueLabel;
+    if(!st.dueDate || st.dueDate<=t) dueLabel = '今日また出題されます';
+    else dueLabel = `${fmtDateShort(st.dueDate)} ごろに再登場`;
+    return `<div class="review-item">
+      <div class="ri-top"><span>${p.unit}｜${p.src}</span><span class="tag">まちがえ ${st.wrong}回</span></div>
+      <div class="ri-stem">${escapeHtml(p.stem)}</div>
+      <div class="ri-due">正解：${escapeHtml(Array.isArray(p.answer)?p.answer.join('、'):(p.answer!=null?p.answer:(p.accept?p.accept[0]:'')))}　／　${dueLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderList(){
+  const box = $('#probList');
+  let html = '';
+  let lastRound = null;
+  let lastUnit = null;
+  PROBLEMS.forEach((p,i)=>{
+    if(p.round!==lastRound){
+      lastRound = p.round;
+      lastUnit = null;
+      const unlocked = isRoundUnlocked(p.round);
+      html += `<div class="unit-head" style="margin-top:${i===0?'0':'18px'};">${unlocked?`第${p.round}回`:`🔒 第${p.round}回（まだ解放されていません）`}</div>`;
+    }
+    if(!isRoundUnlocked(p.round)) return; // 未解放の回は問題文・正解を表示しない
+    if(p.unit!==lastUnit){
+      html += `<div class="unit-head" style="font-size:.85em;opacity:.85;">${escapeHtml(p.unit)}</div>`;
+      lastUnit = p.unit;
+    }
+    const ansText = Array.isArray(p.answer) ? p.answer.join('、') : (p.answer!=null ? p.answer : (p.accept?p.accept[0]:''));
+    const imgHtml = p.image ? `<div class="li-image"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.src)}"></div>` : '';
+    html += `<div class="list-item">
+      <div class="li-no">${i+1}. ${escapeHtml(p.src)}</div>
+      <div class="li-stem">${escapeHtml(p.stem)}</div>
+      ${imgHtml}
+      <div class="li-ans">正解：${escapeHtml(ansText)}</div>
+      <details><summary>解説を見る</summary><div class="li-explain">${escapeHtml(p.explain||'')}</div></details>
+    </div>`;
+  });
+  box.innerHTML = html;
+}
+
+function renderScheduleStatus(){
+  const el = $('#scheduleStatus');
+  if(!el) return;
+  const curRound = currentRound();
+  let rows = '';
+  for(let r=1; r<=SCHEDULE_TOTAL_ROUNDS; r++){
+    const unlocked = isRoundUnlocked(r);
+    rows += `<div class="stat-row"><span>${unlocked?'✅':'🔒'} 第${r}回</span><span>${unlocked?'解放ずみ':'未解放'}</span></div>`;
+  }
+  el.innerHTML = `<div class="section-title" style="margin-top:14px;">週送りスケジュール（第1回〜第${curRound}回が解放ずみ）</div>${rows}`;
+}
+
+function renderHistory(){
+  const rows = Object.entries(state.mDaily)
+    .sort((a,b)=> a[0]<b[0] ? 1 : -1)
+    .slice(0,30)
+    .map(([d,v])=>{
+      const rate = v.attempts>0 ? Math.round((v.correct/v.attempts)*100) : 0;
+      const min = Math.round((v.timeSec||0)/60);
+      return `<tr><td>${d}</td><td>${v.attempts||0}問</td><td>${rate}%</td><td>${min}分</td></tr>`;
+    }).join('');
+  $('#historyTable').innerHTML = `<tr><th>日付</th><th>解いた問題</th><th>正解率</th><th>時間</th></tr>${rows || '<tr><td colspan="4">まだ記録がありません</td></tr>'}`;
+}
+
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* --- クイズ進行 --- */
+let curId = null;
+let answered = false;
+let selectedChoice = null;
+let selectedMulti = new Set();
+let qStartTime = 0;
+
+function startQuiz(force){
+  buildQueueForToday(!!force);
+  showView('quiz');
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(queue.length===0){
+    finishSession();
+    return;
+  }
+  answered = false;
+  selectedChoice = null;
+  selectedMulti = new Set();
+  curId = queue.shift();
+  renderQuestion();
+}
+
+function finishSession(){
+  const md = todaysMDaily();
+  const rate = md.attempts>0 ? Math.round((md.correct/md.attempts)*100) : 0;
+  const min = Math.round((md.timeSec||0)/60);
+  $('#doneSummary').innerHTML = `今日は ${md.attempts}問 解いて、正解率は ${rate}% でした。<br>学習時間：約${min}分`;
+  showView('done');
+}
+
+function renderQuestion(){
+  const p = BY_ID[curId];
+  const st = getStat(curId);
+
+  $('#quizBadge').textContent = st.weak ? '復習リスト' : p.unit;
+  $('#quizBadge').className = 'badge' + (st.weak ? ' review' : '');
+
+  const doneToday = unlockedOrder().length - queue.length; // 今日すでに出題した数（このカードを含む）。週送りで未解放の回は母数に含めない
+  const totalToday = doneToday + queue.length;
+  $('#quizCounter').textContent = doneToday + ' / ' + totalToday + '（今日）';
+  $('#quizProgressBar').style.width = totalToday>0 ? Math.round((doneToday/totalToday)*100)+'%' : '0%';
+
+  $('#qMeta').textContent = p.src;
+  $('#qStem').textContent = p.stem;
+  $('#qImage').innerHTML = p.image ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.src)}">` : '';
+
+  $('#feedback').classList.remove('show','ok','ng');
+
+  const area = $('#answerArea');
+  area.innerHTML = '';
+
+  if(p.type==='choice'){
+    const box = document.createElement('div');
+    box.className = 'choices';
+    p.choices.forEach(c=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c;
+      b.dataset.value = c;
+      b.addEventListener('click', ()=>{
+        if(answered) return;
+        selectedChoice = c;
+        $$('#answerArea .choice-btn').forEach(x=>x.classList.remove('selected'));
+        b.classList.add('selected');
+      });
+      box.appendChild(b);
+    });
+    area.appendChild(box);
+  } else if(p.type==='multi'){
+    const box = document.createElement('div');
+    box.className = 'choices';
+    p.choices.forEach(c=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c;
+      b.dataset.value = c;
+      b.addEventListener('click', ()=>{
+        if(answered) return;
+        if(selectedMulti.has(c)){
+          selectedMulti.delete(c);
+          b.classList.remove('selected');
+        }else{
+          selectedMulti.add(c);
+          b.classList.add('selected');
+        }
+      });
+      box.appendChild(b);
+    });
+    area.appendChild(box);
+    const note = document.createElement('div');
+    note.style.cssText='font-size:.72rem;color:var(--ink-soft);margin:-8px 0 12px;';
+    note.textContent = '※あてはまるものをすべて選んでください（複数選択）';
+    area.appendChild(note);
+  } else if(p.type==='text'){
+    const row = document.createElement('div');
+    row.className = 'text-input-row';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'ことばで答える';
+    input.id = 'textAnswer';
+    input.autocomplete = 'off';
+    row.appendChild(input);
+    area.appendChild(row);
+    setTimeout(()=>input.focus(), 50);
+  }
+
+  $('#btnCheck').classList.remove('hidden');
+  $('#btnCheck').disabled = false;
+  $('#btnNext').classList.add('hidden');
+
+  qStartTime = Date.now();
+}
+
+function normalizeText(s){
+  if(s==null) return '';
+  return s
+    .toString()
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0)) // 全角->半角
+    .replace(/\s+/g,'')
+    .replace(/[。．.、，,]/g,'')
+    .trim();
+}
+
+function checkAnswer(){
+  const p = BY_ID[curId];
+  if(answered) return;
+
+  let isCorrect = false;
+
+  if(p.type==='choice'){
+    if(!selectedChoice){ flashNeedSelect(); return; }
+    isCorrect = selectedChoice === p.answer;
+    $$('#answerArea .choice-btn').forEach(b=>{
+      if(b.dataset.value === p.answer) b.classList.add('correct');
+      else if(b.dataset.value === selectedChoice && !isCorrect) b.classList.add('wrong');
+      b.disabled = true;
+    });
+  } else if(p.type==='multi'){
+    if(selectedMulti.size===0){ flashNeedSelect(); return; }
+    const ans = new Set(p.answer);
+    isCorrect = ans.size===selectedMulti.size && [...ans].every(a=>selectedMulti.has(a));
+    $$('#answerArea .choice-btn').forEach(b=>{
+      const v = b.dataset.value;
+      if(ans.has(v)) b.classList.add('correct');
+      else if(selectedMulti.has(v)) b.classList.add('wrong');
+      b.disabled = true;
+    });
+  } else if(p.type==='text'){
+    const input = $('#textAnswer');
+    const val = input.value;
+    if(!val || !val.trim()){ flashNeedSelect(); return; }
+    const norm = normalizeText(val);
+    isCorrect = p.accept.some(a=>normalizeText(a)===norm);
+    input.disabled = true;
+    input.classList.add(isCorrect?'correct':'wrong');
+  }
+
+  answered = true;
+  const sec = Math.max(1, Math.round((Date.now()-qStartTime)/1000));
+  updateStats(p.id, isCorrect, sec);
+
+  const fb = $('#feedback');
+  fb.classList.add('show');
+  if(isCorrect){
+    fb.classList.add('ok'); fb.classList.remove('ng');
+    $('#fbTitle').textContent = '⭕ せいかい！';
+  }else{
+    fb.classList.add('ng'); fb.classList.remove('ok');
+    const correctText = Array.isArray(p.answer) ? p.answer.join('、') : (p.answer!=null ? p.answer : (p.accept ? p.accept[0] : ''));
+    $('#fbTitle').textContent = '❌ おしい！ 正解は「'+correctText+'」';
+  }
+  $('#fbBody').textContent = p.explain;
+
+  $('#btnCheck').classList.add('hidden');
+  $('#btnNext').classList.remove('hidden');
+
+  // まちがえた問題は、今日のうちにもう一度出題されるようキューへ再挿入する（頻度を上げる）
+  if(!isCorrect){
+    const insertAt = Math.min(3, queue.length);
+    queue.splice(insertAt, 0, p.id);
+  }
+}
+
+function flashNeedSelect(){
+  const btn = $('#btnCheck');
+  btn.textContent = 'こたえを選んでね';
+  setTimeout(()=>{ btn.textContent='こたえ合わせ'; }, 900);
+}
+
+function updateStats(id, isCorrect, sec){
+  const st = getStat(id);
+  const wasNew = st.seen===0;
+  st.seen++;
+
+  const t = todayStr();
+  const md = todaysMDaily();
+  md.attempts++;
+  md.timeSec += sec;
+  if(isCorrect) md.correct++;
+  if(wasNew && isCorrect) md.learned++;
+  else md.reviews++;
+
+  if(isCorrect){
+    st.correct++;
+    st.lastResult = 'correct';
+    st.gapIdx = Math.min((st.gapIdx==null?-1:st.gapIdx)+1, GAPS.length-1);
+    st.dueDate = addDays(t, GAPS[st.gapIdx]);
+    // まちがえた履歴があっても、忘却曲線の間隔を2回以上こなしたら復習リストを卒業する
+    if(st.weak && st.gapIdx>=2){
+      st.weak = false;
+    }
+  } else {
+    st.wrong++;
+    st.lastResult = 'wrong';
+    st.weak = true;
+    st.gapIdx = -1;
+    st.dueDate = t; // 今日のうちに再度出題する
+  }
+  saveLocal();
+}
+
+/* --- ボタン結線 --- */
+$('#btnCheck').addEventListener('click', checkAnswer);
+$('#btnNext').addEventListener('click', ()=>{
+  nextQuestion();
+});
+$('#btnStart').addEventListener('click', ()=>startQuiz(false));
+$('#btnRestart').addEventListener('click', ()=>startQuiz(true));
+$('#btnDoneHome').addEventListener('click', ()=>{
+  go('home');
+});
+$('#btnLogout').addEventListener('click', ()=>{
+  if(confirm('なまえを 変えますか？\n（つぎに べつの なまえで はじめられます）')){
+    gateLogout();
+  }
+});
+
+$$('nav.tabs button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const v = b.dataset.view;
+    if(v==='quiz'){ startQuiz(false); }
+    else { go(v); }
+  });
+});
+
+/* ---------- 初期化 ----------
+   ログイン（ログインゲート側のonAuthReady）が完了してから画面を初期描画する。
+   ログイン前でもnav/homeの下地は作っておく（画面がロード直後に真っ白にならないように）。 */
+renderHome();
+go('home');
+onAuthReady = function(){
+  // ログインゲートで確定した「なまえ」に合わせてローカルデータを読み直してから、
+  // クラウド(Firestore)の同名プロフィールと統合する。
+  const name = loadGateNameDisplay();
+  KEY = storageKeyForName(name);
+  state = loadLocalState();
+  initCloudSync();
+};
+</script>
+</body>
+</html>
