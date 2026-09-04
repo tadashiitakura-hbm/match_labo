@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>国語チャレンジ 4年下 第1回 漢字とことば</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Hachi+Maru+Pop&display=swap');
+
+:root{
+  --bg:#FBF7EE;
+  --card:#FFFFFF;
+  --ink:#2E2A22;
+  --ink-soft:#6B6455;
+  --accent:#3C8F72;
+  --accent-dark:#2A6B54;
+  --accent-soft:#DCF0E6;
+  --warn:#C0553B;
+  --warn-soft:#FBE3DC;
+  --gold:#D6A63C;
+  --gold-soft:#FBF0D8;
+  --border:#E5DFCF;
+  --shadow:0 2px 8px rgba(60,50,20,.08), 0 8px 24px rgba(60,50,20,.06);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Kiwi Maru','Hiragino Maru Gothic ProN',-apple-system,sans-serif;
+  background:linear-gradient(180deg,#FDF9EF,#F6EFDC 400px, #FBF7EE);
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:40px;
+}
+.wrap{max-width:680px;margin:0 auto;padding:16px;}
+header{
+  text-align:center;
+  padding:18px 12px 10px;
+  position:relative;
+}
+header h1{
+  font-size:1.3rem;
+  margin:0 0 2px;
+  color:var(--accent-dark);
+  font-family:'Hachi Maru Pop',cursive;
+}
+header p{margin:0;color:var(--ink-soft);font-size:.8rem;}
+.headerStatus{font-size:.68rem;color:var(--ink-soft);margin-top:4px;}
+
+nav.tabs{
+  display:flex;
+  gap:6px;
+  margin:14px 0;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+nav.tabs button{
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--ink-soft);
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:.78rem;
+  font-family:inherit;
+  cursor:pointer;
+  transition:.15s;
+}
+nav.tabs button.active{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+  font-weight:bold;
+}
+
+.card{
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  margin-bottom:16px;
+}
+
+/* HOME */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:14px 0;
+}
+.stat-box{
+  background:var(--accent-soft);
+  border-radius:14px;
+  padding:12px 8px;
+  text-align:center;
+}
+.stat-box .num{font-size:1.5rem;font-weight:bold;color:var(--accent-dark);}
+.stat-box .lbl{font-size:.7rem;color:var(--ink-soft);margin-top:2px;}
+.stat-box.warn{background:var(--warn-soft);}
+.stat-box.warn .num{color:var(--warn);}
+.stat-box.gold{background:var(--gold-soft);}
+.stat-box.gold .num{color:#a37b1c;}
+
+.stat-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 4px;
+  border-bottom:1px solid var(--line);
+  font-size:.88rem;
+}
+.stat-row:last-child{border-bottom:none;}
+
+.bigbtn{
+  display:block;
+  width:100%;
+  border:none;
+  border-radius:16px;
+  padding:16px;
+  font-size:1.05rem;
+  font-family:inherit;
+  font-weight:bold;
+  color:#fff;
+  background:var(--accent);
+  cursor:pointer;
+  margin-bottom:12px;
+  box-shadow:0 4px 0 var(--accent-dark);
+  transition:.1s;
+}
+.bigbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-dark);}
+.bigbtn.secondary{background:#8A8F99;box-shadow:0 4px 0 #666a72;}
+.bigbtn.secondary:active{box-shadow:0 1px 0 #666a72;}
+.bigbtn:disabled{background:#CBC7B8;box-shadow:0 4px 0 #A8A492;cursor:default;}
+.bigbtn .sub{display:block;font-size:.72rem;font-weight:normal;opacity:.9;margin-top:2px;}
+
+.section-title{
+  font-size:.85rem;
+  color:var(--ink-soft);
+  margin:18px 0 8px;
+  font-weight:bold;
+}
+
+.progress-outer{
+  background:#EDE7D6;
+  border-radius:999px;
+  height:14px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.progress-inner{
+  background:linear-gradient(90deg,var(--accent),#59B48C);
+  height:100%;
+  border-radius:999px;
+  transition:width .3s;
+}
+
+/* QUIZ */
+.quiz-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  font-size:.78rem;
+  color:var(--ink-soft);
+}
+.quiz-top .badge{
+  background:var(--accent-soft);
+  color:var(--accent-dark);
+  padding:3px 10px;
+  border-radius:999px;
+  font-weight:bold;
+}
+.quiz-top .badge.review{background:var(--warn-soft);color:var(--warn);}
+
+.q-meta{font-size:.72rem;color:var(--ink-soft);margin-bottom:6px;}
+.q-stem{
+  font-size:1rem;
+  line-height:1.7;
+  margin:10px 0 16px;
+  white-space:pre-wrap;
+}
+.q-stem b{color:var(--accent-dark);}
+.q-image{margin:0 0 16px;text-align:center;}
+.q-image img{max-width:100%;max-height:280px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px;}
+
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.choice-btn{
+  text-align:left;
+  border:2px solid var(--border);
+  background:#fff;
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:.92rem;
+  font-family:inherit;
+  cursor:pointer;
+  transition:.12s;
+  line-height:1.5;
+}
+.choice-btn:active{transform:scale(.98);}
+.choice-btn.selected{border-color:var(--accent);background:var(--accent-soft);}
+.choice-btn.correct{border-color:var(--accent);background:var(--accent-soft);font-weight:bold;}
+.choice-btn.wrong{border-color:var(--warn);background:var(--warn-soft);}
+
+.text-input-row{margin-bottom:14px;}
+.text-input-row input{
+  width:100%;
+  font-size:1.05rem;
+  font-family:inherit;
+  padding:12px 14px;
+  border:2px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+}
+.text-input-row input:focus{outline:none;border-color:var(--accent);}
+.text-input-row input.correct{border-color:var(--accent);background:var(--accent-soft);}
+.text-input-row input.wrong{border-color:var(--warn);background:var(--warn-soft);}
+.multi-input{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.multi-input .field{flex:1;min-width:110px;}
+.multi-input label{font-size:.72rem;color:var(--ink-soft);display:block;margin-bottom:3px;}
+
+.action-row{display:flex;gap:8px;}
+.action-row button{
+  flex:1;
+  border:none;
+  border-radius:12px;
+  padding:13px;
+  font-size:.95rem;
+  font-family:inherit;
+  font-weight:bold;
+  cursor:pointer;
+  color:#fff;
+  background:var(--accent);
+  box-shadow:0 3px 0 var(--accent-dark);
+}
+.action-row button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--accent-dark);}
+.action-row button:disabled{background:#CBC7B8;box-shadow:0 3px 0 #A8A492;cursor:default;}
+.action-row button.next{background:var(--gold);box-shadow:0 3px 0 #a37b1c;}
+.action-row button.next:active{box-shadow:0 1px 0 #a37b1c;}
+
+.feedback{
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+  font-size:.88rem;
+  line-height:1.6;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--accent-soft);color:var(--accent-dark);}
+.feedback.ng{background:var(--warn-soft);color:var(--warn);}
+.feedback .fb-title{font-weight:bold;margin-bottom:4px;font-size:.95rem;}
+
+/* review list / done screen */
+.review-item{
+  padding:12px 4px;
+  border-bottom:1px solid var(--border);
+  font-size:.85rem;
+}
+.review-item:last-child{border-bottom:none;}
+.review-item .ri-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;}
+.review-item .tag{
+  background:var(--warn-soft);
+  color:var(--warn);
+  font-size:.68rem;
+  padding:2px 8px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.review-item .ri-stem{color:var(--ink);font-size:.85rem;line-height:1.5;white-space:pre-wrap;margin-bottom:4px;}
+.review-item .ri-due{font-size:.68rem;color:var(--ink-soft);}
+.empty-msg{color:var(--ink-soft);font-size:.85rem;text-align:center;padding:20px 0;}
+
+.done-emoji{font-size:2.6rem;text-align:center;margin-bottom:6px;}
+.done-title{text-align:center;font-size:1.15rem;font-weight:bold;color:var(--accent-dark);margin-bottom:14px;}
+
+footer{text-align:center;color:var(--ink-soft);font-size:.68rem;padding:16px 0 4px;}
+
+.hidden{display:none !important;}
+
+/* list view */
+.unit-head{font-size:.9rem;font-weight:bold;color:var(--accent-dark);margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--accent-soft);}
+.unit-head:first-child{margin-top:0;}
+.list-item{border-bottom:1px solid var(--border);padding:10px 2px;}
+.list-item:last-child{border-bottom:none;}
+.list-item .li-no{font-size:.68rem;color:var(--ink-soft);}
+.list-item .li-stem{font-size:.86rem;line-height:1.6;white-space:pre-wrap;margin:2px 0 6px;}
+.list-item .li-image{margin:4px 0 8px;}
+.list-item .li-image img{max-width:100%;max-height:200px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px;}
+.list-item .li-ans{font-size:.82rem;color:var(--accent-dark);font-weight:bold;background:var(--accent-soft);border-radius:8px;padding:6px 10px;display:inline-block;}
+.list-item details{margin-top:4px;}
+.list-item summary{font-size:.72rem;color:var(--ink-soft);cursor:pointer;}
+.list-item .li-explain{font-size:.78rem;color:var(--ink-soft);line-height:1.5;margin-top:4px;}
+
+/* history table */
+table.rec{width:100%;border-collapse:collapse;font-size:.8rem;}
+table.rec th,table.rec td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);}
+table.rec th{color:var(--ink-soft);font-weight:bold;font-size:.72rem;}
+.rec-wrap{overflow-x:auto;}
+
+/* login gate */
+#loginGate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+#loginGate .box{background:var(--card);border-radius:20px;padding:32px 28px;box-shadow:var(--shadow);max-width:340px;width:100%;text-align:center;}
+#loginGate h2{font-family:'Hachi Maru Pop',cursive;color:var(--accent-dark);margin:0 0 6px;font-size:1.25rem;}
+#loginGate p{color:var(--ink-soft);font-size:.85rem;margin:0 0 16px;}
+#loginGate input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:1.05rem;font-family:inherit;text-align:center;letter-spacing:.08em;}
+#loginGate button{width:100%;margin-top:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:1rem;cursor:pointer;font-family:inherit;font-weight:bold;box-shadow:0 3px 0 var(--accent-dark);}
+#loginGate .err{color:var(--warn);font-size:.8rem;margin-top:10px;min-height:1.2em;}
+#loginGate .loading{color:var(--ink-soft);font-size:.8rem;margin-top:10px;min-height:1.2em;}
+body.gate-open #appRoot{display:none;}
+.small-link{background:none;border:none;color:var(--ink-soft);font-size:.72rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:0;}
+</style>
+</head>
+<body class="gate-open">
+
+<div id="loginGate">
+  <div class="box">
+    <h2>国語チャレンジ 4年下</h2>
+    <p>なまえ を にゅうりょくしてね</p>
+    <input type="text" id="gatePass" placeholder="なまえ（例：さくら）" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <button id="gateBtn">はじめる</button>
+    <div class="err" id="gateErr"></div>
+    <div class="loading" id="gateLoading"></div>
+  </div>
+</div>
+
+<div id="appRoot">
+<div class="wrap">
+  <header>
+    <h1>国語チャレンジ 4年下</h1>
+    <p>予習シリーズ「漢字とことば」準拠 ／ 第1回</p>
+    <div class="headerStatus" id="headerStatus"></div>
+  </header>
+
+  <nav class="tabs">
+    <button data-view="home" class="active">ホーム</button>
+    <button data-view="quiz">練習する</button>
+    <button data-view="review">復習リスト</button>
+    <button data-view="list">問題一覧</button>
+    <button data-view="history">学習記録</button>
+  </nav>
+
+  <!-- HOME -->
+  <div id="view-home">
+    <div class="card">
+      <div class="section-title">ぜんたいのすすみぐあい</div>
+      <div class="progress-outer"><div class="progress-inner" id="homeProgressBar" style="width:0%"></div></div>
+      <div style="text-align:center;font-size:.8rem;color:var(--ink-soft);margin-top:4px;" id="homeProgressLabel">0 / 0 問クリア</div>
+
+      <div class="stat-grid">
+        <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">全問題数</div></div>
+        <div class="stat-box gold"><div class="num" id="statMastered">0</div><div class="lbl">おぼえた</div></div>
+        <div class="stat-box warn"><div class="num" id="statWeak">0</div><div class="lbl">復習リスト</div></div>
+      </div>
+      <div id="scheduleStatus"></div>
+    </div>
+
+    <div class="card">
+      <button class="bigbtn" id="btnStart">今日のぶんを練習する<span class="sub" id="btnStartSub">忘却曲線に沿って出題／ランダムなし</span></button>
+      <button class="bigbtn secondary" id="btnRestart">全問をもう一度練習する<span class="sub">記録は消さずに、今日ぶんとして全問を出題</span></button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="view-quiz" class="hidden">
+    <div class="card" id="quizCard">
+      <div class="quiz-top">
+        <span id="quizBadge" class="badge">漢字練習問題</span>
+        <span id="quizCounter">1 / 10</span>
+      </div>
+      <div class="progress-outer"><div class="progress-inner" id="quizProgressBar" style="width:0%"></div></div>
+      <div class="q-meta" id="qMeta"></div>
+      <div class="q-stem" id="qStem"></div>
+      <div class="q-image" id="qImage"></div>
+
+      <div id="answerArea"></div>
+
+      <div class="feedback" id="feedback">
+        <div class="fb-title" id="fbTitle"></div>
+        <div id="fbBody"></div>
+      </div>
+
+      <div class="action-row">
+        <button id="btnCheck">こたえ合わせ</button>
+        <button id="btnNext" class="next hidden">つぎの問題へ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW LIST -->
+  <div id="view-review" class="hidden">
+    <div class="card">
+      <div class="section-title">復習リスト（まちがえた問題）</div>
+      <div id="reviewList"></div>
+    </div>
+  </div>
+
+  <!-- PROBLEM LIST -->
+  <div id="view-list" class="hidden">
+    <div class="card">
+      <div class="section-title">問題一覧（全問の問題と正解）</div>
+      <div id="probList"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="view-history" class="hidden">
+    <div class="card">
+      <div class="section-title">学習記録（日ごと）</div>
+      <div class="rec-wrap"><table class="rec" id="historyTable"></table></div>
+    </div>
+    <div class="card" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <button class="small-link" id="btnLogout">🔑 なまえを変える</button>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div id="view-done" class="hidden">
+    <div class="card">
+      <div class="done-emoji">🎉</div>
+      <div class="done-title">今日の分がおわりました！</div>
+      <div style="text-align:center;color:var(--ink-soft);font-size:.85rem;margin-bottom:16px;" id="doneSummary"></div>
+      <button class="bigbtn" id="btnDoneHome">ホームにもどる</button>
+    </div>
+  </div>
+
+  <footer>予習シリーズ「漢字とことば」4年下 第1回準拠　家庭学習用（データはこの端末とサーバーに保存されます）</footer>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.14.1/firebase-firestore-compat.min.js"></script>
+<script>
+'use strict';
+const firebaseConfig={
+  apiKey:"AIzaSyD307IornF-BGD55DSlNL9UBA3P6avqI6s",
+  authDomain:"hbmsansu.firebaseapp.com",
+  projectId:"hbmsansu",
+  storageBucket:"hbmsansu.firebasestorage.app",
+  messagingSenderId:"360846130418",
+  appId:"1:360846130418:web:3b54bb3239158cc675e46b"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth=firebase.auth();
+const fbDb=firebase.firestore();
+
+// Firebaseへのログインはアプリ共通の固定アカウントを使う（利用者ごとの
+// 使い分けはこのメール/パスワードではなく、下の「なまえ」で行う。算数アプリと同じ設計）
+const FIXED_EMAIL='ch4kokugo-shimo@hbmsansu.local';
+const FIXED_PASSWORD='y3pWx1BXE1IhwddgUVQ81bky7';
+
+document.body.classList.add('gate-open');
+
+function gateSetErr(msg){document.getElementById('gateErr').textContent=msg||'';}
+function gateSetLoading(msg){document.getElementById('gateLoading').textContent=msg||'';}
+
+const GATE_NAME_KEY='kokugo_ch1_gatename_v1';
+function saveGateNameDisplay(name){
+  try{localStorage.setItem(GATE_NAME_KEY,name);}catch(e){}
+}
+function loadGateNameDisplay(){
+  try{return localStorage.getItem(GATE_NAME_KEY)||'';}catch(e){return '';}
+}
+function clearGateNameDisplay(){
+  try{localStorage.removeItem(GATE_NAME_KEY);}catch(e){}
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+// Firestoreのドキュメントパスに使えない文字（/ など）を除いた、名前の正規化キー
+function normalizeName(name){
+  return name.trim().replace(/[\/\.\#\$\[\]<>]/g,'').slice(0,30);
+}
+
+let fbReady=false; // 固定アカウントでのサインインが完了したか
+let fbReadyPromise=null;
+
+// アプリ起動時に一度だけ、共通の固定アカウントへ自動サインインする。
+// 利用者は名前を入力するだけでよく、このログイン自体を意識しない。
+function ensureFirebaseSignIn(){
+  if(fbReadyPromise)return fbReadyPromise;
+  fbReadyPromise=(async()=>{
+    try{
+      // 算数アプリ（同じFirebaseプロジェクトの別の固定アカウント）を同じブラウザで
+      // 先に使っていた場合、Firebase Authのセッションがそのまま引き継がれてしまい
+      // currentUserが「算数アプリのアカウント」になっていることがある。
+      // その場合は「未サインイン」とみなして国語アプリ専用アカウントへ明示的にサインインし直す。
+      if(!fbAuth.currentUser || fbAuth.currentUser.email!==FIXED_EMAIL){
+        try{
+          await fbAuth.signInWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+        }catch(err){
+          // 固定アカウントがまだ存在しない場合のエラーコードはFirebaseの設定により
+          // 'auth/user-not-found' のことも 'auth/invalid-credential' のこともあるため、
+          // どちらの場合も「まだ作成されていない」とみなして新規作成を試みる。
+          if(err.code==='auth/user-not-found' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-login-credentials'){
+            try{
+              await fbAuth.createUserWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+            }catch(err2){
+              // 別タブ等で既に作成済みだった場合はメールアドレス重複エラーになるので、
+              // その場合は本来のパスワード誤りとしてサインインし直す。
+              if(err2.code==='auth/email-already-in-use'){
+                await fbAuth.signInWithEmailAndPassword(FIXED_EMAIL,FIXED_PASSWORD);
+              }else{
+                throw err2;
+              }
+            }
+          }else{
+            throw err;
+          }
+        }
+      }
+      fbReady=true;
+    }catch(err){
+      fbReady=false;
+      throw err;
+    }
+  })();
+  return fbReadyPromise;
+}
+
+async function doLogin(){
+  const nameRaw=document.getElementById('gatePass').value;
+  const name=normalizeName(nameRaw);
+  if(!name){
+    gateSetErr('なまえを にゅうりょくしてね');
+    return;
+  }
+  gateSetErr('');
+  gateSetLoading('つないでいます…');
+  document.getElementById('gateBtn').disabled=true;
+  try{
+    await ensureFirebaseSignIn();
+    saveGateNameDisplay(name);
+    gateSetLoading('');
+    document.body.classList.remove('gate-open');
+    document.getElementById('loginGate').style.display='none';
+    onAuthReady();
+  }catch(err){
+    gateSetLoading('');
+    document.getElementById('gateBtn').disabled=false;
+    if(err.code==='auth/network-request-failed'){
+      gateSetErr('インターネットに つながっていないみたい。Wi-Fiや通信をかくにんしてね');
+    }else{
+      gateSetErr('つながりませんでした（'+(err.code||err.message)+'）');
+    }
+  }
+}
+document.getElementById('gateBtn').addEventListener('click',doLogin);
+document.getElementById('gatePass').addEventListener('keydown',(e)=>{if(e.key==='Enter')doLogin();});
+
+let onAuthReady=function(){}; // メインスクリプトで上書きされる
+
+// 前回すでに名前を入力したことがあれば、その名前でそのまま再開する
+(function tryAutoEnter(){
+  const savedName=loadGateNameDisplay();
+  if(!savedName)return;
+  ensureFirebaseSignIn().then(()=>{
+    document.body.classList.remove('gate-open');
+    document.getElementById('loginGate').style.display='none';
+    onAuthReady();
+  }).catch(()=>{
+    // 自動サインインに失敗した場合は通常のゲート画面のまま待つ（doLoginで再試行できる）
+  });
+})();
+
+function gateLogout(){
+  clearGateNameDisplay();
+  location.reload();
+}
+</script>
+
+<script>
+'use strict';
+/* =========================================================
+   問題データ（予習シリーズ演習問題集 理科4年下 第1回 ヒトのからだ）
+   漢字練習問題 / 漢字の用例 / 確認問題 / 和語① / 復習問題　すべて収録
+   別冊「解答と解説」と全問照合済み（2026年再チェック）
+   ========================================================= */
+/* =========================================================
+   問題データ（予習シリーズ 漢字とことば 4年下 第1回）
+   漢字練習問題／漢字の用例／確認問題／和語①／復習問題
+   教材と全問照合済み（2026年作成）
+   ========================================================= */
+const PROBLEMS = [
+/* ---------- 漢字練習問題 ---------- */
+{ id:"k1-1", round:1, unit:"漢字練習問題", src:"票：伝票", stem:"次の――線部を漢字に直しなさい。\nでんぴょうの整理をする。", type:"choice", choices:["伝票","電表","伝表","電票"], answer:"伝票", explain:"「デンピョウ」は漢字で「伝票」と書きます。" },
+{ id:"k1-2", round:1, unit:"漢字練習問題", src:"票：開票", stem:"次の――線部を漢字に直しなさい。\nかいひょう作業を始める。", type:"choice", choices:["開票","開表","改票","会票"], answer:"開票", explain:"「カイヒョウ」は漢字で「開票」と書きます。" },
+{ id:"k1-3", round:1, unit:"漢字練習問題", src:"票：投票", stem:"次の――線部を漢字に直しなさい。\n学級会のとうひょうで係を決める。", type:"choice", choices:["投票","当票","答票","投表"], answer:"投票", explain:"「トウヒョウ」は漢字で「投票」と書きます。" },
+{ id:"k2-1", round:1, unit:"漢字練習問題", src:"標：標語", stem:"次の――線部を漢字に直しなさい。\n交通安全のひょうごを決める。", type:"choice", choices:["標語","表語","標誤","票語"], answer:"標語", explain:"「ヒョウゴ」は漢字で「標語」と書きます。" },
+{ id:"k2-2", round:1, unit:"漢字練習問題", src:"標：目標", stem:"次の――線部を漢字に直しなさい。\nもくひょうを達成する。", type:"choice", choices:["目標","目票","目表","木標"], answer:"目標", explain:"「モクヒョウ」は漢字で「目標」と書きます。" },
+{ id:"k3-1", round:1, unit:"漢字練習問題", src:"不：不足", stem:"次の――線部を漢字に直しなさい。\n水分がふそくする。", type:"choice", choices:["不足","布足","不則","付足"], answer:"不足", explain:"「フソク」は漢字で「不足」と書きます。" },
+{ id:"k3-2", round:1, unit:"漢字練習問題", src:"不：不用心", stem:"次の――線部を漢字に直しなさい。\nその行動はぶようじんだ。", type:"choice", choices:["不用心","不要心","不容心","付用心"], answer:"不用心", explain:"「フヨウジン」は漢字で「不用心」と書きます。" },
+{ id:"k4-1", round:1, unit:"漢字練習問題", src:"夫：夫人", stem:"次の――線部を漢字に直しなさい。\n大統領ふじんに面会する。", type:"choice", choices:["夫人","婦人","付人","府人"], answer:"夫人", explain:"「フジン」は漢字で「夫人」と書きます。" },
+{ id:"k4-2", round:1, unit:"漢字練習問題", src:"夫：水夫", stem:"次の――線部を漢字に直しなさい。\n私のすいふは船に乗る。", type:"choice", choices:["水夫","水婦","水付","水府"], answer:"水夫", explain:"「スイフ」は漢字で「水夫」と書きます。" },
+{ id:"k5-1", round:1, unit:"漢字練習問題", src:"付：付近", stem:"次の――線部を漢字に直しなさい。\nふきんをパトロールする。", type:"choice", choices:["付近","布近","府近","富近"], answer:"付近", explain:"「フキン」は漢字で「付近」と書きます。" },
+{ id:"k5-2", round:1, unit:"漢字練習問題", src:"付：付加", stem:"次の――線部を漢字に直しなさい。\n商品にふか価値をつける。", type:"choice", choices:["付加","布可","富加","府加"], answer:"付加", explain:"「フカ」は漢字で「付加」と書きます。" },
+{ id:"k5-3", round:1, unit:"漢字練習問題", src:"付：付着", stem:"次の――線部を漢字に直しなさい。\n商品におまけがふちゃくする。", type:"choice", choices:["付着","府着","布着","富着"], answer:"付着", explain:"「フチャク」は漢字で「付着」と書きます。" },
+{ id:"k6-1", round:1, unit:"漢字練習問題", src:"府：首府", stem:"次の――線部を漢字に直しなさい。\n日本のしゅふは東京だ。", type:"choice", choices:["首府","主府","首付","首富"], answer:"首府", explain:"「シュフ」は漢字で「首府」と書きます。" },
+{ id:"k6-2", round:1, unit:"漢字練習問題", src:"府：府立", stem:"次の――線部を漢字に直しなさい。\n京都ふりつ図書館を利用する。", type:"choice", choices:["府立","富立","付立","阜立"], answer:"府立", explain:"「フリツ」は漢字で「府立」と書きます。" },
+{ id:"k7-1", round:1, unit:"漢字練習問題", src:"阜：岐阜", stem:"次の――線部を漢字に直しなさい。\nぎふ県は内陸県だ。", type:"choice", choices:["岐阜","岐富","岐付","岐府"], answer:"岐阜", explain:"「ギフ」は漢字で「岐阜」と書きます。" },
+{ id:"k8-1", round:1, unit:"漢字練習問題", src:"富：富国", stem:"次の――線部を漢字に直しなさい。\n商売に成功して家がふこくした。", type:"choice", choices:["富国","福国","副国","府国"], answer:"富国", explain:"「フコク」は漢字で「富国」と書きます。" },
+{ id:"k8-2", round:1, unit:"漢字練習問題", src:"富：富", stem:"次の――線部を漢字に直しなさい。\n一代で巨万のとみを築く。", type:"choice", choices:["富","福","副","府"], answer:"富", explain:"「トミ」は漢字で「富」と書きます。" },
+{ id:"k8-3", round:1, unit:"漢字練習問題", src:"富：富山県", stem:"次の――線部を漢字に直しなさい。\nとやまけんを旅行する。", type:"choice", choices:["富山県","福山県","副山県","冨山県"], answer:"富山県", explain:"「トヤマケン」は漢字で「富山県」と書きます。" },
+{ id:"k9-1", round:1, unit:"漢字練習問題", src:"副：副業", stem:"次の――線部を漢字に直しなさい。\nふくぎょうで店を始める。", type:"choice", choices:["副業","福業","復業","富業"], answer:"副業", explain:"「フクギョウ」は漢字で「副業」と書きます。" },
+{ id:"k9-2", round:1, unit:"漢字練習問題", src:"副：副作用", stem:"次の――線部を漢字に直しなさい。\n薬のふくさように注意する。", type:"choice", choices:["副作用","復作用","福作用","富作用"], answer:"副作用", explain:"「フクサヨウ」は漢字で「副作用」と書きます。" },
+{ id:"k9-3", round:1, unit:"漢字練習問題", src:"副：副会長", stem:"次の――線部を漢字に直しなさい。\n町内会のふくかいちょう。", type:"choice", choices:["副会長","福会長","復会長","富会長"], answer:"副会長", explain:"「フクカイチョウ」は漢字で「副会長」と書きます。" },
+{ id:"k9-4", round:1, unit:"漢字練習問題", src:"副：副食", stem:"次の――線部を漢字に直しなさい。\nふくしょくが三品ある。", type:"choice", choices:["副食","福食","復食","富食"], answer:"副食", explain:"「フクショク」は漢字で「副食」と書きます。" },
+{ id:"k10-1", round:1, unit:"漢字練習問題", src:"兵：兵", stem:"次の――線部を漢字に直しなさい。\n若いへい士が行進する。", type:"choice", choices:["兵","平","丙","並"], answer:"兵", explain:"「ヘイシ」は漢字で「兵」と書きます。" },
+{ id:"k10-2", round:1, unit:"漢字練習問題", src:"兵：兵器", stem:"次の――線部を漢字に直しなさい。\n核へいき根絶を願う。", type:"choice", choices:["兵器","平気","併記","丙器"], answer:"兵器", explain:"「ヘイキ」は漢字で「兵器」と書きます。" },
+{ id:"k10-3", round:1, unit:"漢字練習問題", src:"兵：兵火", stem:"次の――線部を漢字に直しなさい。\n村はへいかで焼かれた。", type:"choice", choices:["兵火","平火","丙火","併火"], answer:"兵火", explain:"「ヘイカ」は漢字で「兵火」と書きます。" },
+/* ---------- 漢字の用例 ---------- */
+{ id:"k1-y1", round:1, unit:"漢字の用例", src:"票：伝票", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「伝票」（計算などに使う小さな紙。取り引き内容を書いて箱に入れること。）", type:"text", accept:["でんぴょう"], explain:"「伝票」の読み方は「でんぴょう」です。計算などに使う小さな紙。取り引き内容を書いて箱に入れること。" },
+{ id:"k1-y2", round:1, unit:"漢字の用例", src:"票：投票", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「投票」（選挙で、票を書いて意思を集計すること。）", type:"text", accept:["とうひょう"], explain:"「投票」の読み方は「とうひょう」です。選挙で、票を書いて意思を集計すること。" },
+{ id:"k2-y1", round:1, unit:"漢字の用例", src:"標：目標", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「目標」（そこまでやろうと心に決めてめあてにすること。）", type:"text", accept:["もくひょう"], explain:"「目標」の読み方は「もくひょう」です。そこまでやろうと心に決めてめあてにすること。" },
+{ id:"k2-y2", round:1, unit:"漢字の用例", src:"標：標語", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「標語」（考えなどをうまく短い言葉で表したもの。）", type:"text", accept:["ひょうご"], explain:"「標語」の読み方は「ひょうご」です。考えなどをうまく短い言葉で表したもの。" },
+{ id:"k3-y1", round:1, unit:"漢字の用例", src:"不：不安", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「不安」（安心できないこと。）", type:"text", accept:["ふあん"], explain:"「不安」の読み方は「ふあん」です。安心できないこと。" },
+{ id:"k3-y2", round:1, unit:"漢字の用例", src:"不：不用心", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「不用心」（用心が悪いこと。）", type:"text", accept:["ぶようじん"], explain:"「不用心」の読み方は「ぶようじん」です。用心が悪いこと。" },
+{ id:"k4-y1", round:1, unit:"漢字の用例", src:"夫：夫人", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「夫人」（他人の妻をていねいにいう言葉。）", type:"text", accept:["ふじん"], explain:"「夫人」の読み方は「ふじん」です。他人の妻をていねいにいう言葉。" },
+{ id:"k4-y2", round:1, unit:"漢字の用例", src:"夫：水夫", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「水夫」（船に乗って仕事をする人。）", type:"text", accept:["すいふ"], explain:"「水夫」の読み方は「すいふ」です。船に乗って仕事をする人。" },
+{ id:"k5-y1", round:1, unit:"漢字の用例", src:"付：付近", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「付近」（近い所。）", type:"text", accept:["ふきん"], explain:"「付近」の読み方は「ふきん」です。近い所。" },
+{ id:"k5-y2", round:1, unit:"漢字の用例", src:"付：付加", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「付加」（付け加えること。）", type:"text", accept:["ふか"], explain:"「付加」の読み方は「ふか」です。付け加えること。" },
+{ id:"k5-y3", round:1, unit:"漢字の用例", src:"付：付着", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「付着」（物にくっつくこと。）", type:"text", accept:["ふちゃく"], explain:"「付着」の読み方は「ふちゃく」です。物にくっつくこと。" },
+{ id:"k6-y1", round:1, unit:"漢字の用例", src:"府：首府", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「首府」（国の政府のある都市。首都。）", type:"text", accept:["しゅふ"], explain:"「首府」の読み方は「しゅふ」です。国の政府のある都市。首都。" },
+{ id:"k6-y2", round:1, unit:"漢字の用例", src:"府：府立", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「府立」（府がお金を出して作り、経営すること。）", type:"text", accept:["ふりつ"], explain:"「府立」の読み方は「ふりつ」です。府がお金を出して作り、経営すること。" },
+{ id:"k7-y1", round:1, unit:"漢字の用例", src:"阜：岐阜県", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「岐阜県」（中部地方にある県の一つ。）", type:"text", accept:["ぎふけん"], explain:"「岐阜県」の読み方は「ぎふけん」です。中部地方にある県の一つ。" },
+{ id:"k8-y1", round:1, unit:"漢字の用例", src:"富：富国", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「富国」（国を豊かにすること。）", type:"text", accept:["ふこく"], explain:"「富国」の読み方は「ふこく」です。国を豊かにすること。" },
+{ id:"k8-y2", round:1, unit:"漢字の用例", src:"富：富", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「富」（お金や財産。）", type:"text", accept:["とみ"], explain:"「富」の読み方は「とみ」です。お金や財産。" },
+{ id:"k9-y1", round:1, unit:"漢字の用例", src:"副：副業", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「副業」（主な仕事のかたわらに行う仕事。）", type:"text", accept:["ふくぎょう"], explain:"「副業」の読み方は「ふくぎょう」です。主な仕事のかたわらに行う仕事。" },
+{ id:"k9-y2", round:1, unit:"漢字の用例", src:"副：副会長", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「副会長」（会長の助けをする役目。）", type:"text", accept:["ふくかいちょう"], explain:"「副会長」の読み方は「ふくかいちょう」です。会長の助けをする役目。" },
+{ id:"k10-y1", round:1, unit:"漢字の用例", src:"兵：兵士", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「兵士」（戦争をするための人員。）", type:"text", accept:["へいし"], explain:"「兵士」の読み方は「へいし」です。戦争をするための人員。" },
+{ id:"k10-y2", round:1, unit:"漢字の用例", src:"兵：兵器", stem:"次の熟語の読み方を、ひらがなで入力しなさい。\n「兵器」（戦争に用いる武器。）", type:"text", accept:["へいき"], explain:"「兵器」の読み方は「へいき」です。戦争に用いる武器。" },
+/* ---------- 確認問題 ---------- */
+{ id:"kn-1", round:1, unit:"確認問題", src:"確認問題1", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n急速な経済成長による（ヒンプ）の差が拡大し、社会問題化する。", type:"choice", choices:["貧富","貧付","品府","貧夫"], answer:"貧富", explain:"「ヒンプ」は漢字で「貧富」と書きます。" },
+{ id:"kn-2", round:1, unit:"確認問題", src:"確認問題2", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n午後八時から（カイヒョウ）作業を始める。", type:"choice", choices:["開票","開表","改票","会票"], answer:"開票", explain:"「カイヒョウ」は漢字で「開票」と書きます。" },
+{ id:"kn-3", round:1, unit:"確認問題", src:"確認問題3", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n放射線の研究で名を残したキュリー（フジン）。", type:"choice", choices:["夫人","婦人","付人","府人"], answer:"夫人", explain:"「フジン」は漢字で「夫人」と書きます。" },
+{ id:"kn-4", round:1, unit:"確認問題", src:"確認問題4", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n万全の準備がととのって何の（フアン）もない。", type:"choice", choices:["不安","付安","府安","不案"], answer:"不安", explain:"「フアン」は漢字で「不安」と書きます。" },
+{ id:"kn-5", round:1, unit:"確認問題", src:"確認問題5", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n母は（フクギョウ）で日曜日に英会話を教えている。", type:"choice", choices:["副業","福業","復業","富業"], answer:"副業", explain:"「フクギョウ」は漢字で「副業」と書きます。" },
+{ id:"kn-6", round:1, unit:"確認問題", src:"確認問題6", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n作業に夢中になり、服に塗料が（フチャク）したのに気づかなかった。", type:"choice", choices:["付着","布着","富着","府着"], answer:"付着", explain:"「フチャク」は漢字で「付着」と書きます。" },
+{ id:"kn-7", round:1, unit:"確認問題", src:"確認問題7", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n東京から引っ越して大阪（フ）民になる。", type:"choice", choices:["府","富","付","阜"], answer:"府", explain:"「フ」は漢字で「府」と書きます。" },
+{ id:"kn-8", round:1, unit:"確認問題", src:"確認問題8", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\nみんなで頑張って（モクヒョウ）を達成する。", type:"choice", choices:["目標","目票","目表","木標"], answer:"目標", explain:"「モクヒョウ」は漢字で「目標」と書きます。" },
+{ id:"kn-9", round:1, unit:"確認問題", src:"確認問題9", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n（ヘイ）士が戦闘訓練を積む。", type:"choice", choices:["兵","平","丙","並"], answer:"兵", explain:"「ヘイ」は漢字で「兵」と書きます。" },
+{ id:"kn-10", round:1, unit:"確認問題", src:"確認問題10", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n支持する政治家に（イッピョウ）を投じる。", type:"choice", choices:["一票","一表","一標","一評"], answer:"一票", explain:"「イッピョウ」は漢字で「一票」と書きます。" },
+{ id:"kn-11", round:1, unit:"確認問題", src:"確認問題11", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n戦国時代の（ヘイカ）で焼失した寺を再建する。", type:"choice", choices:["兵火","平火","丙火","併火"], answer:"兵火", explain:"「ヘイカ」は漢字で「兵火」と書きます。" },
+{ id:"kn-12", round:1, unit:"確認問題", src:"確認問題12", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n郵便物が料金（ブソク）で返送される。", type:"choice", choices:["不足","武足","付足","府足"], answer:"不足", explain:"「ブソク」は漢字で「不足」と書きます。" },
+{ id:"kn-13", round:1, unit:"確認問題", src:"確認問題13", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n風邪薬の（フクサヨウ）で眠気を感じる。", type:"choice", choices:["副作用","復作用","福作用","富作用"], answer:"副作用", explain:"「フクサヨウ」は漢字で「副作用」と書きます。" },
+{ id:"kn-14", round:1, unit:"確認問題", src:"確認問題14", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n家の（フキン）のごみを拾う。", type:"choice", choices:["付近","布近","府近","富近"], answer:"付近", explain:"「フキン」は漢字で「付近」と書きます。" },
+{ id:"kn-15", round:1, unit:"確認問題", src:"確認問題15", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n（トヤマ）県の黒部ダムを訪れる。", type:"choice", choices:["富山","福山","副山","冨山"], answer:"富山", explain:"「トヤマ」は漢字で「富山」と書きます。" },
+{ id:"kn-16", round:1, unit:"確認問題", src:"確認問題16", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n（ノウフ）が畑で育てた作物を売りに行く。", type:"choice", choices:["農夫","農府","農富","農付"], answer:"農夫", explain:"「ノウフ」は漢字で「農夫」と書きます。" },
+{ id:"kn-17", round:1, unit:"確認問題", src:"確認問題17", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n学級会の（トウヒョウ）で係を決める。", type:"choice", choices:["投票","当票","答票","投表"], answer:"投票", explain:"「トウヒョウ」は漢字で「投票」と書きます。" },
+{ id:"kn-18", round:1, unit:"確認問題", src:"確認問題18", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n四十七（トドウフケン）の名前を覚える。", type:"choice", choices:["都道府県","都道富県","都道付県","都導府県"], answer:"都道府県", explain:"「トドウフケン」は漢字で「都道府県」と書きます。" },
+{ id:"kn-19", round:1, unit:"確認問題", src:"確認問題19", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n防災意識を高めるために消防庁が（ヒョウゴ）を募集する。", type:"choice", choices:["標語","表語","標誤","票語"], answer:"標語", explain:"「ヒョウゴ」は漢字で「標語」と書きます。" },
+{ id:"kn-20", round:1, unit:"確認問題", src:"確認問題20", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n生徒会の（フクカイチョウ）に選ばれる。", type:"choice", choices:["副会長","福会長","復会長","富会長"], answer:"副会長", explain:"「フクカイチョウ」は漢字で「副会長」と書きます。" },
+{ id:"kn-21", round:1, unit:"確認問題", src:"確認問題21", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n様々な機能が（フカ）された新商品。", type:"choice", choices:["付加","布可","富加","府加"], answer:"付加", explain:"「フカ」は漢字で「付加」と書きます。" },
+{ id:"kn-22", round:1, unit:"確認問題", src:"確認問題22", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n温泉の（ヒョウコウ）が高くなると、気圧が下がる。", type:"choice", choices:["標高","表高","票高","評高"], answer:"標高", explain:"「ヒョウコウ」は漢字で「標高」と書きます。" },
+{ id:"kn-23", round:1, unit:"確認問題", src:"確認問題23", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n船長の命令で、（スイフ）たちは急いで帆を下ろした。", type:"choice", choices:["水夫","水婦","水付","水府"], answer:"水夫", explain:"「スイフ」は漢字で「水夫」と書きます。" },
+{ id:"kn-24", round:1, unit:"確認問題", src:"確認問題24", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n豆腐を作るときの（フクサンブツ）としておからが得られる。", type:"choice", choices:["副産物","福産物","復産物","富産物"], answer:"副産物", explain:"「フクサンブツ」は漢字で「副産物」と書きます。" },
+{ id:"kn-25", round:1, unit:"確認問題", src:"確認問題25", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\nアメリカ合衆国の（シュフ）はワシントンである。", type:"choice", choices:["首府","主府","首付","首富"], answer:"首府", explain:"「シュフ」は漢字で「首府」と書きます。" },
+{ id:"kn-26", round:1, unit:"確認問題", src:"確認問題26", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n毒ガスなどの化学（ヘイキ）の使用を禁止する条約を結ぶ。", type:"choice", choices:["兵器","平気","併記","丙器"], answer:"兵器", explain:"「ヘイキ」は漢字で「兵器」と書きます。" },
+{ id:"kn-27", round:1, unit:"確認問題", src:"確認問題27", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n京都（フリツ）図書館を利用して平安京の歴史を調べる。", type:"choice", choices:["府立","富立","付立","阜立"], answer:"府立", explain:"「フリツ」は漢字で「府立」と書きます。" },
+{ id:"kn-28", round:1, unit:"確認問題", src:"確認問題28", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\nこの国は農業には恵まれないが、鉱物資源に（トム）。", type:"choice", choices:["富む","福む","副む","冨む"], answer:"富む", explain:"「トム」は漢字で「富む」と書きます。" },
+{ id:"kn-29", round:1, unit:"確認問題", src:"確認問題29", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n客をだまして（フトウ）な利益をあげる。", type:"choice", choices:["不当","付当","府当","武当"], answer:"不当", explain:"「フトウ」は漢字で「不当」と書きます。" },
+{ id:"kn-30", round:1, unit:"確認問題", src:"確認問題30", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n食事を終えたので、（デンピョウ）を持ってレジに向かう。", type:"choice", choices:["伝票","電表","伝表","電票"], answer:"伝票", explain:"「デンピョウ」は漢字で「伝票」と書きます。" },
+{ id:"kn-31", round:1, unit:"確認問題", src:"確認問題31", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n妻が（オット）の海外赴任に同行する。", type:"choice", choices:["夫","婦","付","府"], answer:"夫", explain:"「オット」は漢字で「夫」と書きます。" },
+{ id:"kn-32", round:1, unit:"確認問題", src:"確認問題32", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n夏休みの自由研究で昆虫の（ヒョウホン）を作る。", type:"choice", choices:["標本","表本","票本","評本"], answer:"標本", explain:"「ヒョウホン」は漢字で「標本」と書きます。" },
+{ id:"kn-33", round:1, unit:"確認問題", src:"確認問題33", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\nダイナマイトを発明したノーベルは、巨万の（トミ）を築いた。", type:"choice", choices:["富","福","副","府"], answer:"富", explain:"「トミ」は漢字で「富」と書きます。" },
+{ id:"kn-34", round:1, unit:"確認問題", src:"確認問題34", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n夜道のひとり歩きは（ブヨウジン）だ。", type:"choice", choices:["不用心","不要心","不容心","付用心"], answer:"不用心", explain:"「ブヨウジン」は漢字で「不用心」と書きます。" },
+{ id:"kn-35", round:1, unit:"確認問題", src:"確認問題35", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n健康のために（フクショク）に野菜を多くとる。", type:"choice", choices:["副食","福食","復食","富食"], answer:"副食", explain:"「フクショク」は漢字で「副食」と書きます。" },
+{ id:"kn-36", round:1, unit:"確認問題", src:"確認問題36", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n（トクヒョウ）数が最も多い作品が最優秀賞となる。", type:"choice", choices:["得票","得表","得標","徳票"], answer:"得票", explain:"「トクヒョウ」は漢字で「得票」と書きます。" },
+{ id:"kn-37", round:1, unit:"確認問題", src:"確認問題37", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\nクマのぬいぐるみに「ヨックン」という名前を（ツケ）る。", type:"choice", choices:["付け","附け","府け","富け"], answer:"付け", explain:"「ツケ」は漢字で「付け」と書きます。" },
+{ id:"kn-38", round:1, unit:"確認問題", src:"確認問題38", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n東軍と西軍が戦った関ヶ原は、現在の（ギフ）県にある。", type:"choice", choices:["岐阜","岐富","岐付","岐府"], answer:"岐阜", explain:"「ギフ」は漢字で「岐阜」と書きます。" },
+{ id:"kn-39", round:1, unit:"確認問題", src:"確認問題39", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n明治時代に（フコクキョウヘイ）政策が行われた。", type:"choice", choices:["富国強兵","福国強兵","副国強兵","富国協兵"], answer:"富国強兵", explain:"「フコクキョウヘイ」は漢字で「富国強兵」と書きます。" },
+{ id:"kn-40", round:1, unit:"確認問題", src:"確認問題40", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n（ヘイタイ）に入って戦場に行く。", type:"choice", choices:["兵隊","平隊","丙隊","併隊"], answer:"兵隊", explain:"「ヘイタイ」は漢字で「兵隊」と書きます。" },
+/* ---------- 和語① ---------- */
+{ id:"w1-1", round:1, unit:"和語①", src:"和語：ひたむき", stem:"次の文の――線部「ひたむき」の意味を選びなさい。\nひたむきな努力を続け、志望校に合格する。", type:"choice", choices:["我慢強く、いちずに打ち込むさま。","軽く見ること。ばかにすること。","ものごとの意味を考えずに、そのまま受け入れること。","人の機嫌をとって、気に入られるような態度をとること。"], answer:"我慢強く、いちずに打ち込むさま。", explain:"「ひたむき」は「我慢強く、いちずに打ち込むさま。」という意味です。" },
+{ id:"w1-2", round:1, unit:"和語①", src:"和語：うのみ", stem:"次の文の――線部「うのみ」の意味を選びなさい。\n妹は兄の言うことをなんでもうのみにする。", type:"choice", choices:["ものごとの意味を考えずに、そのまま受け入れること。","我慢強く、いちずに打ち込むさま。","つらいことをがまんして、耐えること。","心の底から深く感じるさま。"], answer:"ものごとの意味を考えずに、そのまま受け入れること。", explain:"「うのみ」は「ものごとの意味を考えずに、そのまま受け入れること。」という意味です。" },
+{ id:"w1-3", round:1, unit:"和語①", src:"和語：こびる", stem:"次の文の――線部「こびる」の意味を選びなさい。\nこびるような笑いをうかべてみんなの前に立った。", type:"choice", choices:["人の機嫌をとって、気に入られるような態度をとること。","軽く見ること。ばかにすること。","自分の思う通りに事が進んだと、ひとりひそかに笑うさま。","虫が葉を食うように、少しずつ悪くなること。"], answer:"人の機嫌をとって、気に入られるような態度をとること。", explain:"「こびる」は「人の機嫌をとって、気に入られるような態度をとること。」という意味です。" },
+{ id:"w1-4", round:1, unit:"和語①", src:"和語：しのぶ", stem:"次の文の――線部「しのぶ」の意味を選びなさい。\n恥をしのんで、恥ずかしい体験を話す。", type:"choice", choices:["つらいことをがまんして、耐えること。","ものごとの意味を考えずに、そのまま受け入れること。","心の底から深く感じるさま。","人の機嫌をとって、気に入られるような態度をとること。"], answer:"つらいことをがまんして、耐えること。", explain:"「しのぶ」は「つらいことをがまんして、耐えること。」という意味です。" },
+{ id:"w1-5", round:1, unit:"和語①", src:"和語：しみじみ", stem:"次の文の――線部「しみじみ」の意味を選びなさい。\n中学の入学式でしみじみと我が子の成長を感じる。", type:"choice", choices:["心の底から深く感じるさま。","我慢強く、いちずに打ち込むさま。","つらいことをがまんして、耐えること。","軽く見ること。ばかにすること。"], answer:"心の底から深く感じるさま。", explain:"「しみじみ」は「心の底から深く感じるさま。」という意味です。" },
+{ id:"w1-6", round:1, unit:"和語①", src:"和語：ないがしろ", stem:"次の文の――線部「ないがしろ」の意味を選びなさい。\n後輩の意見をないがしろにしてはいけない。", type:"choice", choices:["軽く見ること。ばかにすること。","心の底から深く感じるさま。","自分の思う通りに事が進んだと、ひとりひそかに笑うさま。","虫が葉を食うように、少しずつ悪くなること。"], answer:"軽く見ること。ばかにすること。", explain:"「ないがしろ」は「軽く見ること。ばかにすること。」という意味です。" },
+{ id:"w1-7", round:1, unit:"和語①", src:"和語：むしばむ", stem:"次の文の――線部「むしばむ」の意味を選びなさい。\n病魔が祖父の体をむしばむ。", type:"choice", choices:["虫が葉を食うように、少しずつ悪くなること。","人の機嫌をとって、気に入られるような態度をとること。","我慢強く、いちずに打ち込むさま。","ものごとの意味を考えずに、そのまま受け入れること。"], answer:"虫が葉を食うように、少しずつ悪くなること。", explain:"「むしばむ」は「虫が葉を食うように、少しずつ悪くなること。」という意味です。" },
+{ id:"w1-8", round:1, unit:"和語①", src:"和語：ほくそえむ", stem:"次の文の――線部「ほくそえむ」の意味を選びなさい。\n友だちへのいたずらがうまくいき、しめしめとほくそえむ。", type:"choice", choices:["自分の思う通りに事が進んだと、ひとりひそかに笑うさま。","軽く見ること。ばかにすること。","つらいことをがまんして、耐えること。","心の底から深く感じるさま。"], answer:"自分の思う通りに事が進んだと、ひとりひそかに笑うさま。", explain:"「ほくそえむ」は「自分の思う通りに事が進んだと、ひとりひそかに笑うさま。」という意味です。" },
+{ id:"w2-1", round:1, unit:"和語①", src:"和語：空欄補充", stem:"次の文の（　）にあてはまる言葉を選びなさい。\n（　）手つきでおはしを使う。（動作などがなめらかでないこと）", type:"choice", choices:["ぎこちない","あさましい","けわしい","さりげない"], answer:"ぎこちない", explain:"「ぎこちない」があてはまります。" },
+{ id:"w2-2", round:1, unit:"和語①", src:"和語：空欄補充", stem:"次の文の（　）にあてはまる言葉を選びなさい。\nずるをして勝負に勝とうなんて、（　）根性だ。（品性が下劣であること）", type:"choice", choices:["あさましい","ぎこちない","けわしい","さりげない"], answer:"あさましい", explain:"「あさましい」があてはまります。" },
+{ id:"w2-3", round:1, unit:"和語①", src:"和語：空欄補充", stem:"次の文の（　）にあてはまる言葉を選びなさい。\n医者が（　）表情で、病名を告げる。（怒りや緊張性が下劣であること）", type:"choice", choices:["けわしい","ぎこちない","あさましい","さりげない"], answer:"けわしい", explain:"「けわしい」があてはまります。" },
+{ id:"w2-4", round:1, unit:"和語①", src:"和語：空欄補充", stem:"次の文の（　）にあてはまる言葉を選びなさい。\n（　）ふうをよそおって、噂が本当か聞き出す。（何事もないように振る舞うさま）", type:"choice", choices:["さりげない","ぎこちない","あさましい","けわしい"], answer:"さりげない", explain:"「さりげない」があてはまります。" },
+{ id:"w3-1", round:1, unit:"和語①", src:"和語：いぶかる", stem:"次の文の――線部「いぶかる」の意味に最も近い言葉を選びなさい。\n姉の言うことが本当とは思えず、いぶかる。", type:"choice", choices:["疑う","見損なう","非難する"], answer:"疑う", explain:"「いぶかる」は「疑う」という意味です。" },
+{ id:"w3-2", round:1, unit:"和語①", src:"和語：そむく", stem:"次の文の――線部「そむく」の意味に最も近い言葉を選びなさい。\n上司の命令にそむく。", type:"choice", choices:["さからう","したがう","たえる"], answer:"さからう", explain:"「そむく」は「さからう」という意味です。" },
+{ id:"w3-3", round:1, unit:"和語①", src:"和語：もっぱら", stem:"次の文の――線部「もっぱら」の意味に最も近い言葉を選びなさい。\n休日はもっぱらテレビを観て過ごす。", type:"choice", choices:["ひたすら","ときどき","まれに"], answer:"ひたすら", explain:"「もっぱら」は「ひたすら」という意味です。" },
+/* ---------- 復習問題 ---------- */
+{ id:"rv-k1-1", round:1, unit:"復習問題", src:"復習：票：伝票", stem:"次の――線部を漢字に直しなさい。\nでんぴょうの整理をする。", type:"choice", choices:["伝票","電表","伝表","電票"], answer:"伝票", explain:"「デンピョウ」は漢字で「伝票」と書きます。" },
+{ id:"rv-k3-1", round:1, unit:"復習問題", src:"復習：不：不足", stem:"次の――線部を漢字に直しなさい。\n水分がふそくする。", type:"choice", choices:["不足","布足","不則","付足"], answer:"不足", explain:"「フソク」は漢字で「不足」と書きます。" },
+{ id:"rv-k5-3", round:1, unit:"復習問題", src:"復習：付：付着", stem:"次の――線部を漢字に直しなさい。\n商品におまけがふちゃくする。", type:"choice", choices:["付着","府着","布着","富着"], answer:"付着", explain:"「フチャク」は漢字で「付着」と書きます。" },
+{ id:"rv-k9-2", round:1, unit:"復習問題", src:"復習：副：副作用", stem:"次の――線部を漢字に直しなさい。\n薬のふくさように注意する。", type:"choice", choices:["副作用","復作用","福作用","富作用"], answer:"副作用", explain:"「フクサヨウ」は漢字で「副作用」と書きます。" },
+{ id:"rv-kn-2", round:1, unit:"復習問題", src:"復習：確認問題2", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n午後八時から（カイヒョウ）作業を始める。", type:"choice", choices:["開票","開表","改票","会票"], answer:"開票", explain:"「カイヒョウ」は漢字で「開票」と書きます。" },
+{ id:"rv-kn-12", round:1, unit:"復習問題", src:"復習：確認問題12", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n郵便物が料金（ブソク）で返送される。", type:"choice", choices:["不足","武足","付足","府足"], answer:"不足", explain:"「ブソク」は漢字で「不足」と書きます。" },
+{ id:"rv-kn-18", round:1, unit:"復習問題", src:"復習：確認問題18", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\n四十七（トドウフケン）の名前を覚える。", type:"choice", choices:["都道府県","都道富県","都道付県","都導府県"], answer:"都道府県", explain:"「トドウフケン」は漢字で「都道府県」と書きます。" },
+{ id:"rv-kn-28", round:1, unit:"復習問題", src:"復習：確認問題28", stem:"次の文の（　）を漢字に直したとき、正しいものを選びなさい。\nこの国は農業には恵まれないが、鉱物資源に（トム）。", type:"choice", choices:["富む","福む","副む","冨む"], answer:"富む", explain:"「トム」は漢字で「富む」と書きます。" },
+{ id:"rv-w1-1", round:1, unit:"復習問題", src:"復習：和語：ひたむき", stem:"次の文の――線部「ひたむき」の意味を選びなさい。\nひたむきな努力を続け、志望校に合格する。", type:"choice", choices:["我慢強く、いちずに打ち込むさま。","軽く見ること。ばかにすること。","ものごとの意味を考えずに、そのまま受け入れること。","人の機嫌をとって、気に入られるような態度をとること。"], answer:"我慢強く、いちずに打ち込むさま。", explain:"「ひたむき」は「我慢強く、いちずに打ち込むさま。」という意味です。" },
+{ id:"rv-w1-3", round:1, unit:"復習問題", src:"復習：和語：こびる", stem:"次の文の――線部「こびる」の意味を選びなさい。\nこびるような笑いをうかべてみんなの前に立った。", type:"choice", choices:["人の機嫌をとって、気に入られるような態度をとること。","軽く見ること。ばかにすること。","自分の思う通りに事が進んだと、ひとりひそかに笑うさま。","虫が葉を食うように、少しずつ悪くなること。"], answer:"人の機嫌をとって、気に入られるような態度をとること。", explain:"「こびる」は「人の機嫌をとって、気に入られるような態度をとること。」という意味です。" }
+];
+
+/* =========================================================
+   忘却曲線・反復学習エンジン（日付ベース）
+   - まちがえた問題は正解するまで「今日」の中で何度も出題される
+   - 一度正解すると、その日はもう出題されない
+   - 翌日以降、忘却曲線の間隔（1→2→4→7→14→30日）で再出題される
+   - 全問がこの同じしくみで回るので、正解し続けている問題もいずれ再登場する
+   ========================================================= */
+// localStorageのキーは「なまえ」ごとに分ける（同じ端末で名前を切り替えても記録が混ざらないように）。
+// ログイン前はまだ名前が確定していないので、いったん共通のプレースホルダーで読み込んでおき、
+// ログイン確定後（onAuthReady内）に正しいキーで読み直す。
+function storageKeyForName(name){
+  return name ? ('kokugo_ch1_v2_'+name) : 'kokugo_ch1_v2___anon__';
+}
+let KEY = storageKeyForName(loadGateNameDisplay());
+const N = PROBLEMS.length;
+const BY_ID = {};
+PROBLEMS.forEach((p,i)=>{ p.__index=i; BY_ID[p.id]=p; });
+const ORDER = PROBLEMS.map(p=>p.id); // 教科書の掲載順（漢字練習問題→漢字の用例→確認問題→和語→復習問題）。ランダム要素なし。
+
+/* ---------- 週送りスケジュール（算数アプリと同じ方式） ---------- */
+// 2026-08-31(月)を第1週の開始とし、1週間で1回ずつ解放する
+function todayObj(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+const SCHEDULE_START = new Date(2026,7,31); // 月は0始まりなので8月=7
+const SCHEDULE_TOTAL_ROUNDS = 1; // 現時点では第1回のみ実装。今後の回を追加するたびにこの数値も増やす
+function currentWeekIndex(){
+  // 開始週を0とする経過週数（0始まり）。開始日より前は0扱い。
+  const now = todayObj();
+  const diffDays = Math.floor((now-SCHEDULE_START)/86400000);
+  const w = Math.floor(diffDays/7);
+  return Math.max(0,w);
+}
+function currentRound(){
+  // 第1週=第1回。全回解放後は最終回のまま。
+  return Math.min(SCHEDULE_TOTAL_ROUNDS, currentWeekIndex()+1);
+}
+function isRoundUnlocked(r){
+  return r<=currentRound();
+}
+const UNLOCKED_ORDER_CACHE_TTL = 0; // 都度計算（週送りなので毎回軽い計算で十分）
+function unlockedOrder(){
+  return ORDER.filter(id=>isRoundUnlocked(BY_ID[id].round));
+}
+function unlockedProblems(){
+  return PROBLEMS.filter(p=>isRoundUnlocked(p.round));
+}
+function unlockedN(){
+  return unlockedProblems().length;
+}
+
+const GAPS = [1, 2, 4, 7, 14, 30]; // 忘却曲線に沿った復習間隔（日）
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+}
+function addDays(dateStr, n){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate()+n);
+  return `${dt.getFullYear()}-${pad2(dt.getMonth()+1)}-${pad2(dt.getDate())}`;
+}
+function fmtDateShort(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return `${m}/${d}`;
+}
+
+function defaultStat(){
+  return {seen:0, correct:0, wrong:0, weak:false, dueDate:null, gapIdx:-1, lastResult:null};
+}
+function normalizeState(s){
+  if(!s || typeof s!=='object') s={};
+  s.stats = s.stats || {};
+  PROBLEMS.forEach(p=>{
+    s.stats[p.id] = Object.assign(defaultStat(), s.stats[p.id]||{});
+  });
+  s.mDaily = s.mDaily || {};
+  s.updatedAt = s.updatedAt || 0;
+  return s;
+}
+function loadLocalState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) return normalizeState(JSON.parse(raw));
+  }catch(e){}
+  return normalizeState({});
+}
+
+let state = loadLocalState();
+let queue = [];       // 今日出題する残りの問題id（クラウド同期はしないその場限りの作業列）
+let queueDate = null;
+let cloudSyncReady = false;
+let cloudSaveTimer = null;
+
+function saveLocal(){
+  state.updatedAt = Date.now();
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  scheduleCloudSave();
+}
+function scheduleCloudSave(){
+  if(!cloudSyncReady) return;
+  if(cloudSaveTimer) clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(cloudSaveNow, 800);
+}
+function cloudPayload(){
+  return { stats: state.stats, mDaily: state.mDaily, updatedAt: state.updatedAt };
+}
+function profileDocRef(){
+  const user = fbAuth.currentUser;
+  const name = loadGateNameDisplay();
+  if(!user || !name) return null;
+  return fbDb.collection('users').doc(user.uid).collection('profiles').doc(name);
+}
+function cloudSaveNow(){
+  cloudSaveTimer = null;
+  const ref = profileDocRef();
+  if(!ref) return;
+  ref.set(cloudPayload()).catch(e=>{
+    console.warn('cloud save failed', e);
+  });
+}
+
+/* ---------- ローカルとクラウドのマージ（進んでいる方を残す） ---------- */
+function statScore(s){
+  if(!s) return -1;
+  return (s.gapIdx||-1)*1000 + (s.correct||0) - (s.wrong||0);
+}
+function mergeStat(a,b){
+  if(!a) return b; if(!b) return a;
+  const winner = statScore(a) >= statScore(b) ? a : b;
+  let dueDate = null;
+  if(a.dueDate && b.dueDate) dueDate = (a.dueDate > b.dueDate) ? a.dueDate : b.dueDate;
+  else dueDate = a.dueDate || b.dueDate || null;
+  return {
+    seen: Math.max(a.seen||0, b.seen||0),
+    correct: Math.max(a.correct||0, b.correct||0),
+    wrong: Math.max(a.wrong||0, b.wrong||0),
+    weak: winner.weak,
+    dueDate: dueDate,
+    gapIdx: Math.max(a.gapIdx==null?-1:a.gapIdx, b.gapIdx==null?-1:b.gapIdx),
+    lastResult: winner.lastResult
+  };
+}
+function mergeDailyEntry(a,b){
+  if(!a) return b; if(!b) return a;
+  return {
+    learned: Math.max(a.learned||0, b.learned||0),
+    reviews: Math.max(a.reviews||0, b.reviews||0),
+    correct: Math.max(a.correct||0, b.correct||0),
+    attempts: Math.max(a.attempts||0, b.attempts||0),
+    timeSec: Math.max(a.timeSec||0, b.timeSec||0)
+  };
+}
+function mergeState(local, remote){
+  const out = normalizeState({});
+  const keys = new Set([...Object.keys(local.stats||{}), ...Object.keys(remote.stats||{})]);
+  keys.forEach(k=>{ out.stats[k] = mergeStat(local.stats[k], remote.stats[k]); });
+  const dkeys = new Set([...Object.keys(local.mDaily||{}), ...Object.keys(remote.mDaily||{})]);
+  dkeys.forEach(k=>{ out.mDaily[k] = mergeDailyEntry(local.mDaily[k], remote.mDaily[k]); });
+  out.updatedAt = Date.now();
+  return out;
+}
+// Firebase Authログイン完了後に呼ばれる：Firestoreの記録とこの端末の記録を統合し、
+// どちらの記録も失わないようにしてから画面を再描画する
+async function initCloudSync(){
+  const ref = profileDocRef();
+  if(!ref) return;
+  cloudSyncReady = false;
+  try{
+    const snap = await ref.get();
+    if(snap.exists){
+      const remote = normalizeState(snap.data());
+      state = mergeState(state, remote);
+      try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+    }
+    // リモートに何もなければ、この端末の記録がそのまま初回アップロードされる（後段のscheduleCloudSaveで反映）
+  }catch(e){
+    console.warn('cloud load failed', e);
+  }
+  cloudSyncReady = true;
+  scheduleCloudSave();
+  updateHeaderProfileLabel();
+  renderHome();
+  go('home');
+}
+function updateHeaderProfileLabel(){
+  const el = document.getElementById('headerStatus');
+  const name = loadGateNameDisplay();
+  if(el) el.textContent = name ? `👤 ${name} さんの記録` : '';
+}
+
+function getStat(id){ return state.stats[id]; }
+
+/* ---------- 今日の出題キューを組み立てる ---------- */
+function buildQueueForToday(force){
+  const t = todayStr();
+  if(!force && queueDate===t && Array.isArray(queue)) return;
+  let ids;
+  const uOrder = unlockedOrder(); // 週送りでまだ解放されていない回は出題しない
+  if(force){
+    ids = uOrder.slice(); // 解放ずみの全問を今日ぶんとして出題（記録はリセットしない）
+  }else{
+    ids = uOrder.filter(id=>{
+      const st = getStat(id);
+      return !st.dueDate || st.dueDate <= t;
+    });
+  }
+  queue = ids;
+  queueDate = t;
+}
+
+function todaysMDaily(){
+  const t = todayStr();
+  state.mDaily[t] = state.mDaily[t] || {learned:0, reviews:0, correct:0, attempts:0, timeSec:0};
+  return state.mDaily[t];
+}
+
+function currentMasteredCount(){
+  return unlockedProblems().filter(p=>{
+    const st = getStat(p.id);
+    return st.correct>0 && !st.weak;
+  }).length;
+}
+function currentWeakCount(){
+  return unlockedProblems().filter(p=>getStat(p.id).weak).length;
+}
+function everAnsweredCount(){
+  return unlockedProblems().filter(p=>getStat(p.id).seen>0).length;
+}
+
+/* =========================================================
+   UI ロジック
+   ========================================================= */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+const views = {
+  home: $('#view-home'),
+  quiz: $('#view-quiz'),
+  review: $('#view-review'),
+  list: $('#view-list'),
+  history: $('#view-history'),
+  done: $('#view-done')
+};
+function showView(name){
+  Object.keys(views).forEach(k=>{
+    views[k].classList.toggle('hidden', k!==name);
+  });
+  $$('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  const btn = document.querySelector(`nav.tabs button[data-view="${name}"]`);
+  if(btn) btn.classList.add('active');
+}
+function go(name){
+  if(name==='home'){ showView('home'); renderHome(); }
+  else if(name==='review'){ showView('review'); renderReview(); }
+  else if(name==='list'){ showView('list'); renderList(); }
+  else if(name==='history'){ showView('history'); renderHistory(); }
+  else { showView(name); }
+}
+
+function renderHome(){
+  const total = unlockedN();
+  const masteredOnce = everAnsweredCount();
+  const weak = currentWeakCount();
+  $('#statTotal').textContent = total;
+  $('#statMastered').textContent = currentMasteredCount();
+  $('#statWeak').textContent = weak;
+  const pct = total>0 ? Math.round((masteredOnce/total)*100) : 0;
+  $('#homeProgressBar').style.width = pct+'%';
+  $('#homeProgressLabel').textContent = masteredOnce+' / '+total+' 問に挑戦ずみ';
+  renderScheduleStatus();
+
+  buildQueueForToday(false);
+  const remain = queue.length;
+  const btnStart = $('#btnStart');
+  if(remain>0){
+    btnStart.disabled = false;
+    $('#btnStartSub').textContent = `今日はあと ${remain} 問／忘却曲線に沿って出題`;
+  }else{
+    btnStart.disabled = false;
+    $('#btnStartSub').textContent = '今日のぶんはおわりました。もう一度練習することもできます';
+  }
+}
+
+function renderReview(){
+  const list = $('#reviewList');
+  const t = todayStr();
+  const weakItems = unlockedProblems().filter(p=>getStat(p.id).weak);
+  if(weakItems.length===0){
+    list.innerHTML = '<div class="empty-msg">今は復習リストに問題がありません。すばらしい！<br>まちがえた問題があるとここに表示されます。</div>';
+    return;
+  }
+  list.innerHTML = weakItems.map(p=>{
+    const st = getStat(p.id);
+    let dueLabel;
+    if(!st.dueDate || st.dueDate<=t) dueLabel = '今日また出題されます';
+    else dueLabel = `${fmtDateShort(st.dueDate)} ごろに再登場`;
+    return `<div class="review-item">
+      <div class="ri-top"><span>${p.unit}｜${p.src}</span><span class="tag">まちがえ ${st.wrong}回</span></div>
+      <div class="ri-stem">${escapeHtml(p.stem)}</div>
+      <div class="ri-due">正解：${escapeHtml(Array.isArray(p.answer)?p.answer.join('、'):p.answer)}　／　${dueLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderList(){
+  const box = $('#probList');
+  let html = '';
+  let lastRound = null;
+  let lastUnit = null;
+  PROBLEMS.forEach((p,i)=>{
+    if(p.round!==lastRound){
+      lastRound = p.round;
+      lastUnit = null;
+      const unlocked = isRoundUnlocked(p.round);
+      html += `<div class="unit-head" style="margin-top:${i===0?'0':'18px'};">${unlocked?`第${p.round}回`:`🔒 第${p.round}回（まだ解放されていません）`}</div>`;
+    }
+    if(!isRoundUnlocked(p.round)) return; // 未解放の回は問題文・正解を表示しない
+    if(p.unit!==lastUnit){
+      html += `<div class="unit-head" style="font-size:.85em;opacity:.85;">${escapeHtml(p.unit)}</div>`;
+      lastUnit = p.unit;
+    }
+    const ansText = Array.isArray(p.answer) ? p.answer.join('、') : (p.answer!=null ? p.answer : (p.accept?p.accept[0]:''));
+    const imgHtml = p.image ? `<div class="li-image"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.src)}"></div>` : '';
+    html += `<div class="list-item">
+      <div class="li-no">${i+1}. ${escapeHtml(p.src)}</div>
+      <div class="li-stem">${escapeHtml(p.stem)}</div>
+      ${imgHtml}
+      <div class="li-ans">正解：${escapeHtml(ansText)}</div>
+      <details><summary>解説を見る</summary><div class="li-explain">${escapeHtml(p.explain||'')}</div></details>
+    </div>`;
+  });
+  box.innerHTML = html;
+}
+
+function renderScheduleStatus(){
+  const el = $('#scheduleStatus');
+  if(!el) return;
+  const curRound = currentRound();
+  let rows = '';
+  for(let r=1; r<=SCHEDULE_TOTAL_ROUNDS; r++){
+    const unlocked = isRoundUnlocked(r);
+    rows += `<div class="stat-row"><span>${unlocked?'✅':'🔒'} 第${r}回</span><span>${unlocked?'解放ずみ':'未解放'}</span></div>`;
+  }
+  el.innerHTML = `<div class="section-title" style="margin-top:14px;">週送りスケジュール（第1回〜第${curRound}回が解放ずみ）</div>${rows}`;
+}
+
+function renderHistory(){
+  const rows = Object.entries(state.mDaily)
+    .sort((a,b)=> a[0]<b[0] ? 1 : -1)
+    .slice(0,30)
+    .map(([d,v])=>{
+      const rate = v.attempts>0 ? Math.round((v.correct/v.attempts)*100) : 0;
+      const min = Math.round((v.timeSec||0)/60);
+      return `<tr><td>${d}</td><td>${v.attempts||0}問</td><td>${rate}%</td><td>${min}分</td></tr>`;
+    }).join('');
+  $('#historyTable').innerHTML = `<tr><th>日付</th><th>解いた問題</th><th>正解率</th><th>時間</th></tr>${rows || '<tr><td colspan="4">まだ記録がありません</td></tr>'}`;
+}
+
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* --- クイズ進行 --- */
+let curId = null;
+let answered = false;
+let selectedChoice = null;
+let selectedMulti = new Set();
+let qStartTime = 0;
+
+function startQuiz(force){
+  buildQueueForToday(!!force);
+  showView('quiz');
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(queue.length===0){
+    finishSession();
+    return;
+  }
+  answered = false;
+  selectedChoice = null;
+  selectedMulti = new Set();
+  curId = queue.shift();
+  renderQuestion();
+}
+
+function finishSession(){
+  const md = todaysMDaily();
+  const rate = md.attempts>0 ? Math.round((md.correct/md.attempts)*100) : 0;
+  const min = Math.round((md.timeSec||0)/60);
+  $('#doneSummary').innerHTML = `今日は ${md.attempts}問 解いて、正解率は ${rate}% でした。<br>学習時間：約${min}分`;
+  showView('done');
+}
+
+function renderQuestion(){
+  const p = BY_ID[curId];
+  const st = getStat(curId);
+
+  $('#quizBadge').textContent = st.weak ? '復習リスト' : p.unit;
+  $('#quizBadge').className = 'badge' + (st.weak ? ' review' : '');
+
+  const doneToday = unlockedOrder().length - queue.length; // 今日すでに出題した数（このカードを含む）。週送りで未解放の回は母数に含めない
+  const totalToday = doneToday + queue.length;
+  $('#quizCounter').textContent = doneToday + ' / ' + totalToday + '（今日）';
+  $('#quizProgressBar').style.width = totalToday>0 ? Math.round((doneToday/totalToday)*100)+'%' : '0%';
+
+  $('#qMeta').textContent = p.src;
+  $('#qStem').textContent = p.stem;
+  $('#qImage').innerHTML = p.image ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.src)}">` : '';
+
+  $('#feedback').classList.remove('show','ok','ng');
+
+  const area = $('#answerArea');
+  area.innerHTML = '';
+
+  if(p.type==='choice'){
+    const box = document.createElement('div');
+    box.className = 'choices';
+    p.choices.forEach(c=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c;
+      b.dataset.value = c;
+      b.addEventListener('click', ()=>{
+        if(answered) return;
+        selectedChoice = c;
+        $$('#answerArea .choice-btn').forEach(x=>x.classList.remove('selected'));
+        b.classList.add('selected');
+      });
+      box.appendChild(b);
+    });
+    area.appendChild(box);
+  } else if(p.type==='multi'){
+    const box = document.createElement('div');
+    box.className = 'choices';
+    p.choices.forEach(c=>{
+      const b = document.createElement('button');
+      b.className = 'choice-btn';
+      b.textContent = c;
+      b.dataset.value = c;
+      b.addEventListener('click', ()=>{
+        if(answered) return;
+        if(selectedMulti.has(c)){
+          selectedMulti.delete(c);
+          b.classList.remove('selected');
+        }else{
+          selectedMulti.add(c);
+          b.classList.add('selected');
+        }
+      });
+      box.appendChild(b);
+    });
+    area.appendChild(box);
+    const note = document.createElement('div');
+    note.style.cssText='font-size:.72rem;color:var(--ink-soft);margin:-8px 0 12px;';
+    note.textContent = '※あてはまるものをすべて選んでください（複数選択）';
+    area.appendChild(note);
+  } else if(p.type==='text'){
+    const row = document.createElement('div');
+    row.className = 'text-input-row';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'ことばで答える';
+    input.id = 'textAnswer';
+    input.autocomplete = 'off';
+    row.appendChild(input);
+    area.appendChild(row);
+    setTimeout(()=>input.focus(), 50);
+  }
+
+  $('#btnCheck').classList.remove('hidden');
+  $('#btnCheck').disabled = false;
+  $('#btnNext').classList.add('hidden');
+
+  qStartTime = Date.now();
+}
+
+function normalizeText(s){
+  if(s==null) return '';
+  return s
+    .toString()
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0)) // 全角->半角
+    .replace(/[ァ-ヶ]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0x60)) // カタカナ->ひらがな（読み方入力の表記ゆれ対応）
+    .replace(/\s+/g,'')
+    .replace(/[。．.、，,]/g,'')
+    .trim();
+}
+
+function checkAnswer(){
+  const p = BY_ID[curId];
+  if(answered) return;
+
+  let isCorrect = false;
+
+  if(p.type==='choice'){
+    if(!selectedChoice){ flashNeedSelect(); return; }
+    isCorrect = selectedChoice === p.answer;
+    $$('#answerArea .choice-btn').forEach(b=>{
+      if(b.dataset.value === p.answer) b.classList.add('correct');
+      else if(b.dataset.value === selectedChoice && !isCorrect) b.classList.add('wrong');
+      b.disabled = true;
+    });
+  } else if(p.type==='multi'){
+    if(selectedMulti.size===0){ flashNeedSelect(); return; }
+    const ans = new Set(p.answer);
+    isCorrect = ans.size===selectedMulti.size && [...ans].every(a=>selectedMulti.has(a));
+    $$('#answerArea .choice-btn').forEach(b=>{
+      const v = b.dataset.value;
+      if(ans.has(v)) b.classList.add('correct');
+      else if(selectedMulti.has(v)) b.classList.add('wrong');
+      b.disabled = true;
+    });
+  } else if(p.type==='text'){
+    const input = $('#textAnswer');
+    const val = input.value;
+    if(!val || !val.trim()){ flashNeedSelect(); return; }
+    const norm = normalizeText(val);
+    isCorrect = p.accept.some(a=>normalizeText(a)===norm);
+    input.disabled = true;
+    input.classList.add(isCorrect?'correct':'wrong');
+  }
+
+  answered = true;
+  const sec = Math.max(1, Math.round((Date.now()-qStartTime)/1000));
+  updateStats(p.id, isCorrect, sec);
+
+  const fb = $('#feedback');
+  fb.classList.add('show');
+  if(isCorrect){
+    fb.classList.add('ok'); fb.classList.remove('ng');
+    $('#fbTitle').textContent = '⭕ せいかい！';
+  }else{
+    fb.classList.add('ng'); fb.classList.remove('ok');
+    const correctText = Array.isArray(p.answer) ? p.answer.join('、') : p.answer;
+    $('#fbTitle').textContent = '❌ おしい！ 正解は「'+correctText+'」';
+  }
+  $('#fbBody').textContent = p.explain;
+
+  $('#btnCheck').classList.add('hidden');
+  $('#btnNext').classList.remove('hidden');
+
+  // まちがえた問題は、今日のうちにもう一度出題されるようキューへ再挿入する（頻度を上げる）
+  if(!isCorrect){
+    const insertAt = Math.min(3, queue.length);
+    queue.splice(insertAt, 0, p.id);
+  }
+}
+
+function flashNeedSelect(){
+  const btn = $('#btnCheck');
+  btn.textContent = 'こたえを選んでね';
+  setTimeout(()=>{ btn.textContent='こたえ合わせ'; }, 900);
+}
+
+function updateStats(id, isCorrect, sec){
+  const st = getStat(id);
+  const wasNew = st.seen===0;
+  st.seen++;
+
+  const t = todayStr();
+  const md = todaysMDaily();
+  md.attempts++;
+  md.timeSec += sec;
+  if(isCorrect) md.correct++;
+  if(wasNew && isCorrect) md.learned++;
+  else md.reviews++;
+
+  if(isCorrect){
+    st.correct++;
+    st.lastResult = 'correct';
+    st.gapIdx = Math.min((st.gapIdx==null?-1:st.gapIdx)+1, GAPS.length-1);
+    st.dueDate = addDays(t, GAPS[st.gapIdx]);
+    // まちがえた履歴があっても、忘却曲線の間隔を2回以上こなしたら復習リストを卒業する
+    if(st.weak && st.gapIdx>=2){
+      st.weak = false;
+    }
+  } else {
+    st.wrong++;
+    st.lastResult = 'wrong';
+    st.weak = true;
+    st.gapIdx = -1;
+    st.dueDate = t; // 今日のうちに再度出題する
+  }
+  saveLocal();
+}
+
+/* --- ボタン結線 --- */
+$('#btnCheck').addEventListener('click', checkAnswer);
+$('#btnNext').addEventListener('click', ()=>{
+  nextQuestion();
+});
+$('#btnStart').addEventListener('click', ()=>startQuiz(false));
+$('#btnRestart').addEventListener('click', ()=>startQuiz(true));
+$('#btnDoneHome').addEventListener('click', ()=>{
+  go('home');
+});
+$('#btnLogout').addEventListener('click', ()=>{
+  if(confirm('なまえを 変えますか？\n（つぎに べつの なまえで はじめられます）')){
+    gateLogout();
+  }
+});
+
+$$('nav.tabs button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const v = b.dataset.view;
+    if(v==='quiz'){ startQuiz(false); }
+    else { go(v); }
+  });
+});
+
+/* ---------- 初期化 ----------
+   ログイン（ログインゲート側のonAuthReady）が完了してから画面を初期描画する。
+   ログイン前でもnav/homeの下地は作っておく（画面がロード直後に真っ白にならないように）。 */
+renderHome();
+go('home');
+onAuthReady = function(){
+  // ログインゲートで確定した「なまえ」に合わせてローカルデータを読み直してから、
+  // クラウド(Firestore)の同名プロフィールと統合する。
+  const name = loadGateNameDisplay();
+  KEY = storageKeyForName(name);
+  state = loadLocalState();
+  initCloudSync();
+};
+</script>
+</body>
+</html>
