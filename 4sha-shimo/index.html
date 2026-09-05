@@ -843,7 +843,7 @@ const PROBLEMS = [
 },
 {
   id:'p4', round:1, unit:'練習問題', src:'日本三景（宮城県）',
-  stem:'（文1）日本三景の1つがあります。この道県庁所在地では、8月に東北三大祭りの1つが盛大に行われます。文中の日本三景を選びなさい。',
+  stem:'（文1）宮城県には日本三景の1つがあります。宮城県の道県庁所在地では、8月に東北三大祭りの1つが盛大に行われます。文中の日本三景を選びなさい。',
   type:'choice',
   choices:['宮島','松島','天橋立'],
   answer:'松島',
@@ -909,7 +909,7 @@ const PROBLEMS = [
 },
 {
   id:'p9', round:1, unit:'練習問題', src:'山形県を流れる川',
-  stem:'この道県を流れる川は三大急流に数えられ、下流の平野では米づくりがさかんに行われています。この川の名前を答えなさい。',
+  stem:'山形県を流れる川は三大急流に数えられ、下流の平野では米づくりがさかんに行われています。この川の名前を答えなさい。',
   type:'text', accept:['最上川'],
   explain:'山形県を流れる最上川は日本三大急流の1つで、下流には庄内平野が広がり米づくりがさかんです。'
 },
@@ -941,7 +941,7 @@ const PROBLEMS = [
 },
 {
   id:'p12', round:1, unit:'練習問題', src:'輪郭図にあてはまらない道県（文1〜5）', image:'prefshapes1.png',
-  stem:'この練習問題の文1〜5（宮城県・北海道・山形県・岩手県・福島県）が述べている道県のうち、右のア〜エ（北海道・岩手県・青森県・福島県）の輪郭図のどれにもあてはまらない道県を、文の番号（1〜5）で答えなさい。',
+  stem:'次の文1〜5（宮城県・北海道・山形県・岩手県・福島県）が述べている道県のうち、右のア〜エ（北海道・岩手県・青森県・福島県）の輪郭図のどれにもあてはまらない道県を、文の番号（1〜5）で答えなさい。',
   type:'choice',
   choices:['1','2','3','4','5'],
   answer:'3',
@@ -958,8 +958,8 @@ const PROBLEMS = [
 {
   id:'dev1', round:1, unit:'発展問題', src:'地図中の山脈（A）', image:'devmap1.png',
   stem:'地図のAの山脈の名前を答えなさい。',
-  type:'text', accept:['奥羽山脈'],
-  explain:'Aは奥羽山脈です。日本海側の県との間にある、東北地方で最も長い山脈です。'
+  type:'text', accept:['日高山脈'],
+  explain:'Aは日高山脈です。北海道の南東部にある山脈です。'
 },
 {
   id:'dev2', round:1, unit:'発展問題', src:'白神山地の樹木', image:'devmap1.png',
@@ -1015,6 +1015,13 @@ const PROBLEMS = [
   id:'desc2', round:1, unit:'記述問題', src:'竿燈まつりの由来', image:'festival_all.png',
   stem:'「竿燈まつり」はどのようなことを祈って行われる祭りですか。東北地方で夏の時期に開かれることをふまえ、また、写真の中に見られるもの（提灯）を参考にして、20〜40字程度で説明しなさい。',
   type:'text', accept:['眠気や病虫害を追い払って夏の農作業がうまくいくことと豊作を祈る','眠気や病虫害を追い払い豊作を祈る'],
+  keywordGroups:[
+    ['眠気','ねむけ','睡魔'],
+    ['病虫害','害虫','病気'],
+    ['農作業','夏バテ'],
+    ['豊作','収穫','実り','みのり']
+  ],
+  keywordThreshold:2,
   explain:'竿燈は「ねぶり流し」と七夕が1つになったものと考えられています。稲の花が開く夏には台風などによる風水害や病虫害が起こりやすくなります。これらの被害を受けることなく、無事に豊かな収穫を迎えられるように、稲穂に見立てた提灯をつるして、眠気や病虫害を追い払い、夏の農作業がうまくいくことと豊作を祈る祭りです。'
 }
 ];
@@ -1537,7 +1544,15 @@ function checkAnswer(){
     const val = input.value;
     if(!val || !val.trim()){ flashNeedSelect(); return; }
     const norm = normalizeText(val);
-    isCorrect = p.accept.some(a=>normalizeText(a)===norm);
+    const exactMatch = p.accept.some(a=>normalizeText(a)===norm);
+    let keywordMatch = false;
+    if(p.keywordGroups){
+      // 記述問題など「おおよそ合っていれば正解」としたい問題向け：
+      // キーワードのグループ分けをして、規定数以上のグループに該当すれば正解とする
+      const matchedGroups = p.keywordGroups.filter(group=>group.some(kw=>val.includes(kw)));
+      keywordMatch = matchedGroups.length >= (p.keywordThreshold || p.keywordGroups.length);
+    }
+    isCorrect = exactMatch || keywordMatch;
     input.disabled = true;
     input.classList.add(isCorrect?'correct':'wrong');
   }
