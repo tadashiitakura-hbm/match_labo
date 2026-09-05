@@ -1773,326 +1773,422 @@ function gen_p4_5(rng) {
 }
 
 // ============================================================
-// 週テスト（第1回）：予習シリーズ第1回の範囲（小数と分数）に対応した
-// オリジナル問題（数字はランダム生成。実際の教材の問題・数値・図をそのまま使用したものではありません）
+// 週テスト（第1回・オリジナル問題、全20問）
+// 四谷大塚 予習シリーズ4年下第1回 週テストと同じ大問構成・出題パターンに合わせて
+// 数値をすべてランダム生成したオリジナル問題。教材の問題文・数値・図はそのまま使用していない。
+// 構成：大問1(3問)・大問2(9問)・大問3(2問)・大問4(2問)・大問5(2問)・大問6(2問) = 計20問
 // ============================================================
 
-// w1_1: 小数の四則混合計算＋指定の位までの四捨五入
-function gen_w1_1(rng) {
-  const a = randInt(rng, 1, 6) + choice(rng, [0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9]);
-  const b = randInt(rng, 1, 5) + choice(rng, [0.1, 0.3, 0.5, 0.7, 0.9]);
-  const c = choice(rng, [1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.8, 1.9, 2.1, 2.3]);
-  const sum = Math.round((a + b) * 10) / 10;
-  const raw = Math.round(sum * c * 100) / 100;
-  const ans = Math.round(raw * 10) / 10;
-  const sig = `w1_1_${a}_${b}_${c}`;
-  const stem = `次の式を計算し、答えを小数第一位までのがい数（四捨五入）で求めなさい。<br>（${a} ＋ ${b}）× ${c}`;
-  const fields = [{ id: 'a1', label: '答え（小数第一位まで）', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
+// ---- 大問1：計算・がい数（3問）----
+
+// wk1_1: 小数のたし算
+function gen_wk1_1(rng) {
+  const a = Math.round((randInt(rng, 1, 8) + choice(rng, [0.11,0.12,0.23,0.34,0.45,0.56,0.67,0.78,0.89,0.14,0.25,0.36])) * 100) / 100;
+  const b = Math.round((randInt(rng, 1, 8) + choice(rng, [0.11,0.22,0.33,0.44,0.55,0.66,0.77,0.88,0.99,0.13,0.24,0.35])) * 100) / 100;
+  const ans = Math.round((a + b) * 100) / 100;
+  const sig = `wk1_1_${a}_${b}`;
+  const stem = `次の　□　にあてはまる数を求めなさい。<br>${a} ＋ ${b} ＝`;
+  const fields = [{ id: 'a1', label: '答え', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
   const hints = [
-    hintStep('why',
-      'かっこの中を先に計算してから、かけ算をする',
-      '計算のじゅんばんをまちがえると、答えがまったく変わってしまう',
-      `<b>考え方：</b>式に（　）があるときは、必ず（　）の中を最初に計算する。そのあとで残りの計算をする。`
-    ),
-    hintStep('do',
-      `① ${a}＋${b}を計算する　② その答えに${c}をかける　③ 小数第二位を四捨五入する`,
-      `${a}＋${b}＝${sum}　→　${sum}×${c}＝${raw}`,
-      `<b>手順：</b><br>① （${a}＋${b}）を先に計算：${sum}<br>② ${sum}×${c}を計算：${raw}<br>③ 小数第二位の数字を見て、四捨五入で小数第一位までにする`
-    ),
-    hintStep('goal',
-      `${ans} になる`,
-      `${raw}を小数第一位までの四捨五入にすると${ans}`,
-      `<b>見直しのコツ：</b>四捨五入する前の数（${raw}）に一度もどって、位をまちがえていないか確認しよう。`
-    )
+    hintStep('why', '小数のたし算は、位をそろえて計算する', '整数のたし算と同じしくみで、小数点の位置をそろえることが大切', `<b>考え方：</b>小数点の位置をたてにそろえて、位ごとに計算する。`),
+    hintStep('do', `${a}＋${b}を筆算で計算する`, '小数点をそろえて位ごとにたす', `<b>手順：</b><br>① 小数点の位置をそろえて書く<br>② 位ごとにたし算をする<br>③ 小数点をそのままおろす`),
+    hintStep('goal', `${ans} になる`, `${a}＋${b}＝${ans}`, `<b>見直しのコツ：</b>${ans}－${a}を計算して、${b}にもどるか確かめよう。`)
   ];
-  const solution = `（${a}＋${b}）×${c}<br>＝${sum}×${c}<br>＝${raw}<br>小数第一位までの四捨五入で <b>${ans}</b>`;
-  return { title: '週テスト1：小数の混合計算とがい数', stem, fields, svg: '', hints, solution, sig };
+  const solution = `${a} ＋ ${b} ＝ <b>${ans}</b>`;
+  return { title: '週テスト1：小数のたし算', stem, fields, svg: '', hints, solution, sig };
 }
 
-// w1_2: 小数×整数の平均の文章題
-function gen_w1_2(rng) {
-  const perUnitX10 = randInt(rng, 12, 38); // 0.1刻みの単価×10
-  const perUnit = perUnitX10 / 10;
-  const days = randInt(rng, 3, 6);
-  const amounts = [];
-  for (let i = 0; i < days; i++) amounts.push(randInt(rng, 2, 9));
-  const totalCount = amounts.reduce((s, v) => s + v, 0);
-  const totalCost = Math.round(totalCount * perUnit * 100) / 100;
-  const avg = Math.round((totalCount / days) * 100) / 100;
-  const askCost = rng() < 0.5;
-  const sig = `w1_2_${perUnitX10}_${amounts.join('-')}_${askCost}`;
-  let stem, answer, label;
-  if (askCost) {
-    stem = `1個${perUnit}kgのりんごを、${days}日間でそれぞれ ${amounts.join('個, ')}個 買いました。買った個数の合計の重さは何kgですか。`;
-    answer = totalCost; label = '合計の重さ(kg)';
-  } else {
-    stem = `${days}日間でりんごをそれぞれ ${amounts.join('個, ')}個 買いました。1日あたり平均何個買ったことになりますか。`;
-    answer = avg; label = '1日あたりの平均(個)';
-  }
-  const fields = [{ id: 'a1', label, type: 'dec', check: (v) => decEq(v, answer, 1e-6) }];
-  const hints = askCost ? [
-    hintStep('why',
-      '「1個あたりの重さ」が分かれば、何個でも重さが計算できる',
-      '合計の重さは、1個あたりの重さ×個数の合計で求められる',
-      `<b>考え方：</b>まず${days}日間で買った個数をぜんぶ足して合計の個数を出し、それに1個${perUnit}kgをかければ、全体の重さが分かる。`
-    ),
-    hintStep('do',
-      `① 個数を全部たす　② 1個${perUnit}kgをかける`,
-      `${amounts.join('+')}＝${totalCount}（個）　→　${totalCount}×${perUnit}`,
-      `<b>手順：</b><br>① ${amounts.join('＋')}＝${totalCount}（個）<br>② ${totalCount}×${perUnit}＝${totalCost}（kg）`
-    ),
-    hintStep('goal',
-      `${totalCost}kg になる`,
-      `${totalCount}×${perUnit}＝${totalCost}`,
-      `<b>見直しのコツ：</b>${totalCost}÷${perUnit}を計算して、合計個数${totalCount}にもどるか確かめよう。`
-    )
-  ] : [
-    hintStep('why',
-      '平均は「ならしたときの1つあたりの量」のこと',
-      'でこぼこのある数を、同じ量ずつに分け直したときの数が平均',
-      `<b>考え方：</b>平均＝合計÷個数（日数）。${days}日間の個数をならして、1日あたりならいくつになるかを求める。`
-    ),
-    hintStep('do',
-      `① 個数を全部たす　② ${days}でわる`,
-      `${amounts.join('+')}＝${totalCount}（個）　→　${totalCount}÷${days}`,
-      `<b>手順：</b><br>① ${amounts.join('＋')}＝${totalCount}（個）<br>② ${totalCount}÷${days}＝${avg}（個）`
-    ),
-    hintStep('goal',
-      `${avg}個 になる`,
-      `${totalCount}÷${days}＝${avg}`,
-      `<b>見直しのコツ：</b>${avg}×${days}を計算して、合計${totalCount}にもどるか確かめよう。`
-    )
-  ];
-  const solution = askCost
-    ? `${amounts.join('＋')}＝${totalCount}（個）<br>${totalCount}×${perUnit}＝<b>${totalCost}</b>（kg）`
-    : `${amounts.join('＋')}＝${totalCount}（個）<br>${totalCount}÷${days}＝<b>${avg}</b>（個）`;
-  return { title: '週テスト2：小数×整数と平均', stem, fields, svg: '', hints, solution, sig };
-}
-
-// w1_2b: 分数・小数の変換と3つの数の大小比較
-function gen_w1_2b(rng) {
-  const bd = choice(rng, [4, 5, 8, 20, 25]);
-  const bn = randInt(rng, 1, bd - 1);
-  const [rn, rd] = reduceFrac(bn, bd);
-  const decVal = bn / bd; // 有限小数になるbdだけを選んでいる
-  const decStr = decVal.toFixed(String(decVal).split('.')[1] ? String(decVal).split('.')[1].length : 1);
-  // 比較用に、もう1つの小数と、分母の異なる分数を用意する
-  const otherDec = Math.round((decVal + choice(rng, [-0.15, -0.1, 0.08, 0.12, 0.2])) * 1000) / 1000;
-  const cd = choice(rng, [3, 6, 9]);
-  const cn = randInt(rng, 1, cd - 1);
-  const cVal = cn / cd;
-  const vals = [{ label: 'ア', v: decVal, disp: fracHtml(rn, rd) }, { label: 'イ', v: otherDec, disp: `${otherDec}` }, { label: 'ウ', v: cVal, disp: fracHtml(cn, cd) }];
-  const sorted = [...vals].sort((x, y) => y.v - x.v);
-  const answer = sorted.map(v => v.label).join('');
-  const sig = `w1_2b_${rn}_${rd}_${otherDec}_${cn}_${cd}`;
-  const stem = `次の3つの数を、大きい順に記号で並べなさい。<br>ア　${fracHtml(rn, rd)}　　イ　${otherDec}　　ウ　${fracHtml(cn, cd)}`;
-  const fields = [{ id: 'a1', label: '大きい順（例：アイウ）', type: 'text', check: (v) => String(v || '').trim() === answer }];
+// wk1_2: 整数の四則混合計算（かっこ・優先順位）
+function gen_wk1_2(rng) {
+  const a = randInt(rng, 2, 9);
+  const b = randInt(rng, 2, 9);
+  const c = randInt(rng, 2, 8);
+  const d = randInt(rng, 2, 6);
+  const inner = a + b * c;
+  if (inner % d !== 0) return gen_wk1_2(rng);
+  const ans = inner / d;
+  const sig = `wk1_2_${a}_${b}_${c}_${d}`;
+  const stem = `次の　□　にあてはまる数を求めなさい。<br>（${a} ＋ ${b} × ${c}）÷ ${d} ＝`;
+  const fields = [{ id: 'a1', label: '答え', type: 'int', check: (v) => intEq(v, ans) }];
   const hints = [
-    hintStep('why',
-      '分数と小数がまざっていると、そのままでは大きさをくらべにくい',
-      '形をそろえれば、数の大小がひと目で分かるようになる',
-      `<b>考え方：</b>分数を小数に直せば、3つとも同じ「小数」という形になり、そのまま大きさをくらべられる。`
-    ),
-    hintStep('do',
-      'すべて小数に直してからくらべる',
-      `ア＝${fracHtml(rn, rd)}＝${decVal}、ウ＝${fracHtml(cn, cd)}＝${Math.round(cVal * 1000) / 1000}`,
-      `<b>手順：</b><br>① ア＝${rn}÷${rd}を計算して小数に直す<br>② ウ＝${cn}÷${cd}を計算して小数に直す<br>③ イはそのままの小数<br>④ 3つの小数を大きい順に並べる`
-    ),
-    hintStep('goal',
-      `${answer} の順になる`,
-      `${sorted.map(v => `${v.label}＝${Math.round(v.v * 1000) / 1000}`).join('　')}`,
-      `<b>見直しのコツ：</b>並べた順に数字を書き出して、本当に大きい→小さいになっているか確認しよう。`
-    )
+    hintStep('why', '計算には正しい順序（きまり）がある', 'かけ算・わり算はたし算・ひき算より先に計算する。（　）はさらに先', `<b>考え方：</b>①（　）の中→②かけ算・わり算→③たし算・ひき算、の順で計算する。`),
+    hintStep('do', `① ${b}×${c}を先に計算　② ${a}をたす　③ ${d}でわる`, `${b}×${c}＝${b*c}、${a}＋${b*c}＝${inner}、${inner}÷${d}＝${ans}`, `<b>手順：</b><br>① （　）の中の${b}×${c}を先に計算：${b*c}<br>② ${a}＋${b*c}＝${inner}<br>③ ${inner}÷${d}＝${ans}`),
+    hintStep('goal', `${ans} になる`, `（${a}＋${b*c}）÷${d}＝${ans}`, `<b>見直しのコツ：</b>${ans}×${d}を計算して、${inner}にもどるか確かめよう。`)
   ];
-  const solution = `ア＝${decVal}、イ＝${otherDec}、ウ＝${Math.round(cVal * 1000) / 1000}<br>大きい順に並べると <b>${answer}</b>`;
-  return { title: '週テスト3：分数・小数の変換と大小比較', stem, fields, svg: '', hints, solution, sig };
+  const solution = `${b}×${c}＝${b*c}<br>${a}＋${b*c}＝${inner}<br>${inner}÷${d}＝<b>${ans}</b>`;
+  return { title: '週テスト2：計算のじゅんばん', stem, fields, svg: '', hints, solution, sig };
 }
 
-// w1_2c: 分数の四則計算（+ - × ÷ のいずれか1問）
-function gen_w1_2c(rng) {
-  const op = choice(rng, ['+', '-', '×', '÷']);
-  let bn, bd, cn, cd, rn, rd;
-  if (op === '+' || op === '-') {
-    bd = choice(rng, [4, 6, 8, 9, 12]);
-    cd = choice(rng, [3, 4, 6, 9].filter(d => d !== bd));
-    bn = randInt(rng, 1, bd - 1);
-    cn = randInt(rng, 1, cd - 1);
-    if (gcd(bn, bd) !== 1 || gcd(cn, cd) !== 1) return gen_w1_2c(rng); // 出題する分数自体が既約になるように
-    const L = lcm(bd, cd);
-    let numer = op === '+' ? bn * (L / bd) + cn * (L / cd) : bn * (L / bd) - cn * (L / cd);
-    if (op === '-' && numer <= 0) { [bn, cn] = [cn, bn]; [bd, cd] = [cd, bd]; numer = bn * (L / bd) - cn * (L / cd); }
-    [rn, rd] = reduceFrac(numer, L);
-    if (rd === 1) return gen_w1_2c(rng); // 答えが整数になりすぎる場合は作り直す
-  } else if (op === '×') {
-    bd = choice(rng, [3, 4, 5, 6]); bn = randInt(rng, 1, bd - 1);
-    cd = choice(rng, [4, 5, 7, 8]); cn = randInt(rng, 1, cd - 1);
-    if (gcd(bn, bd) !== 1 || gcd(cn, cd) !== 1) return gen_w1_2c(rng);
-    [rn, rd] = reduceFrac(bn * cn, bd * cd);
-  } else {
-    bd = choice(rng, [3, 4, 5, 6]); bn = randInt(rng, 1, bd - 1);
-    cd = choice(rng, [3, 4, 5]); cn = randInt(rng, 1, cd - 1);
-    if (gcd(bn, bd) !== 1 || gcd(cn, cd) !== 1) return gen_w1_2c(rng);
-    [rn, rd] = reduceFrac(bn * cd, bd * cn);
-  }
-  const sig = `w1_2c_${op}_${bn}_${bd}_${cn}_${cd}`;
-  const stem = `次の計算をしなさい。<br>${fracHtml(bn, bd)} ${op} ${fracHtml(cn, cd)}`;
+// wk1_3: 四捨五入してがい数にする
+function gen_wk1_3(rng) {
+  const num = randInt(rng, 100, 999);
+  const placeChoice = choice(rng, ['ten','hundred']);
+  let ans, placeName, divisor;
+  if (placeChoice === 'ten') { divisor = 10; placeName = '十'; }
+  else { divisor = 100; placeName = '百'; }
+  const digit = Math.floor(num / (divisor/10)) % 10;
+  ans = digit >= 5 ? (Math.floor(num/divisor)+1)*divisor : Math.floor(num/divisor)*divisor;
+  const sig = `wk1_3_${num}_${placeChoice}`;
+  const stem = `${num}を四捨五入して${placeName}の位までのがい数にすると　□　になります。`;
+  const fields = [{ id: 'a1', label: '答え', type: 'int', check: (v) => intEq(v, ans) }];
+  const hints = [
+    hintStep('why', '四捨五入は「その位より1つ下の位」の数字を見て決める', `${placeName}の位までのがい数にするには、その1つ下の位の数字を見る`, `<b>考え方：</b>のこしたい位のすぐ下の位が0〜4なら切り捨て、5〜9なら切り上げる。`),
+    hintStep('do', `${placeName}の位のすぐ下の位（${digit}）を見る`, `${digit}は${digit>=5?'5以上なので切り上げる':'4以下なので切り捨てる'}`, `<b>手順：</b><br>① ${num}の${placeName}の位より1つ下の数字（${digit}）を確認する<br>② ${digit>=5?'5以上なので、その位を切り上げる':'4以下なので、その位を切り捨てる'}<br>③ 下の位を0にする`),
+    hintStep('goal', `${ans} になる`, `${num}を${placeName}の位までのがい数にすると${ans}`, `<b>見直しのコツ：</b>もとの数${num}と${ans}を比べて、位取りがずれていないか確認しよう。`)
+  ];
+  const solution = `${num}の${placeName}の位より1つ下の数字は${digit}なので、${digit>=5?'切り上げて':'切り捨てて'}<br><b>${ans}</b>`;
+  return { title: '週テスト3：四捨五入とがい数', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ---- 大問2：小数・分数の計算と変換（9問）----
+
+// wk2_1: 小数×整数
+function gen_wk2_1(rng) {
+  const dec = randInt(rng,1,9)/10;
+  const n = randInt(rng, 3, 9);
+  const ans = Math.round(dec*n*100)/100;
+  const sig = `wk2_1_${dec}_${n}`;
+  const stem = `1本${dec}mのひもが${n}本あります。この${n}本のひもの長さの合計は　□　mです。`;
+  const fields = [{ id: 'a1', label: '答え(m)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
+  const hints = [
+    hintStep('why', '同じ長さのものが何本分あるかは、かけ算で求められる', '1本分の長さ×本数＝合計の長さ', `<b>考え方：</b>1本${dec}mの${n}本分は、${dec}×${n}で求められる。`),
+    hintStep('do', `${dec}×${n}を計算する`, '小数×整数は、整数のかけ算をしてから小数点をうつ', `<b>手順：</b><br>① ${dec}を10倍して整数にする（${dec*10}）<br>② ${dec*10}×${n}＝${dec*10*n}<br>③ 10でわって小数点をもどす`),
+    hintStep('goal', `${ans}m になる`, `${dec}×${n}＝${ans}`, `<b>見直しのコツ：</b>${ans}÷${n}を計算して、${dec}にもどるか確かめよう。`)
+  ];
+  const solution = `${dec} × ${n} ＝ <b>${ans}</b>（m）`;
+  return { title: '週テスト4：小数×整数', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk2_2: 小数÷整数（等分除、あまりなし）
+function gen_wk2_2(rng) {
+  const n = randInt(rng, 3, 8);
+  const oneWeight = randInt(rng, 2, 20)/10 + randInt(rng,0,3);
+  const total = Math.round(oneWeight*n*10)/10;
+  const ans = Math.round((total/n)*100)/100;
+  if (!Number.isFinite(ans) || Math.abs(ans*n - total) > 1e-6) return gen_wk2_2(rng);
+  const sig = `wk2_2_${n}_${total}`;
+  const stem = `同じおもり${n}個の重さをはかったところ、${total}gありました。このおもり1個の重さは　□　gです。`;
+  const fields = [{ id: 'a1', label: '答え(g)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
+  const hints = [
+    hintStep('why', '全部で同じ重さのものは、等分するわり算で1個分がわかる', '合計の重さ÷個数＝1個あたりの重さ', `<b>考え方：</b>${n}個で${total}gなので、${total}を${n}等分すれば1個分の重さがわかる。`),
+    hintStep('do', `${total}÷${n}を計算する`, '小数÷整数は、整数のわり算と同じように計算し、商の小数点をそろえる', `<b>手順：</b><br>① ${total}÷${n}を筆算で計算する<br>② 小数点は、わられる数の小数点にそろえてうつ`),
+    hintStep('goal', `${ans}g になる`, `${total}÷${n}＝${ans}`, `<b>見直しのコツ：</b>${ans}×${n}を計算して、${total}にもどるか確かめよう。`)
+  ];
+  const solution = `${total} ÷ ${n} ＝ <b>${ans}</b>（g）`;
+  return { title: '週テスト5：小数÷整数', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk2_3: 分数を小数にする
+function gen_wk2_3(rng) {
+  const dOptions = [2,4,5,8,10,20,25];
+  const d = choice(rng, dOptions);
+  const n = randInt(rng, 1, d-1);
+  if (gcd(n,d) !== 1) return gen_wk2_3(rng);
+  const ans = n/d;
+  const sig = `wk2_3_${n}_${d}`;
+  const stem = `${fracHtml(n,d)} を小数にすると　□　です。`;
+  const fields = [{ id: 'a1', label: '答え', type: 'dec', check: (v) => decEq(v, ans, 1e-9) }];
+  const hints = [
+    hintStep('why', '分数は「分子÷分母」で小数に直せる', `${fracHtml(n,d)}は${n}÷${d}という意味`, `<b>考え方：</b>分数は割り算の別の書き方。分子を分母でわれば小数になる。`),
+    hintStep('do', `${n}÷${d}を計算する`, 'わり切れるまで計算を続ける', `<b>手順：</b><br>① ${n}を${d}でわる筆算をする<br>② わり切れるまで0をつけたして計算する`),
+    hintStep('goal', `${ans} になる`, `${n}÷${d}＝${ans}`, `<b>見直しのコツ：</b>${ans}×${d}を計算して、${n}にもどるか確かめよう。`)
+  ];
+  const solution = `${fracHtml(n,d)} ＝ ${n}÷${d} ＝ <b>${ans}</b>`;
+  return { title: '週テスト6：分数を小数にする', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk2_4: 小数を既約分数にする
+function gen_wk2_4(rng) {
+  const decOptions = [
+    [0.5,1,2],[0.25,1,4],[0.75,3,4],[0.2,1,5],[0.4,2,5],[0.6,3,5],[0.8,4,5],
+    [0.125,1,8],[0.375,3,8],[0.625,5,8],[0.875,7,8],[0.05,1,20],[0.15,3,20],[0.35,7,20]
+  ];
+  const [dec, n, d] = choice(rng, decOptions);
+  const sig = `wk2_4_${dec}`;
+  const stem = `${dec}を既約分数にすると　□　です。`;
+  const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, n, d) }];
+  const hints = [
+    hintStep('why', '小数はまず「分母が10や100の分数」に直せる', `${dec}は、小数点の位から分母が決まる`, `<b>考え方：</b>小数第1位までなら分母10、第2位までなら分母100、第3位までなら分母1000にできる。`),
+    hintStep('do', '小数を分数の形にしてから、約分する', '共通の約数で分子・分母をわっていく', `<b>手順：</b><br>① ${dec}を分数の形にする<br>② 分子と分母の最大公約数を見つける<br>③ 最大公約数で分子・分母をわって約分する`),
+    hintStep('goal', `${fracStr(n,d)} になる`, 'これ以上約分できないところまで簡単にした形', `<b>見直しのコツ：</b>${fracStr(n,d)}を計算し直して${dec}にもどるか確かめよう。`)
+  ];
+  const solution = `${dec}を分数にして約分すると <b>${fracStr(n,d)}</b>`;
+  return { title: '週テスト7：小数を既約分数にする', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk2_5: 3つの数の大小比較（最も大きいものを選ぶ）
+function gen_wk2_5(rng) {
+  const decVal = choice(rng, [0.5,0.6,0.7,0.4,0.55,0.65,0.45,0.35]);
+  const fracs = [[2,3],[3,5],[4,7],[5,8],[3,4],[2,5],[5,6],[1,2]];
+  const [n1,d1] = choice(rng, fracs);
+  let [n2,d2] = choice(rng, fracs);
+  if (n2===n1 && d2===d1) { [n2,d2] = [d1,n1+d1]; }
+  const items = [
+    { label: 'ア', v: decVal, disp: `${decVal}` },
+    { label: 'イ', v: n1/d1, disp: fracHtml(n1,d1) },
+    { label: 'ウ', v: n2/d2, disp: fracHtml(n2,d2) },
+  ];
+  // 値がかぶらないように調整
+  if (Math.abs(items[0].v-items[1].v)<0.01 || Math.abs(items[0].v-items[2].v)<0.01 || Math.abs(items[1].v-items[2].v)<0.01) return gen_wk2_5(rng);
+  const maxItem = items.reduce((a,b)=> b.v>a.v?b:a);
+  const sig = `wk2_5_${decVal}_${n1}_${d1}_${n2}_${d2}`;
+  const stem = `3つの数 {${decVal}, ${fracHtml(n1,d1)}, ${fracHtml(n2,d2)}} の中で、最も大きい数は　□　です。`;
+  const fields = [{ id: 'a1', label: '答え（記号）', type: 'text', check: (v) => String(v||'').trim() === maxItem.label }];
+  const hints = [
+    hintStep('why', '分数と小数がまざっていると、そのままでは比べにくい', '形をそろえれば、大きさをひと目で比べられる', `<b>考え方：</b>分数を小数に直せば、3つとも同じ「小数」の形になり、そのまま比べられる。`),
+    hintStep('do', 'すべて小数に直してから比べる', `イ＝${fracHtml(n1,d1)}＝${Math.round(items[1].v*1000)/1000}、ウ＝${fracHtml(n2,d2)}＝${Math.round(items[2].v*1000)/1000}`, `<b>手順：</b><br>① イ・ウをそれぞれ分子÷分母で小数に直す<br>② アはそのままの小数<br>③ 3つの小数の大きさを比べる`),
+    hintStep('goal', `${maxItem.label} が最も大きい`, `ア＝${decVal}、イ＝${Math.round(items[1].v*1000)/1000}、ウ＝${Math.round(items[2].v*1000)/1000}`, `<b>見直しのコツ：</b>3つの数値を書き出して、本当に${maxItem.label}が一番大きいか確認しよう。`)
+  ];
+  const solution = `ア＝${decVal}、イ＝${Math.round(items[1].v*1000)/1000}、ウ＝${Math.round(items[2].v*1000)/1000}<br>最も大きいのは <b>${maxItem.label}</b>`;
+  return { title: '週テスト8：3つの数の大小比較', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk2_6: 分数のたし算
+function gen_wk2_6(rng) {
+  const bd = choice(rng, [3,4,5,6,8,9]);
+  const cd = choice(rng, [3,4,5,6,8,9].filter(d=>d!==bd));
+  const bn = randInt(rng, 1, bd-1);
+  const cn = randInt(rng, 1, cd-1);
+  if (gcd(bn,bd)!==1 || gcd(cn,cd)!==1) return gen_wk2_6(rng);
+  const L = lcm(bd,cd);
+  const [rn,rd] = reduceFrac(bn*(L/bd)+cn*(L/cd), L);
+  const sig = `wk2_6_${bn}_${bd}_${cn}_${cd}`;
+  const stem = `次の計算をしなさい。<br>${fracHtml(bn,bd)} ＋ ${fracHtml(cn,cd)} ＝`;
   const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, rn, rd) }];
-  const opName = op === '+' ? 'たし算' : op === '-' ? 'ひき算' : op === '×' ? 'かけ算' : 'わり算';
   const hints = [
-    hintStep('why',
-      `分数の${opName}には、それぞれのやり方（きまり）がある`,
-      op === '+' || op === '-' ? '分母がちがう分数どうしは、通分しないと計算できない' : op === '×' ? 'かけ算は通分しなくても、分子どうし・分母どうしをかけるだけでよい' : 'わり算は、わる分数をひっくり返してかけ算に直す',
-      `<b>考え方：</b>${op === '+' || op === '-' ? `${fracHtml(bn, bd)}と${fracHtml(cn, cd)}は分母がちがうので、まず同じ分母にそろえる（通分する）。` : op === '×' ? '分数×分数は、分子は分子どうし、分母は分母どうしをかければよい。' : '分数のわり算は、わる数の分子と分母を入れかえて、かけ算にして計算する。'}`
-    ),
-    hintStep('do',
-      op === '+' || op === '-' ? `${bd}と${cd}の最小公倍数で通分する` : op === '×' ? '分子どうし、分母どうしをそのままかける' : `${fracHtml(cn, cd)}を${fracHtml(cd, cn)}にしてかけ算にする`,
-      op === '+' || op === '-' ? `${bd}と${cd}の最小公倍数は${lcm(bd, cd)}` : op === '×' ? `${bn}×${cn}、${bd}×${cd}` : `${bn}×${cd}、${bd}×${cn}`,
-      op === '+' || op === '-'
-        ? `<b>手順：</b><br>① ${bd}と${cd}の最小公倍数${lcm(bd, cd)}を求める<br>② 両方の分数をその分母にそろえる<br>③ 分子どうしを${op === '+' ? 'たす' : 'ひく'}<br>④ 約分できるか確認する`
-        : op === '×'
-        ? `<b>手順：</b><br>① 分子どうしをかける：${bn}×${cn}<br>② 分母どうしをかける：${bd}×${cd}<br>③ 約分できるか確認する`
-        : `<b>手順：</b><br>① わる分数${fracHtml(cn, cd)}をひっくり返して${fracHtml(cd, cn)}にする<br>② かけ算の式（${fracHtml(bn, bd)}×${fracHtml(cd, cn)}）に直す<br>③ 分子どうし・分母どうしをかけて、約分する`
-    ),
-    hintStep('goal',
-      `${fracStr(rn, rd)} になる`,
-      '計算した結果を、これ以上約分できないところまで簡単にする',
-      `<b>見直しのコツ：</b>分子と分母に共通の約数が残っていないか、もう一度たしかめよう。`
-    )
+    hintStep('why', '分母がちがう分数どうしは、そのままたし算できない', '通分して分母をそろえれば計算できる', `<b>考え方：</b>${fracHtml(bn,bd)}と${fracHtml(cn,cd)}は分母がちがうので、まず同じ分母にそろえる。`),
+    hintStep('do', `${bd}と${cd}の最小公倍数で通分する`, `${bd}と${cd}の最小公倍数は${L}`, `<b>手順：</b><br>① ${bd}と${cd}の最小公倍数${L}を求める<br>② 両方の分数を分母${L}にそろえる<br>③ 分子どうしをたす<br>④ 約分できるか確認する`),
+    hintStep('goal', `${fracStr(rn,rd)} になる`, '計算した結果を、これ以上約分できないところまで簡単にする', `<b>見直しのコツ：</b>分子と分母に共通の約数が残っていないか確認しよう。`)
   ];
-  const solution = `${fracHtml(bn, bd)} ${op} ${fracHtml(cn, cd)} を計算すると<br>答えは <b>${fracStr(rn, rd)}</b>`;
-  return { title: '週テスト4：分数の四則計算', stem, fields, svg: '', hints, solution, sig };
+  const solution = `${fracHtml(bn,bd)} ＋ ${fracHtml(cn,cd)} を計算すると<br>答えは <b>${fracStr(rn,rd)}</b>`;
+  return { title: '週テスト9：分数のたし算', stem, fields, svg: '', hints, solution, sig };
 }
 
-// w1_3: 面積の等しい正方形と長方形
-function gen_w1_3(rng) {
-  const candidates = [6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
-  const side = choice(rng, candidates);
-  const area = side * side;
-  const divisors = [];
-  for (let w = 3; w <= area / 3; w++) { if (area % w === 0 && w !== side && area / w !== side && area / w <= 45) divisors.push(w); }
-  const rectW = choice(rng, divisors);
-  const rectH = area / rectW;
-  const sig = `w1_3_${side}_${rectW}`;
-  const stem = `1辺${side}cmの正方形と、たて${rectH}cmの長方形の面積が等しいとき、長方形の横の長さは何cmですか。`;
-  const fields = [{ id: 'a1', label: '横の長さ(cm)', type: 'int', check: (v) => intEq(v, rectW) }];
+// wk2_7: 帯分数のひき算
+function gen_wk2_7(rng) {
+  const d1 = choice(rng, [4,5,6,7,8,9]);
+  const d2 = choice(rng, [3,4,5].filter(d=>d!==d1));
+  const n1 = randInt(rng, 1, d1-1);
+  const n2 = randInt(rng, 1, d2-1);
+  if (gcd(n1,d1)!==1 || gcd(n2,d2)!==1) return gen_wk2_7(rng);
+  const whole = randInt(rng, 1, 3);
+  const L = lcm(d1,d2);
+  // 帯分数 whole + n1/d1 から n2/d2 をひく（n1/d1 < n2/d2 の場合はくり下がり）
+  let totalNumer = whole*L + n1*(L/d1) - n2*(L/d2);
+  if (totalNumer <= 0) return gen_wk2_7(rng);
+  const [rn, rd] = reduceFrac(totalNumer, L);
+  const sig = `wk2_7_${whole}_${n1}_${d1}_${n2}_${d2}`;
+  const stem = `次の計算をしなさい。<br>${whole} ${fracHtml(n1,d1)} － ${fracHtml(n2,d2)} ＝`;
+  const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, rn, rd) }];
   const hints = [
-    hintStep('why',
-      '面積が同じなら、「たて×横」の答えも同じになる',
-      '正方形の面積が分かれば、そこから長方形の横の長さが逆算できる',
-      `<b>考え方：</b>正方形の面積＝1辺×1辺。この面積と長方形の面積（たて×横）が等しいので、長方形の面積が先に分かる。`
-    ),
-    hintStep('do',
-      `① 正方形の面積を求める　② 長方形の面積÷たての長さ で横を求める`,
-      `${side}×${side}＝${area}（cm²）　→　${area}÷${rectH}`,
-      `<b>手順：</b><br>① 正方形の面積：${side}×${side}＝${area}（cm²）<br>② 長方形も面積は同じ${area}cm²<br>③ 横の長さ＝${area}÷${rectH}`
-    ),
-    hintStep('goal',
-      `${rectW}cm になる`,
-      `${area}÷${rectH}＝${rectW}`,
-      `<b>見直しのコツ：</b>${rectH}×${rectW}を計算して、正方形の面積${area}にもどるか確かめよう。`
-    )
+    hintStep('why', '帯分数のひき算も、分母をそろえてから計算する', '整数部分と分数部分に分けて考えることもできる', `<b>考え方：</b>${whole} ${fracHtml(n1,d1)}は「${whole}と${fracHtml(n1,d1)}」を合わせた数。分母をそろえてから計算する。`),
+    hintStep('do', `${d1}と${d2}の最小公倍数で通分してから、ひき算する`, `${d1}と${d2}の最小公倍数は${L}。くり下がりが必要なら仮分数に直す`, `<b>手順：</b><br>① ${whole} ${fracHtml(n1,d1)}を仮分数に直す<br>② ${d1}と${d2}の最小公倍数${L}で通分する<br>③ 分子どうしをひく<br>④ 約分できるか確認する`),
+    hintStep('goal', `${fracStr(rn,rd)} になる`, '計算した結果を、これ以上約分できないところまで簡単にする', `<b>見直しのコツ：</b>答えに${fracHtml(n2,d2)}をたして、${whole} ${fracHtml(n1,d1)}にもどるか確かめよう。`)
+  ];
+  const solution = `${whole} ${fracHtml(n1,d1)} － ${fracHtml(n2,d2)} を計算すると<br>答えは <b>${fracStr(rn,rd)}</b>`;
+  return { title: '週テスト10：帯分数のひき算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk2_8: 分数のかけ算
+function gen_wk2_8(rng) {
+  const bd = choice(rng, [3,4,5,6]); const bn = randInt(rng, 1, bd-1);
+  const cd = choice(rng, [4,5,7,8,9]); const cn = randInt(rng, 1, cd-1);
+  if (gcd(bn,bd)!==1 || gcd(cn,cd)!==1) return gen_wk2_8(rng);
+  const [rn,rd] = reduceFrac(bn*cn, bd*cd);
+  const sig = `wk2_8_${bn}_${bd}_${cn}_${cd}`;
+  const stem = `次の計算をしなさい。<br>${fracHtml(bn,bd)} × ${fracHtml(cn,cd)} ＝`;
+  const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, rn, rd) }];
+  const hints = [
+    hintStep('why', '分数のかけ算は通分しなくてよい', '分子は分子どうし、分母は分母どうしをかければよい', `<b>考え方：</b>${fracHtml(bn,bd)}×${fracHtml(cn,cd)}は、分子どうし・分母どうしをそれぞれかけるだけでよい。`),
+    hintStep('do', '分子どうし、分母どうしをかける', `${bn}×${cn}、${bd}×${cd}`, `<b>手順：</b><br>① 分子どうしをかける：${bn}×${cn}＝${bn*cn}<br>② 分母どうしをかける：${bd}×${cd}＝${bd*cd}<br>③ 約分できるか確認する`),
+    hintStep('goal', `${fracStr(rn,rd)} になる`, '計算した結果を、これ以上約分できないところまで簡単にする', `<b>見直しのコツ：</b>分子と分母に共通の約数が残っていないか確認しよう。`)
+  ];
+  const solution = `${fracHtml(bn,bd)} × ${fracHtml(cn,cd)} を計算すると<br>答えは <b>${fracStr(rn,rd)}</b>`;
+  return { title: '週テスト11：分数のかけ算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk2_9: 分数のわり算
+function gen_wk2_9(rng) {
+  const bd = choice(rng, [3,4,5,6,9]); const bn = randInt(rng, 1, bd-1);
+  const cd = choice(rng, [3,4,5,7]); const cn = randInt(rng, 1, cd-1);
+  if (gcd(bn,bd)!==1 || gcd(cn,cd)!==1) return gen_wk2_9(rng);
+  const [rn,rd] = reduceFrac(bn*cd, bd*cn);
+  const sig = `wk2_9_${bn}_${bd}_${cn}_${cd}`;
+  const stem = `次の計算をしなさい。<br>${fracHtml(bn,bd)} ÷ ${fracHtml(cn,cd)} ＝`;
+  const fields = [{ id: 'a1', label: '答え', type: 'frac', check: (v) => fracEq(v, rn, rd) }];
+  const hints = [
+    hintStep('why', '分数のわり算は、わる数をひっくり返してかけ算に直す', 'わり算のままでは計算しにくいので、かけ算に直す', `<b>考え方：</b>${fracHtml(bn,bd)}÷${fracHtml(cn,cd)}は、わる数${fracHtml(cn,cd)}を${fracHtml(cd,cn)}にひっくり返してかけ算にする。`),
+    hintStep('do', `${fracHtml(cn,cd)}を${fracHtml(cd,cn)}にしてかけ算にする`, `${bn}×${cd}、${bd}×${cn}`, `<b>手順：</b><br>① わる分数${fracHtml(cn,cd)}をひっくり返して${fracHtml(cd,cn)}にする<br>② かけ算の式（${fracHtml(bn,bd)}×${fracHtml(cd,cn)}）に直す<br>③ 分子どうし・分母どうしをかけて、約分する`),
+    hintStep('goal', `${fracStr(rn,rd)} になる`, '計算した結果を、これ以上約分できないところまで簡単にする', `<b>見直しのコツ：</b>答えに${fracHtml(cn,cd)}をかけて、${fracHtml(bn,bd)}にもどるか確かめよう。`)
+  ];
+  const solution = `${fracHtml(bn,bd)} ÷ ${fracHtml(cn,cd)} を計算すると<br>答えは <b>${fracStr(rn,rd)}</b>`;
+  return { title: '週テスト12：分数のわり算', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ---- 大問3：面積の等しい正方形と長方形（2問）----
+
+// wk3_1: 正方形の面積
+function gen_wk3_1(rng) {
+  const side = randInt(rng, 20, 60) / 10; // 2.0〜6.0cm刻み0.1
+  const area = Math.round(side*side*100)/100;
+  const sig = `wk3_1_${side}`;
+  const stem = `1辺が${side}cmの正方形があります。この正方形の面積は何cm²ですか。`;
+  const fields = [{ id: 'a1', label: '答え(cm²)', type: 'dec', check: (v) => decEq(v, area, 1e-6) }];
+  const hints = [
+    hintStep('why', '正方形の面積は「1辺×1辺」で求められる', '正方形は4辺の長さがすべて等しい四角形', `<b>考え方：</b>正方形の面積の公式は、1辺×1辺。`),
+    hintStep('do', `${side}×${side}を計算する`, '同じ数どうしのかけ算になる', `<b>手順：</b>① ${side}×${side}を計算する`),
+    hintStep('goal', `${area}cm² になる`, `${side}×${side}＝${area}`, `<b>見直しのコツ：</b>${area}を${side}でわって、もう一度${side}になるか確かめよう。`)
+  ];
+  const solution = `${side} × ${side} ＝ <b>${area}</b>（cm²）`;
+  return { title: '週テスト13：正方形の面積', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk3_2: 等積の長方形の横の長さ
+function gen_wk3_2(rng) {
+  const side = choice(rng, [3.5,4.2,4.5,5.4,6.0,6.5,7.2,3.6,4.8]);
+  const area = Math.round(side*side*100)/100;
+  const rectH = choice(rng, [2.5,3.0,3.6,4.0,4.5,5.0,6.0,7.5].filter(h => Math.abs(h-side)>0.5));
+  const rectW = Math.round((area/rectH)*100)/100;
+  if (!Number.isFinite(rectW) || rectW <= 0) return gen_wk3_2(rng);
+  const sig = `wk3_2_${side}_${rectH}`;
+  const stem = `1辺${side}cmの正方形と、たてが${rectH}cmで、この正方形と面積が等しい長方形があります。この長方形の横の長さは何cmですか。`;
+  const fields = [{ id: 'a1', label: '答え(cm)', type: 'dec', check: (v) => decEq(v, rectW, 1e-6) }];
+  const hints = [
+    hintStep('why', '面積が同じなら「たて×横」の答えも同じになる', '正方形の面積が分かれば、長方形の横の長さが逆算できる', `<b>考え方：</b>正方形の面積＝1辺×1辺。この面積と長方形の面積（たて×横）が等しい。`),
+    hintStep('do', `① 正方形の面積を求める　② 面積÷たて で横を求める`, `${side}×${side}＝${area}（cm²）　→　${area}÷${rectH}`, `<b>手順：</b><br>① 正方形の面積：${side}×${side}＝${area}（cm²）<br>② 長方形も面積は同じ${area}cm²<br>③ 横の長さ＝${area}÷${rectH}`),
+    hintStep('goal', `${rectW}cm になる`, `${area}÷${rectH}＝${rectW}`, `<b>見直しのコツ：</b>${rectH}×${rectW}を計算して、正方形の面積${area}にもどるか確かめよう。`)
   ];
   const solution = `正方形の面積＝${side}×${side}＝${area}（cm²）<br>長方形の面積も${area}cm²なので<br>${area}÷${rectH}＝<b>${rectW}</b>（cm）`;
-  return { title: '週テスト5：面積の等しい正方形と長方形', stem, fields, svg: '', hints, solution, sig };
+  return { title: '週テスト14：等積の長方形', stem, fields, svg: '', hints, solution, sig };
 }
 
-// w1_4: 単位量あたり（ペンキの量）と逆算
-function gen_w1_4(rng) {
-  const perArea = choice(rng, [0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75]);
-  const areaA = choice(rng, [4, 8, 10, 12, 20]);
-  const literA = Math.round(perArea * areaA * 100) / 100;
-  const targetArea = randInt(rng, 2, 10) * (areaA / 4);
-  const needed = Math.round(perArea * targetArea * 100) / 100;
-  const sig = `w1_4_${perArea}_${areaA}_${targetArea}`;
-  const stem = `${literA}Lのペンキで${areaA}m²のかべをぬれます。同じぬり方で${targetArea}m²のかべをぬるには、ペンキは何L必要ですか。`;
-  const fields = [{ id: 'a1', label: 'ペンキの量(L)', type: 'dec', check: (v) => decEq(v, needed, 1e-6) }];
+// ---- 大問4：単位量あたり（お茶の重さ、2問）----
+
+// wk4_1: 単位量を求める（小数L÷帯分数kg）
+function gen_wk4_1(rng) {
+  const perL = choice(rng, [0.5,0.6,0.75,0.8,1.2,1.25,1.5]);
+  const liters = choice(rng, [3,4,5,6,8]);
+  const totalWhole = Math.floor(perL*liters);
+  const totalFracVal = Math.round((perL*liters - totalWhole)*1000)/1000;
+  // 分数として表現できる形にする（分母を絞る）
+  const fracOptions = [[1,4],[1,2],[3,4],[1,5],[2,5],[3,5],[4,5],[1,3],[2,3],[1,8],[3,8],[5,8],[7,8]];
+  let matched = fracOptions.find(([n,d]) => Math.abs(n/d - totalFracVal) < 1e-6);
+  if (!matched) return gen_wk4_1(rng);
+  const [fn, fd] = matched;
+  const sig = `wk4_1_${liters}_${perL}`;
+  const stem = `${liters}Lの重さが${totalWhole} ${fracHtml(fn,fd)}kgのお茶があります。このお茶1Lの重さは何kgですか。`;
+  const fields = [{ id: 'a1', label: '答え(kg)', type: 'dec', check: (v) => decEq(v, perL, 1e-6) }];
   const hints = [
-    hintStep('why',
-      '「1m²あたりのペンキの量」が分かれば、どんな広さでも計算できる',
-      '同じぬり方なら、1m²あたりに使うペンキの量はいつも同じ',
-      `<b>考え方：</b>まず1m²あたり何Lのペンキを使うかを求めておけば、あとは広さが変わってもかけ算で必要な量が分かる。`
-    ),
-    hintStep('do',
-      `① 1m²あたりの量を求める　② ${targetArea}m²分をかける`,
-      `${literA}÷${areaA}＝1m²あたりの量　→　それに${targetArea}をかける`,
-      `<b>手順：</b><br>① ${literA}÷${areaA}＝${perArea}（L／m²）<br>② ${perArea}×${targetArea}＝${needed}（L）`
-    ),
-    hintStep('goal',
-      `${needed}L になる`,
-      `${perArea}×${targetArea}＝${needed}`,
-      `<b>見直しのコツ：</b>${needed}÷${targetArea}を計算して、1m²あたりの量${perArea}にもどるか確かめよう。`
-    )
+    hintStep('why', '「1Lあたりの重さ」が分かれば、どんな量にも対応できる', '全体の重さ÷全体の量＝1つあたりの量', `<b>考え方：</b>${liters}Lで${totalWhole} ${fracHtml(fn,fd)}kgという情報から、1Lあたりの重さを求める。`),
+    hintStep('do', `${totalWhole} ${fracHtml(fn,fd)}÷${liters}を計算する`, '帯分数を仮分数に直してから、小数で計算する', `<b>手順：</b><br>① ${totalWhole} ${fracHtml(fn,fd)}kgを小数に直す<br>② その小数を${liters}でわる`),
+    hintStep('goal', `${perL}kg になる`, `${totalWhole} ${fracHtml(fn,fd)}÷${liters}＝${perL}`, `<b>見直しのコツ：</b>${perL}×${liters}を計算して、もとの重さにもどるか確かめよう。`)
   ];
-  const solution = `1m²あたり　${literA}÷${areaA}＝${perArea}（L）<br>${perArea}×${targetArea}＝<b>${needed}</b>（L）`;
-  return { title: '週テスト6：単位量あたり（ペンキ）', stem, fields, svg: '', hints, solution, sig };
+  const solution = `${totalWhole} ${fracHtml(fn,fd)} ÷ ${liters} ＝ <b>${perL}</b>（kg）`;
+  return { title: '週テスト15：単位量あたり（1Lの重さ）', stem, fields, svg: '', hints, solution, sig };
 }
 
-// w1_5: 小数のわり算の文章題（あまりあり）
-function gen_w1_5(rng) {
-  const cut = choice(rng, [1.2, 1.5, 1.8, 2.1, 2.3, 2.4, 2.6]);
+// wk4_2: 単位量×分数で重さを求める
+function gen_wk4_2(rng) {
+  const perL = choice(rng, [0.5,0.6,0.75,0.8,1.2,1.25,1.5]);
+  const fracOptions = [[1,4],[1,2],[3,4],[1,5],[2,5],[3,5],[4,5],[1,8],[3,8],[5,8],[7,8]];
+  const [fn, fd] = choice(rng, fracOptions);
+  const wholePart = randInt(rng, 1, 3);
+  const targetL = wholePart + fn/fd;
+  const ans = Math.round(perL*targetL*1000)/1000;
+  const sig = `wk4_2_${perL}_${wholePart}_${fn}_${fd}`;
+  const stem = `1Lの重さが${perL}kgのお茶があります。このお茶${wholePart} ${fracHtml(fn,fd)}Lの重さは何kgですか。`;
+  const fields = [{ id: 'a1', label: '答え(kg)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
+  const hints = [
+    hintStep('why', '「1Lあたりの重さ」が分かれば、どんな量の重さも求められる', '1つあたりの量×個数（量）＝全体の量', `<b>考え方：</b>1Lあたり${perL}kgなので、${wholePart} ${fracHtml(fn,fd)}L分は、それに${wholePart} ${fracHtml(fn,fd)}をかければよい。`),
+    hintStep('do', `${perL}×${wholePart} ${fracHtml(fn,fd)}を計算する`, '帯分数を小数（または仮分数）に直してからかける', `<b>手順：</b><br>① ${wholePart} ${fracHtml(fn,fd)}Lを小数に直す<br>② ${perL}にその小数をかける`),
+    hintStep('goal', `${ans}kg になる`, `${perL}×${wholePart} ${fracHtml(fn,fd)}＝${ans}`, `<b>見直しのコツ：</b>${ans}÷${perL}を計算して、${wholePart} ${fracHtml(fn,fd)}にもどるか確かめよう。`)
+  ];
+  const solution = `${perL} × ${wholePart} ${fracHtml(fn,fd)} ＝ <b>${ans}</b>（kg）`;
+  return { title: '週テスト16：単位量あたり（重さを求める）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// ---- 大問5：小数のわり算文章題（リボン、2問）----
+
+// wk5_1: 等分除（あまりなし）
+function gen_wk5_1(rng) {
+  const parts = randInt(rng, 4, 9);
+  const perPart = choice(rng, [0.5,1.0,1.2,1.5,1.8,2.0,2.4]);
+  const total = Math.round(perPart*parts*10)/10;
+  const ans = Math.round((total/parts)*100)/100;
+  if (Math.abs(ans - perPart) > 1e-6) return gen_wk5_1(rng);
+  const sig = `wk5_1_${total}_${parts}`;
+  const stem = `${total}mのリボンがあります。もし、このリボンを${parts}等分したとすると、1本の長さは何mになりますか。`;
+  const fields = [{ id: 'a1', label: '答え(m)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
+  const hints = [
+    hintStep('why', '等分するときは、全体を等分する数でわる', '全体の長さ÷等分する数＝1本分の長さ', `<b>考え方：</b>${total}mを${parts}等分するので、${total}÷${parts}を計算すればよい。`),
+    hintStep('do', `${total}÷${parts}を計算する`, '小数÷整数の筆算をする', `<b>手順：</b>① ${total}÷${parts}を計算する`),
+    hintStep('goal', `${ans}m になる`, `${total}÷${parts}＝${ans}`, `<b>見直しのコツ：</b>${ans}×${parts}を計算して、${total}にもどるか確かめよう。`)
+  ];
+  const solution = `${total} ÷ ${parts} ＝ <b>${ans}</b>（m）`;
+  return { title: '週テスト17：小数のわり算（等分）', stem, fields, svg: '', hints, solution, sig };
+}
+
+// wk5_2: 包含除（あまりあり）
+function gen_wk5_2(rng) {
+  const cut = choice(rng, [1.2,1.3,1.5,1.8,2.1,2.3,2.4,2.6]);
   const count = randInt(rng, 4, 9);
-  const remBase = choice(rng, [0.3, 0.5, 0.7, 0.9, 1.1]);
-  let rem = remBase;
-  if (rem >= cut) rem = Math.round((rem % cut) * 10) / 10;
-  const total = Math.round((cut * count + rem) * 100) / 100;
-  const sig = `w1_5_${cut}_${count}_${rem}`;
-  const stem = `長さ${total}mのリボンを、${cut}mずつに切っていきます。${cut}mのリボンは何本とれて、何mあまりますか。`;
-  const fields = [
-    { id: 'a1', label: 'とれる本数(本)', type: 'int', check: (v) => intEq(v, count) },
-    { id: 'a2', label: 'あまり(m)', type: 'dec', check: (v) => decEq(v, rem, 1e-6) },
-  ];
+  const rem = choice(rng, [0.3,0.5,0.7,0.9,1.0].filter(r => r < cut));
+  const total = Math.round((cut*count + rem)*100)/100;
+  const sig = `wk5_2_${cut}_${count}_${rem}`;
+  const stem = `${total}mのリボンがあります。もし、このリボンから${cut}mのリボンをできるだけ多く切り取ったとすると、${cut}mのリボンは何本できて、何mあまりますか。（本数を答えなさい）`;
+  const fields = [{ id: 'a1', label: 'できる本数(本)', type: 'int', check: (v) => intEq(v, count) }];
   const hints = [
-    hintStep('why',
-      'わり算の「あまり」は、わる数より必ず小さくなる',
-      '小数のわり算でも、整数のときと同じように商とあまりが出る',
-      `<b>考え方：</b>${total}mの中に${cut}mが何回とれるかを考える。ぴったり割り切れないときは「あまり」が出る。`
-    ),
-    hintStep('do',
-      `${total}÷${cut}を計算して、整数の部分が本数、あまりがそのままあまりの長さになる`,
-      `${total}÷${cut}＝${count}あまり${rem}`,
-      `<b>手順：</b><br>① ${total}÷${cut}を計算する<br>② 商の整数部分（${count}）が本数<br>③ わり切れなかった残りの長さ（${rem}m）があまり`
-    ),
-    hintStep('goal',
-      `${count}本 とれて ${rem}m あまる`,
-      `${cut}×${count}＝${Math.round(cut * count * 100) / 100}、${total}－${Math.round(cut * count * 100) / 100}＝${rem}`,
-      `<b>見直しのコツ：</b>（${cut}×本数）＋あまり＝${total}になるか、たし算で確かめよう。`
-    )
+    hintStep('why', '「できるだけ多く切り取る」は、わり算の商（整数部分）を求めること', 'あまりが出るときは、商とあまりに分かれる', `<b>考え方：</b>${total}mの中に${cut}mが何回とれるかを考える。`),
+    hintStep('do', `${total}÷${cut}を計算する`, '商の整数部分が本数になる', `<b>手順：</b><br>① ${total}÷${cut}を計算する<br>② 商の整数部分（${count}）が本数になる`),
+    hintStep('goal', `${count}本 になる`, `${total}÷${cut}＝${count}あまり${rem}`, `<b>見直しのコツ：</b>${cut}×${count}を計算し、${total}との差が${cut}より小さいか確かめよう。`)
   ];
-  const solution = `${total}÷${cut}＝${count}あまり${rem}<br>${cut}×${count}＝${Math.round(cut * count * 100) / 100}<br>${total}－${Math.round(cut * count * 100) / 100}＝${rem}<br>答えは <b>${count}本</b>とれて<b>${rem}m</b>あまる`;
-  return { title: '週テスト7：小数のわり算（あまり）', stem, fields, svg: '', hints, solution, sig };
+  const solution = `${total}÷${cut}＝${count}あまり${rem}<br>できるリボンは <b>${count}本</b>`;
+  return { title: '週テスト18：小数のわり算（あまり）', stem, fields, svg: '', hints, solution, sig };
 }
 
-// w1_6: 計算順序をまちがえた逆算（分数の混じった式）
-function gen_w1_6(rng) {
-  const b = choice(rng, [2, 4, 5]);
-  const aMult = randInt(rng, 1, 6);
-  const a = aMult * b;
-  const x = randInt(rng, 2, 9);
-  const wrongAns = x + a / b;
-  const correctAns = (x + a) / b;
-  const sig = `w1_6_${a}_${b}_${x}`;
-  const stem = `ある数に${a}をたしてから${b}でわるところを、まちがえて${a}を${b}でわってからある数にたしてしまい、答えが${wrongAns}になりました。正しく計算した答えを求めなさい。`;
-  const fields = [{ id: 'a1', label: '正しい答え', type: 'dec', check: (v) => decEq(v, correctAns, 1e-6) }];
+// ---- 大問6：計算順序をまちがえた逆算（2問）----
+
+// wk6_1: ある数を求める
+function gen_wk6_1(rng) {
+  const fn = choice(rng, [1,2,3]);
+  const fd = choice(rng, [4,3,5].filter(d=>d>fn));
+  const sub = choice(rng, [0.2,0.3,0.4,0.5]);
+  // 正しい式：x*(fn/fd) - sub   まちがえた式：(x-sub)*(fn/fd)
+  // まちがえた式の答え wrongAns が与えられたとき、xを求める
+  const x = randInt(rng, 4, 12) * fd; // fd の倍数にして計算がきれいになるように
+  const wrongVal = Math.round((x - sub) * (fn/fd) * 1000) / 1000;
+  const sig = `wk6_1_${fn}_${fd}_${sub}_${x}`;
+  const stem = `ある数に${fracHtml(fn,fd)}をかけてから${sub}をひく計算を、まちがえて、ある数から${sub}をひいて${fracHtml(fn,fd)}をかけてしまったので、答えが${wrongVal}になりました。ある数はいくつですか。`;
+  const fields = [{ id: 'a1', label: 'ある数', type: 'dec', check: (v) => decEq(v, x, 1e-6) }];
   const hints = [
-    hintStep('why',
-      '「ある数」が分からないと、正しい計算をやり直せない',
-      'まず、まちがえた計算から「ある数」がいくつだったかを逆算する必要がある',
-      `<b>考え方：</b>まちがえた式は「ある数＋（${a}÷${b}）＝${wrongAns}」。この式を逆にたどれば、ある数が求められる。`
-    ),
-    hintStep('do',
-      `まちがえた式を逆算して「ある数」を求める`,
-      `${a}÷${b}＝${a / b}、ある数＝${wrongAns}－${a / b}`,
-      `<b>手順：</b><br>① まちがえた式：ある数＋${a}÷${b}＝${wrongAns}<br>② ${a}÷${b}＝${a / b}を計算する<br>③ ある数＝${wrongAns}－${a / b}＝${x}<br>④ 求めた「ある数」を使って、正しい順番（先に＋${a}、次に÷${b}）で計算し直す`
-    ),
-    hintStep('goal',
-      `${correctAns} になる`,
-      `(${x}＋${a})÷${b}＝${correctAns}`,
-      `<b>見直しのコツ：</b>正しい答え×${b}－${a}を計算して、「ある数」（${x}）にもどるか確認しよう。`
-    )
+    hintStep('why', 'まちがえた式から逆にたどれば「ある数」が分かる', 'まちがえた式は「（ある数－' + sub + '）×' + fracStr(fn,fd) + '＝' + wrongVal + '」', `<b>考え方：</b>まちがえた式を逆算すれば、ある数がいくつだったか求められる。`),
+    hintStep('do', 'まちがえた式を逆にたどる', `${wrongVal}÷${fracHtml(fn,fd)}＝ある数－${sub}`, `<b>手順：</b><br>① まちがえた式：（ある数－${sub}）×${fracHtml(fn,fd)}＝${wrongVal}<br>② 両辺を${fracHtml(fn,fd)}でわる：ある数－${sub}＝${wrongVal}÷${fn}/${fd}<br>③ ${sub}をたして、ある数を求める`),
+    hintStep('goal', `${x} になる`, `（${x}－${sub}）×${fracStr(fn,fd)}＝${wrongVal}`, `<b>見直しのコツ：</b>求めた「ある数」でまちがえた式を計算し直し、${wrongVal}にもどるか確かめよう。`)
   ];
-  const solution = `まちがえた式：ある数＋${a}÷${b}＝${wrongAns}<br>${a}÷${b}＝${a / b}<br>ある数＝${wrongAns}－${a / b}＝${x}<br>正しい式：（ある数＋${a}）÷${b}<br>（${x}＋${a}）÷${b}＝<b>${correctAns}</b>`;
-  return { title: '週テスト8：計算順序の逆算（分数）', stem, fields, svg: '', hints, solution, sig };
+  const solution = `まちがえた式：（ある数－${sub}）×${fracStr(fn,fd)}＝${wrongVal}<br>ある数－${sub}＝${wrongVal}÷${fracStr(fn,fd)}<br>ある数＝<b>${x}</b>`;
+  return { title: '週テスト19：計算順序の逆算（ある数）', stem, fields, svg: '', hints, solution, sig };
 }
+
+// wk6_2: 正しく計算した答えを求める
+function gen_wk6_2(rng) {
+  const fn = choice(rng, [1,2,3]);
+  const fd = choice(rng, [4,3,5].filter(d=>d>fn));
+  const sub = choice(rng, [0.2,0.3,0.4,0.5]);
+  const x = randInt(rng, 4, 12) * fd;
+  const wrongVal = Math.round((x - sub) * (fn/fd) * 1000) / 1000;
+  const correctVal = Math.round((x * (fn/fd) - sub) * 1000) / 1000;
+  const sig = `wk6_2_${fn}_${fd}_${sub}_${x}`;
+  const stem = `ある数に${fracHtml(fn,fd)}をかけてから${sub}をひく計算を、まちがえて、ある数から${sub}をひいて${fracHtml(fn,fd)}をかけてしまったので、答えが${wrongVal}になりました。正しく計算すると、答えはいくつですか。`;
+  const fields = [{ id: 'a1', label: '正しい答え', type: 'dec', check: (v) => decEq(v, correctVal, 1e-6) }];
+  const hints = [
+    hintStep('why', '「ある数」が分かれば、正しい順番で計算し直せる', 'まず、まちがえた計算から「ある数」を求める必要がある', `<b>考え方：</b>まちがえた式（ある数－${sub}）×${fracStr(fn,fd)}＝${wrongVal}から、ある数を先に求める。`),
+    hintStep('do', 'ある数を求めてから、正しい順番で計算し直す', `ある数＝${x}。正しい式は「ある数×${fracHtml(fn,fd)}－${sub}」`, `<b>手順：</b><br>① まちがえた式からある数（${x}）を求める<br>② 正しい式（ある数×${fracHtml(fn,fd)}－${sub}）に${x}をあてはめて計算する`),
+    hintStep('goal', `${correctVal} になる`, `${x}×${fracStr(fn,fd)}－${sub}＝${correctVal}`, `<b>見直しのコツ：</b>${correctVal}＋${sub}を${fracStr(fn,fd)}でわって、ある数（${x}）にもどるか確かめよう。`)
+  ];
+  const solution = `まちがえた式から、ある数＝${x}<br>正しい式：${x}×${fracStr(fn,fd)}－${sub}＝<b>${correctVal}</b>`;
+  return { title: '週テスト20：計算順序の逆算（正しい答え）', stem, fields, svg: '', hints, solution, sig };
+}
+
 
 const GEN = {
   k1_conv: gen_k1_conv,
@@ -2127,9 +2223,14 @@ const GEN = {
   p4_1: gen_p4_1, p4_2: gen_p4_2, p4_3: gen_p4_3, p4_4: gen_p4_4, p4_5: gen_p4_5,
   // 第5回 総合 練習問題
   t5_1: gen_t5_1, t5_2: gen_t5_2, t5_3: gen_t5_3, t5_4: gen_t5_4, t5_5: gen_t5_5,
-  // 第1回 週テスト（オリジナル問題）
-  w1_1: gen_w1_1, w1_2: gen_w1_2, w1_2b: gen_w1_2b, w1_2c: gen_w1_2c,
-  w1_3: gen_w1_3, w1_4: gen_w1_4, w1_5: gen_w1_5, w1_6: gen_w1_6,
+  // 第1回 週テスト（オリジナル問題、大問1〜6・全20問）
+  wk1_1: gen_wk1_1, wk1_2: gen_wk1_2, wk1_3: gen_wk1_3,
+  wk2_1: gen_wk2_1, wk2_2: gen_wk2_2, wk2_3: gen_wk2_3, wk2_4: gen_wk2_4, wk2_5: gen_wk2_5,
+  wk2_6: gen_wk2_6, wk2_7: gen_wk2_7, wk2_8: gen_wk2_8, wk2_9: gen_wk2_9,
+  wk3_1: gen_wk3_1, wk3_2: gen_wk3_2,
+  wk4_1: gen_wk4_1, wk4_2: gen_wk4_2,
+  wk5_1: gen_wk5_1, wk5_2: gen_wk5_2,
+  wk6_1: gen_wk6_1, wk6_2: gen_wk6_2,
 };
 
 const PROBLEMS = [
@@ -2170,11 +2271,19 @@ const PROBLEMS = [
   { key: 't5_1', round: 5, cat: 'practice', no: 1 }, { key: 't5_2', round: 5, cat: 'practice', no: 2 },
   { key: 't5_3', round: 5, cat: 'practice', no: 3 }, { key: 't5_4', round: 5, cat: 'practice', no: 4 },
   { key: 't5_5', round: 5, cat: 'practice', no: 5 },
-  // 第1回 週テスト（オリジナル問題／教材の問題そのままではなく、同じ単元・同じ難易度で数字を変えた問題）
-  { key: 'w1_1', round: 1, cat: 'weektest', no: 1 }, { key: 'w1_2', round: 1, cat: 'weektest', no: 2 },
-  { key: 'w1_2b', round: 1, cat: 'weektest', no: 3 }, { key: 'w1_2c', round: 1, cat: 'weektest', no: 4 },
-  { key: 'w1_3', round: 1, cat: 'weektest', no: 5 }, { key: 'w1_4', round: 1, cat: 'weektest', no: 6 },
-  { key: 'w1_5', round: 1, cat: 'weektest', no: 7 }, { key: 'w1_6', round: 1, cat: 'weektest', no: 8 },
+  // 第1回 週テスト（オリジナル問題／教材の問題そのままではなく、同じ大問構成・同じ難易度で数字を変えた問題）
+  // 大問1(3問)・大問2(9問)・大問3(2問)・大問4(2問)・大問5(2問)・大問6(2問) = 計20問
+  { key: 'wk1_1', round: 1, cat: 'weektest', no: 1 }, { key: 'wk1_2', round: 1, cat: 'weektest', no: 2 },
+  { key: 'wk1_3', round: 1, cat: 'weektest', no: 3 },
+  { key: 'wk2_1', round: 1, cat: 'weektest', no: 4 }, { key: 'wk2_2', round: 1, cat: 'weektest', no: 5 },
+  { key: 'wk2_3', round: 1, cat: 'weektest', no: 6 }, { key: 'wk2_4', round: 1, cat: 'weektest', no: 7 },
+  { key: 'wk2_5', round: 1, cat: 'weektest', no: 8 }, { key: 'wk2_6', round: 1, cat: 'weektest', no: 9 },
+  { key: 'wk2_7', round: 1, cat: 'weektest', no: 10 }, { key: 'wk2_8', round: 1, cat: 'weektest', no: 11 },
+  { key: 'wk2_9', round: 1, cat: 'weektest', no: 12 },
+  { key: 'wk3_1', round: 1, cat: 'weektest', no: 13 }, { key: 'wk3_2', round: 1, cat: 'weektest', no: 14 },
+  { key: 'wk4_1', round: 1, cat: 'weektest', no: 15 }, { key: 'wk4_2', round: 1, cat: 'weektest', no: 16 },
+  { key: 'wk5_1', round: 1, cat: 'weektest', no: 17 }, { key: 'wk5_2', round: 1, cat: 'weektest', no: 18 },
+  { key: 'wk6_1', round: 1, cat: 'weektest', no: 19 }, { key: 'wk6_2', round: 1, cat: 'weektest', no: 20 },
 ];
 
 
