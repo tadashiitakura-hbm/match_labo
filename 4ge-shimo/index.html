@@ -1843,23 +1843,40 @@ function gen_wk1_3(rng) {
 // ---- 大問2：小数・分数の計算と変換（9問）----
 
 // wk2_1: 小数×整数
+const WK2_1_SCENARIOS = [
+  { obj: 'ひも', unit: 'm', counter: '本', qty: '長さ' },
+  { obj: 'テープ', unit: 'm', counter: '本', qty: '長さ' },
+  { obj: 'リボン', unit: 'm', counter: '本', qty: '長さ' },
+  { obj: 'ジュース', unit: 'dL', counter: '本', qty: 'かさ' },
+];
 function gen_wk2_1(rng) {
   const dec = randInt(rng,1,9)/10;
   const n = randInt(rng, 3, 9);
   const ans = Math.round(dec*n*100)/100;
   const sig = `wk2_1_${dec}_${n}`;
-  const stem = `1本${dec}mのひもが${n}本あります。この${n}本のひもの長さの合計は　□　mです。`;
-  const fields = [{ id: 'a1', label: '答え(m)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
+  const sc = choice(rng, WK2_1_SCENARIOS);
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `1${sc.counter}${dec}${sc.unit}の${sc.obj}が${n}${sc.counter}あります。この${n}${sc.counter}の${sc.obj}の${sc.qty}の合計は　□　${sc.unit}です。`;
+  else if (style === 1) stem = `1${sc.counter}${dec}${sc.unit}の${sc.obj}が${n}${sc.counter}あります。${sc.obj}${n}${sc.counter}分の${sc.qty}の合計は何${sc.unit}ですか。`;
+  else stem = `${dec}${sc.unit}の${sc.obj}が${n}${sc.counter}あります。全部の${sc.qty}の合計を求めなさい。`;
+  const fields = [{ id: 'a1', label: `答え(${sc.unit})`, type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
   const hints = [
-    hintStep('why', '同じ長さのものが何本分あるかは、かけ算で求められる', '1本分の長さ×本数＝合計の長さ', `<b>考え方：</b>1本${dec}mの${n}本分は、${dec}×${n}で求められる。`),
+    hintStep('why', `同じ${sc.qty}のものが何${sc.counter}分あるかは、かけ算で求められる`, `1${sc.counter}分の${sc.qty}×${sc.counter}数＝合計の${sc.qty}`, `<b>考え方：</b>1${sc.counter}${dec}${sc.unit}の${n}${sc.counter}分は、${dec}×${n}で求められる。`),
     hintStep('do', `${dec}×${n}を計算する`, '小数×整数は、整数のかけ算をしてから小数点をうつ', `<b>手順：</b><br>① ${dec}を10倍して整数にする（${dec*10}）<br>② ${dec*10}×${n}＝${dec*10*n}<br>③ 10でわって小数点をもどす`),
-    hintStep('goal', `${ans}m になる`, `${dec}×${n}＝${ans}`, `<b>見直しのコツ：</b>${ans}÷${n}を計算して、${dec}にもどるか確かめよう。`)
+    hintStep('goal', `${ans}${sc.unit} になる`, `${dec}×${n}＝${ans}`, `<b>見直しのコツ：</b>${ans}÷${n}を計算して、${dec}にもどるか確かめよう。`)
   ];
-  const solution = `${dec} × ${n} ＝ <b>${ans}</b>（m）`;
+  const solution = `${dec} × ${n} ＝ <b>${ans}</b>（${sc.unit}）`;
   return { title: '週テスト4：小数×整数', stem, fields, svg: '', hints, solution, sig };
 }
 
 // wk2_2: 小数÷整数（等分除、あまりなし）
+const WK2_2_SCENARIOS = [
+  { obj: 'おもり', unit: 'g', counter: '個' },
+  { obj: 'じゃがいも', unit: 'g', counter: '個' },
+  { obj: 'クッキー', unit: 'g', counter: '枚' },
+  { obj: '積み木', unit: 'g', counter: '個' },
+];
 function gen_wk2_2(rng) {
   const n = randInt(rng, 3, 8);
   const oneWeight = randInt(rng, 2, 20)/10 + randInt(rng,0,3);
@@ -1867,14 +1884,19 @@ function gen_wk2_2(rng) {
   const ans = Math.round((total/n)*100)/100;
   if (!Number.isFinite(ans) || Math.abs(ans*n - total) > 1e-6) return gen_wk2_2(rng);
   const sig = `wk2_2_${n}_${total}`;
-  const stem = `同じおもり${n}個の重さをはかったところ、${total}gありました。このおもり1個の重さは　□　gです。`;
-  const fields = [{ id: 'a1', label: '答え(g)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
+  const sc = choice(rng, WK2_2_SCENARIOS);
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `同じ${sc.obj}${n}${sc.counter}の重さをはかったところ、${total}${sc.unit}ありました。この${sc.obj}1${sc.counter}の重さは　□　${sc.unit}です。`;
+  else if (style === 1) stem = `重さの等しい${sc.obj}が${n}${sc.counter}あり、全部で${total}${sc.unit}でした。${sc.obj}1${sc.counter}の重さは何${sc.unit}ですか。`;
+  else stem = `${sc.obj}${n}${sc.counter}の重さの合計は${total}${sc.unit}です。同じ重さだとすると、1${sc.counter}分の重さを求めなさい。`;
+  const fields = [{ id: 'a1', label: `答え(${sc.unit})`, type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
   const hints = [
-    hintStep('why', '全部で同じ重さのものは、等分するわり算で1個分がわかる', '合計の重さ÷個数＝1個あたりの重さ', `<b>考え方：</b>${n}個で${total}gなので、${total}を${n}等分すれば1個分の重さがわかる。`),
+    hintStep('why', '全部で同じ重さのものは、等分するわり算で1つ分がわかる', '合計の重さ÷個数＝1つあたりの重さ', `<b>考え方：</b>${sc.obj}${n}${sc.counter}で${total}${sc.unit}なので、${total}を${n}等分すれば1${sc.counter}分の重さがわかる。`),
     hintStep('do', `${total}÷${n}を計算する`, '小数÷整数は、整数のわり算と同じように計算し、商の小数点をそろえる', `<b>手順：</b><br>① ${total}÷${n}を筆算で計算する<br>② 小数点は、わられる数の小数点にそろえてうつ`),
-    hintStep('goal', `${ans}g になる`, `${total}÷${n}＝${ans}`, `<b>見直しのコツ：</b>${ans}×${n}を計算して、${total}にもどるか確かめよう。`)
+    hintStep('goal', `${ans}${sc.unit} になる`, `${total}÷${n}＝${ans}`, `<b>見直しのコツ：</b>${ans}×${n}を計算して、${total}にもどるか確かめよう。`)
   ];
-  const solution = `${total} ÷ ${n} ＝ <b>${ans}</b>（g）`;
+  const solution = `${total} ÷ ${n} ＝ <b>${ans}</b>（${sc.unit}）`;
   return { title: '週テスト5：小数÷整数', stem, fields, svg: '', hints, solution, sig };
 }
 
@@ -2028,11 +2050,18 @@ function gen_wk2_9(rng) {
 // ---- 大問3：面積の等しい正方形と長方形（2問）----
 
 // wk3_1: 正方形の面積
+const WK3_1_OBJS = ['正方形', '色紙', 'タイル', 'ハンカチ'];
 function gen_wk3_1(rng) {
   const side = randInt(rng, 20, 60) / 10; // 2.0〜6.0cm刻み0.1
   const area = Math.round(side*side*100)/100;
   const sig = `wk3_1_${side}`;
-  const stem = `1辺が${side}cmの正方形があります。この正方形の面積は何cm²ですか。`;
+  const obj = choice(rng, WK3_1_OBJS);
+  const style = randInt(rng, 0, 2);
+  const shapeDesc = obj === '正方形' ? '正方形' : `正方形の${obj}`;
+  let stem;
+  if (style === 0) stem = `1辺が${side}cmの${shapeDesc}があります。この${obj === '正方形' ? '正方形' : obj}の面積は何cm²ですか。`;
+  else if (style === 1) stem = `1辺の長さが${side}cmの${shapeDesc}の面積は　□　cm²です。`;
+  else stem = `1辺${side}cmの${shapeDesc}があります。この${obj === '正方形' ? '正方形' : obj}の面積を求めなさい。`;
   const fields = [{ id: 'a1', label: '答え(cm²)', type: 'dec', check: (v) => decEq(v, area, 1e-6) }];
   const hints = [
     hintStep('why', '正方形の面積は「1辺×1辺」で求められる', '正方形は4辺の長さがすべて等しい四角形', `<b>考え方：</b>正方形の面積の公式は、1辺×1辺。`),
@@ -2044,6 +2073,7 @@ function gen_wk3_1(rng) {
 }
 
 // wk3_2: 等積の長方形の横の長さ
+const WK3_2_OBJS = ['正方形', '色紙', '花だん'];
 function gen_wk3_2(rng) {
   const side = choice(rng, [3.5,4.2,4.5,5.4,6.0,6.5,7.2,3.6,4.8]);
   const area = Math.round(side*side*100)/100;
@@ -2051,10 +2081,16 @@ function gen_wk3_2(rng) {
   const rectW = Math.round((area/rectH)*100)/100;
   if (!Number.isFinite(rectW) || rectW <= 0) return gen_wk3_2(rng);
   const sig = `wk3_2_${side}_${rectH}`;
-  const stem = `1辺${side}cmの正方形と、たてが${rectH}cmで、この正方形と面積が等しい長方形があります。この長方形の横の長さは何cmですか。`;
+  const obj = choice(rng, WK3_2_OBJS);
+  const shapeDesc = obj === '正方形' ? '正方形' : `正方形の${obj}`;
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `1辺${side}cmの${shapeDesc}と、たてが${rectH}cmで、この${obj === '正方形' ? '正方形' : obj}と面積が等しい長方形があります。この長方形の横の長さは何cmですか。`;
+  else if (style === 1) stem = `1辺${side}cmの${shapeDesc}があります。これと面積が等しく、たてが${rectH}cmの長方形の横の長さは　□　cmです。`;
+  else stem = `1辺${side}cmの${shapeDesc}と面積が等しい長方形があります。この長方形のたてが${rectH}cmのとき、横の長さを求めなさい。`;
   const fields = [{ id: 'a1', label: '答え(cm)', type: 'dec', check: (v) => decEq(v, rectW, 1e-6) }];
   const hints = [
-    hintStep('why', '面積が同じなら「たて×横」の答えも同じになる', '正方形の面積が分かれば、長方形の横の長さが逆算できる', `<b>考え方：</b>正方形の面積＝1辺×1辺。この面積と長方形の面積（たて×横）が等しい。`),
+    hintStep('why', '面積が同じなら「たて×横」の答えも同じになる', `${shapeDesc}の面積が分かれば、長方形の横の長さが逆算できる`, `<b>考え方：</b>正方形の面積＝1辺×1辺。この面積と長方形の面積（たて×横）が等しい。`),
     hintStep('do', `① 正方形の面積を求める　② 面積÷たて で横を求める`, `${side}×${side}＝${area}（cm²）　→　${area}÷${rectH}`, `<b>手順：</b><br>① 正方形の面積：${side}×${side}＝${area}（cm²）<br>② 長方形も面積は同じ${area}cm²<br>③ 横の長さ＝${area}÷${rectH}`),
     hintStep('goal', `${rectW}cm になる`, `${area}÷${rectH}＝${rectW}`, `<b>見直しのコツ：</b>${rectH}×${rectW}を計算して、正方形の面積${area}にもどるか確かめよう。`)
   ];
@@ -2065,6 +2101,7 @@ function gen_wk3_2(rng) {
 // ---- 大問4：単位量あたり（お茶の重さ、2問）----
 
 // wk4_1: 単位量を求める（小数L÷帯分数kg）
+const WK4_LIQUIDS = ['お茶', 'ジュース', '牛乳', '油'];
 function gen_wk4_1(rng) {
   const perL = choice(rng, [0.5,0.6,0.75,0.8,1.2,1.25,1.5]);
   const liters = choice(rng, [3,4,5,6,8]);
@@ -2076,7 +2113,12 @@ function gen_wk4_1(rng) {
   if (!matched) return gen_wk4_1(rng);
   const [fn, fd] = matched;
   const sig = `wk4_1_${liters}_${perL}`;
-  const stem = `${liters}Lの重さが${totalWhole} ${fracHtml(fn,fd)}kgのお茶があります。このお茶1Lの重さは何kgですか。`;
+  const liquid = choice(rng, WK4_LIQUIDS);
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `${liters}Lの重さが${totalWhole} ${fracHtml(fn,fd)}kgの${liquid}があります。この${liquid}1Lの重さは何kgですか。`;
+  else if (style === 1) stem = `${liquid}が${liters}Lあり、重さは${totalWhole} ${fracHtml(fn,fd)}kgです。この${liquid}1Lあたりの重さは　□　kgです。`;
+  else stem = `${liters}Lで${totalWhole} ${fracHtml(fn,fd)}kgの${liquid}があります。1Lあたりの重さを求めなさい。`;
   const fields = [{ id: 'a1', label: '答え(kg)', type: 'dec', check: (v) => decEq(v, perL, 1e-6) }];
   const hints = [
     hintStep('why', '「1Lあたりの重さ」が分かれば、どんな量にも対応できる', '全体の重さ÷全体の量＝1つあたりの量', `<b>考え方：</b>${liters}Lで${totalWhole} ${fracHtml(fn,fd)}kgという情報から、1Lあたりの重さを求める。`),
@@ -2096,7 +2138,12 @@ function gen_wk4_2(rng) {
   const targetL = wholePart + fn/fd;
   const ans = Math.round(perL*targetL*1000)/1000;
   const sig = `wk4_2_${perL}_${wholePart}_${fn}_${fd}`;
-  const stem = `1Lの重さが${perL}kgのお茶があります。このお茶${wholePart} ${fracHtml(fn,fd)}Lの重さは何kgですか。`;
+  const liquid = choice(rng, WK4_LIQUIDS);
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `1Lの重さが${perL}kgの${liquid}があります。この${liquid}${wholePart} ${fracHtml(fn,fd)}Lの重さは何kgですか。`;
+  else if (style === 1) stem = `${liquid}は1Lで${perL}kgです。この${liquid}${wholePart} ${fracHtml(fn,fd)}L分の重さは　□　kgです。`;
+  else stem = `1Lあたり${perL}kgの${liquid}が${wholePart} ${fracHtml(fn,fd)}Lあります。この重さを求めなさい。`;
   const fields = [{ id: 'a1', label: '答え(kg)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
   const hints = [
     hintStep('why', '「1Lあたりの重さ」が分かれば、どんな量の重さも求められる', '1つあたりの量×個数（量）＝全体の量', `<b>考え方：</b>1Lあたり${perL}kgなので、${wholePart} ${fracHtml(fn,fd)}L分は、それに${wholePart} ${fracHtml(fn,fd)}をかければよい。`),
@@ -2110,6 +2157,7 @@ function gen_wk4_2(rng) {
 // ---- 大問5：小数のわり算文章題（リボン、2問）----
 
 // wk5_1: 等分除（あまりなし）
+const WK5_OBJS = ['リボン', 'ひも', 'テープ', 'ロープ'];
 function gen_wk5_1(rng) {
   const parts = randInt(rng, 4, 9);
   const perPart = choice(rng, [0.5,1.0,1.2,1.5,1.8,2.0,2.4]);
@@ -2117,7 +2165,12 @@ function gen_wk5_1(rng) {
   const ans = Math.round((total/parts)*100)/100;
   if (Math.abs(ans - perPart) > 1e-6) return gen_wk5_1(rng);
   const sig = `wk5_1_${total}_${parts}`;
-  const stem = `${total}mのリボンがあります。もし、このリボンを${parts}等分したとすると、1本の長さは何mになりますか。`;
+  const obj = choice(rng, WK5_OBJS);
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `${total}mの${obj}があります。もし、この${obj}を${parts}等分したとすると、1本の長さは何mになりますか。`;
+  else if (style === 1) stem = `長さ${total}mの${obj}を${parts}等分すると、1本分の長さは　□　mです。`;
+  else stem = `${total}mの${obj}を${parts}本に等分します。1本分の長さを求めなさい。`;
   const fields = [{ id: 'a1', label: '答え(m)', type: 'dec', check: (v) => decEq(v, ans, 1e-6) }];
   const hints = [
     hintStep('why', '等分するときは、全体を等分する数でわる', '全体の長さ÷等分する数＝1本分の長さ', `<b>考え方：</b>${total}mを${parts}等分するので、${total}÷${parts}を計算すればよい。`),
@@ -2135,14 +2188,19 @@ function gen_wk5_2(rng) {
   const rem = choice(rng, [0.3,0.5,0.7,0.9,1.0].filter(r => r < cut));
   const total = Math.round((cut*count + rem)*100)/100;
   const sig = `wk5_2_${cut}_${count}_${rem}`;
-  const stem = `${total}mのリボンがあります。もし、このリボンから${cut}mのリボンをできるだけ多く切り取ったとすると、${cut}mのリボンは何本できて、何mあまりますか。（本数を答えなさい）`;
+  const obj = choice(rng, WK5_OBJS);
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `${total}mの${obj}があります。もし、この${obj}から${cut}mの${obj}をできるだけ多く切り取ったとすると、${cut}mの${obj}は何本できて、何mあまりますか。（本数を答えなさい）`;
+  else if (style === 1) stem = `長さ${total}mの${obj}から、${cut}mずつできるだけ多く切り取ります。${cut}mの${obj}は何本できますか。（あまりは考えなくてよい）`;
+  else stem = `${total}mの${obj}があります。${cut}mずつ切り取っていくと、何本切り取れますか。本数を求めなさい。`;
   const fields = [{ id: 'a1', label: 'できる本数(本)', type: 'int', check: (v) => intEq(v, count) }];
   const hints = [
     hintStep('why', '「できるだけ多く切り取る」は、わり算の商（整数部分）を求めること', 'あまりが出るときは、商とあまりに分かれる', `<b>考え方：</b>${total}mの中に${cut}mが何回とれるかを考える。`),
     hintStep('do', `${total}÷${cut}を計算する`, '商の整数部分が本数になる', `<b>手順：</b><br>① ${total}÷${cut}を計算する<br>② 商の整数部分（${count}）が本数になる`),
     hintStep('goal', `${count}本 になる`, `${total}÷${cut}＝${count}あまり${rem}`, `<b>見直しのコツ：</b>${cut}×${count}を計算し、${total}との差が${cut}より小さいか確かめよう。`)
   ];
-  const solution = `${total}÷${cut}＝${count}あまり${rem}<br>できるリボンは <b>${count}本</b>`;
+  const solution = `${total}÷${cut}＝${count}あまり${rem}<br>できる${obj}は <b>${count}本</b>`;
   return { title: '週テスト18：小数のわり算（あまり）', stem, fields, svg: '', hints, solution, sig };
 }
 
@@ -2158,7 +2216,11 @@ function gen_wk6_1(rng) {
   const x = randInt(rng, 4, 12) * fd; // fd の倍数にして計算がきれいになるように
   const wrongVal = Math.round((x - sub) * (fn/fd) * 1000) / 1000;
   const sig = `wk6_1_${fn}_${fd}_${sub}_${x}`;
-  const stem = `ある数に${fracHtml(fn,fd)}をかけてから${sub}をひく計算を、まちがえて、ある数から${sub}をひいて${fracHtml(fn,fd)}をかけてしまったので、答えが${wrongVal}になりました。ある数はいくつですか。`;
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `ある数に${fracHtml(fn,fd)}をかけてから${sub}をひく計算を、まちがえて、ある数から${sub}をひいて${fracHtml(fn,fd)}をかけてしまったので、答えが${wrongVal}になりました。ある数はいくつですか。`;
+  else if (style === 1) stem = `本当は、ある数に${fracHtml(fn,fd)}をかけたあとで${sub}をひかなければならないところを、まちがえて先に${sub}をひいてから${fracHtml(fn,fd)}をかけてしまい、答えが${wrongVal}になりました。もとの「ある数」を求めなさい。`;
+  else stem = `ある数×${fracHtml(fn,fd)}－${sub}を計算するはずが、まちがえて（ある数－${sub}）×${fracHtml(fn,fd)}を計算してしまい、答えは${wrongVal}でした。ある数は　□　です。`;
   const fields = [{ id: 'a1', label: 'ある数', type: 'dec', check: (v) => decEq(v, x, 1e-6) }];
   const hints = [
     hintStep('why', 'まちがえた式から逆にたどれば「ある数」が分かる', 'まちがえた式は「（ある数－' + sub + '）×' + fracStr(fn,fd) + '＝' + wrongVal + '」', `<b>考え方：</b>まちがえた式を逆算すれば、ある数がいくつだったか求められる。`),
@@ -2178,7 +2240,11 @@ function gen_wk6_2(rng) {
   const wrongVal = Math.round((x - sub) * (fn/fd) * 1000) / 1000;
   const correctVal = Math.round((x * (fn/fd) - sub) * 1000) / 1000;
   const sig = `wk6_2_${fn}_${fd}_${sub}_${x}`;
-  const stem = `ある数に${fracHtml(fn,fd)}をかけてから${sub}をひく計算を、まちがえて、ある数から${sub}をひいて${fracHtml(fn,fd)}をかけてしまったので、答えが${wrongVal}になりました。正しく計算すると、答えはいくつですか。`;
+  const style = randInt(rng, 0, 2);
+  let stem;
+  if (style === 0) stem = `ある数に${fracHtml(fn,fd)}をかけてから${sub}をひく計算を、まちがえて、ある数から${sub}をひいて${fracHtml(fn,fd)}をかけてしまったので、答えが${wrongVal}になりました。正しく計算すると、答えはいくつですか。`;
+  else if (style === 1) stem = `本当は、ある数に${fracHtml(fn,fd)}をかけたあとで${sub}をひかなければならないところを、まちがえて先に${sub}をひいてから${fracHtml(fn,fd)}をかけてしまい、答えが${wrongVal}になりました。正しい計算をしたときの答えを求めなさい。`;
+  else stem = `ある数×${fracHtml(fn,fd)}－${sub}を計算するはずが、まちがえて（ある数－${sub}）×${fracHtml(fn,fd)}を計算してしまい、答えは${wrongVal}でした。正しく計算した答えは　□　です。`;
   const fields = [{ id: 'a1', label: '正しい答え', type: 'dec', check: (v) => decEq(v, correctVal, 1e-6) }];
   const hints = [
     hintStep('why', '「ある数」が分かれば、正しい順番で計算し直せる', 'まず、まちがえた計算から「ある数」を求める必要がある', `<b>考え方：</b>まちがえた式（ある数－${sub}）×${fracStr(fn,fd)}＝${wrongVal}から、ある数を先に求める。`),
